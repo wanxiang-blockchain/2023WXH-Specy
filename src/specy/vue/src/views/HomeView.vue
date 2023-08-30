@@ -28,13 +28,14 @@ export default {
       tableData: [],
     };
   },
+  watch: {},
   methods: {
     getUserTasks() {
-      //暂且获取所有的task
-      let { tasks } = userTasks(100);
+      let { tasks, isLoading } = userTasks(100);
       const timer = setInterval(() => {
-        if (tasks.value.isLoading == false) {
-          this.tableData = tasks.value.tasks;
+        console.log(isLoading);
+        if (isLoading.value == false) {
+          this.tableData = tasks;
           clearInterval(timer); // 停止定时器
         } else {
           console.log("wait");
@@ -43,9 +44,7 @@ export default {
     },
   },
 
-  mounted() {
-    this.getUserTasks();
-  },
+  mounted() {},
 };
 </script>
   
