@@ -2,7 +2,7 @@
 
 BINARY=specyd
 CHAIN_DIR=./network/data
-CHAINID_1=specy-test-3
+CHAINID_1=specy-test-102
 GRPCPORT_1=8090
 GRPCWEB_1=8091
 

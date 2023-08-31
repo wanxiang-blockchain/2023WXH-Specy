@@ -1,8 +1,9 @@
 #!/bin/bash
 
-BINARY=specyd
+BINARY1=specyd
+BINARY2=osmosisd
 CHAIN_DIR=./network/data
-CHAINID_1=specy-test-3
+CHAINID_1=specy-test-102
 CHAINID_2=osmo-test-5
 
 VAL_MNEMONIC_1="clock post desk civil pottery foster expand merit dash seminar song memory figure uniform spice circle try happy obvious trash crime hybrid hood cushion"
