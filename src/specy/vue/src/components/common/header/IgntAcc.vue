@@ -140,6 +140,7 @@ import { IgntWarningIcon } from "@ignt/vue-library";
 import { useClient } from "@/composables/useClient";
 import { useWalletStore } from "@/stores/useWalletStore";
 import useCosmosBaseTendermintV1Beta1 from "@/composables/useCosmosBaseTendermintV1Beta1";
+import { useStore } from "vuex";
 
 export interface State {
   modalPage: string;
@@ -158,6 +159,7 @@ const initialState: State = {
 // state
 const state = reactive(initialState);
 
+const store = useStore();
 // composables
 const { connectToKeplr, isKeplrAvailable, getKeplrAccParams } = useKeplr();
 
@@ -197,6 +199,7 @@ let tryToConnectToKeplr = (): void => {
 };
 let getAccName = (): string => {
   if (client.signer) {
+    store.dispatch("common/setUserAddress", state.keplrParams.bech32Address);
     return state.keplrParams.name;
   } else {
     return "";

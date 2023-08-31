@@ -13,7 +13,7 @@ import Introduction from "../components/home/Introduction.vue";
 import ShowTasks from "../components/home/ShowTasks.vue";
 import { useAddress } from "../def-composables/useAddress";
 import { userTasks } from "../def-composables/userTasks";
-
+import { useStore } from "vuex";
 export default {
   components: {
     Introduction,
@@ -28,18 +28,23 @@ export default {
       tableData: [],
     };
   },
+  watch: {
+    "$store.state.common.address": function (newVal, oldVal) {},
+  },
   methods: {
     getUserTasks() {
-      //暂且获取所有的task
-      let { tasks } = userTasks(100);
-      const timer = setInterval(() => {
-        if (tasks.value.isLoading == false) {
-          this.tableData = tasks.value.tasks;
-          clearInterval(timer); // 停止定时器
-        } else {
-          console.log("wait");
-        }
-      }, 1000);
+      let store = useStore();
+      if (store.state.common.address != "") {
+        let { tasks, isLoading } = userTasks(100);
+        const timer = setInterval(() => {
+          if (isLoading.value == false) {
+            this.tableData = tasks;
+            clearInterval(timer); // 停止定时器
+          } else {
+            console.log("wait");
+          }
+        }, 1000);
+      }
     },
   },
 
