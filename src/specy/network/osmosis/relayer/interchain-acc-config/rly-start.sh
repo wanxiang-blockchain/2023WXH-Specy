@@ -4,7 +4,7 @@
 BINARY=rly
 CHAIN_DIR=./data
 CHAINID_1=test-1
-CHAINID_2=test-2
+CHAINID_2=osmo-test-5
 RELAYER_DIR=./relayer
 MNEMONIC_1="alley afraid soup fall idea toss can goose become valve initial strong forward bright dish figure check leopard decide warfare hub unusual join cart"
 MNEMONIC_2="record gift you once hip style during joke field prize dust unique length more pencil transfer quit train device arrive energy sort steak upset"
