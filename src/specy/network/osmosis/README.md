@@ -209,7 +209,24 @@ specyd tx specy create-task \
     --from $WALLET_1 --chain-id specy-test-102 --home ./data/specy-test-102 --node tcp://localhost:16657 --keyring-backend test -y
 ```
 
+- Automation task case 3:
 
+Build automated tasks for smart contracts, fill in the desired contract address, functions, and parameters, and automatically execute them when the conditions are met.
+
+```bash
+specyd tx specy create-task \
+    test_task3 connection-0 \
+    '{
+        "@type": "/cosmwasm.wasm.v1.MsgExecuteContract",
+        "sender": "osmo1gt9vdhz5uwq29ftpprmjut5pzf4gp9yje5flnykm2taeztls287sm2nrrd",
+        "contract": "osmo18d75fxaqpvlc925c44tmwsfuy24mkmgl5e6uvnsnklhm23elf4jqt0mrez",
+        "msg": {
+            "increment": {}
+        },
+        "funds": []
+    }' rulefile 0 0 100 '{"maxAmount":10000}' \
+    --from $WALLET_1 --chain-id specy-test-102 --home ./data/specy-test-102 --node tcp://localhost:16657 --keyring-backend test -y
+```
 
 
 ![post-create-task](./images/post-create-task.jpg)

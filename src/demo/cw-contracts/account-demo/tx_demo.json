@@ -1,0 +1,34 @@
+{
+    "body": {
+        "messages": [
+            {
+                "@type": "/cosmwasm.wasm.v1.MsgExecuteContract",
+                "sender": "osmo1njd8p9avmp3y9xa9aq78gsjgwx8ttmw37ppxy2",
+                "contract": "osmo18d75fxaqpvlc925c44tmwsfuy24mkmgl5e6uvnsnklhm23elf4jqt0mrez",
+                "msg": {
+                    "increment": {}
+                },
+                "funds": []
+            }
+        ],
+        "memo": "",
+        "timeout_height": "0",
+        "extension_options": [],
+        "non_critical_extension_options": []
+    },
+    "auth_info": {
+        "signer_infos": [],
+        "fee": {
+            "amount": [
+                {
+                    "denom": "uosmo",
+                    "amount": "3736"
+                }
+            ],
+            "gas_limit": "149427",
+            "payer": "",
+            "granter": ""
+        }
+    },
+    "signatures": []
+}

@@ -1,0 +1,12 @@
+
+- name: wallet
+  type: local
+  address: osmo1njd8p9avmp3y9xa9aq78gsjgwx8ttmw37ppxy2
+  pubkey: '{"@type":"/cosmos.crypto.secp256k1.PubKey","key":"A8Bcbpfs46ctbzzGZpx4qM1drcoOD6PFaN2D3dTy29Kr"}'
+  mnemonic: ""
+
+
+**Important** write this mnemonic phrase in a safe place.
+It is the only way to recover your account if you ever forget your password.
+
+twist oblige car extend scan arena enforce sketch false oak horse silly develop over outdoor echo lucky upon travel bonus roast social jaguar else
