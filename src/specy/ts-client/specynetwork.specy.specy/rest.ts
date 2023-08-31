@@ -425,6 +425,13 @@ export interface V1Beta1PageRequest {
    * is set.
    */
   count_total?: boolean;
+
+  /**
+   * reverse is set to true if results are to be returned in the descending order.
+   *
+   * Since: cosmos-sdk 0.43
+   */
+  reverse?: boolean;
 }
 
 /**
@@ -439,7 +446,8 @@ corresponding request message has used PageRequest.
 export interface V1Beta1PageResponse {
   /**
    * next_key is the key to be passed to PageRequest.key to
-   * query the next page most efficiently
+   * query the next page most efficiently. It will be empty if
+   * there are no more results.
    * @format byte
    */
   next_key?: string;
@@ -606,6 +614,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
       "pagination.offset"?: string;
       "pagination.limit"?: string;
       "pagination.count_total"?: boolean;
+      "pagination.reverse"?: boolean;
     },
     params: RequestParams = {},
   ) =>
@@ -646,6 +655,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
       "pagination.offset"?: string;
       "pagination.limit"?: string;
       "pagination.count_total"?: boolean;
+      "pagination.reverse"?: boolean;
     },
     params: RequestParams = {},
   ) =>
@@ -702,6 +712,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
       "pagination.offset"?: string;
       "pagination.limit"?: string;
       "pagination.count_total"?: boolean;
+      "pagination.reverse"?: boolean;
     },
     params: RequestParams = {},
   ) =>
@@ -790,6 +801,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
       "pagination.offset"?: string;
       "pagination.limit"?: string;
       "pagination.count_total"?: boolean;
+      "pagination.reverse"?: boolean;
     },
     params: RequestParams = {},
   ) =>

@@ -11,7 +11,6 @@ export const userTasks = (perPage: number) => {
     const tasks = computed(() => {
         return query.data.value?.tasks;
     })
-    console.log(query.isLoading);
     const isLoading = computed(() => {
 
         return query.isLoading.value;
