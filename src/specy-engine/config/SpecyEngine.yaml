@@ -1,0 +1,23 @@
+# ComplianceEngine config file
+# version:0.1.0
+dataaccess:
+  CORE_MYSQL_ADDRESS: '127.0.0.1:23306'
+
+requestprocessor:
+  THREAD_POOL_SIZE: 4
+  ENGINE_SERVER_ENDPOINT: '0.0.0.0:50051'
+
+binding:
+  # Name or the full path to the binding enclave image
+  BINDING_ENCLAVE_FILENAME: 'binding_enclave.signed.so'
+
+keymanagement:
+  # Name or the full path to the key_management enclave image
+  KEY_MANAGEMENT_ENCLAVE_FILENAME: 'key_management_enclave.signed.so'
+
+rulecheck:
+  # Name or the full path to the rule_check enclave image
+  RULE_ENCLAVE_FILENAME: 'rule_enclave.signed.so'
+
+monitor:
+  CORE_MONITOR_ADDRESS: '10.100.116.7:9091'

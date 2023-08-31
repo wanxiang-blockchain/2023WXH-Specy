@@ -1,0 +1,21 @@
+syntax = "proto3";
+
+import "Signature.proto";
+import "RuleCheck.proto";
+
+package e2e_message;
+
+message E2ERequest{
+    uint64 func_id = 1;
+    oneof input {
+        RuleCheckRequest rule_check_input = 2;
+        SignInput sign_input = 3;
+    }
+}
+
+message E2EResponse {
+    oneof output {
+        RuleCheckResponse rule_check_output = 1;
+        SignOutput sign_output = 2;
+    }
+}

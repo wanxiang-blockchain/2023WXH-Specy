@@ -1,0 +1,6 @@
+enclave {
+    from "LocalAttestation.edl" import *;
+    from "sgx_tstdc.edl" import *;
+    from "RegistrationEnclave.edl" import *;
+
+};

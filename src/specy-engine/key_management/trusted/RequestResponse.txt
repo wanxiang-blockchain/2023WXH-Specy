@@ -1,0 +1,177 @@
+#include "RequestResponse.h"
+
+using namespace std;
+
+/* For Binding Function Request */
+
+uint32_t RequestResponse::MarshalFunctionInput(uint32_t target_fn_id,
+                                               uint32_t msg_type,
+                                               string *function_input,
+                                               char **marshalled_buff,
+                                               size_t *marshalled_buff_len)
+{
+    ms_in_msg_exchange_t *ms;
+    size_t param_len, ms_len;
+    char *temp_buff;
+    if (!function_input || !marshalled_buff_len)
+        return INVALID_PARAMETER_ERROR;
+    param_len = function_input->length();
+    temp_buff = (char *)malloc(param_len);
+    if (!temp_buff)
+        return MALLOC_ERROR;
+    memcpy(temp_buff, function_input->c_str(), param_len); //can be optimized
+    ms_len = sizeof(ms_in_msg_exchange_t) + param_len;
+    ms = (ms_in_msg_exchange_t *)malloc(ms_len);
+    if (!ms)
+    {
+        SAFE_FREE(temp_buff);
+        return MALLOC_ERROR;
+    }
+    ms->msg_type = msg_type;
+    ms->target_fn_id = target_fn_id;
+    ms->inparam_buff_len = (uint32_t)param_len;
+    memcpy(&ms->inparam_buff, temp_buff, param_len);
+    *marshalled_buff = (char *)ms;
+    *marshalled_buff_len = ms_len;
+    SAFE_FREE(temp_buff);
+    return SUCCESS;
+}
+
+uint32_t RequestResponse::UnmarshalFunctionOutput(char *out_buff, string *function_output)
+{
+    size_t retval_len;
+    ms_out_msg_exchange_t *ms;
+    if (!out_buff)
+        return INVALID_PARAMETER_ERROR;
+    ms = (ms_out_msg_exchange_t *)out_buff;
+    retval_len = ms->retval_len;
+    function_output = new string();
+    function_output->copy(ms->ret_outparam_buff, retval_len);
+    return SUCCESS;
+}
+
+/* For Rule Function Response */
+
+uint32_t RequestResponse::UnmarshalFunctionInput(string *function_input, ms_in_msg_exchange_t *ms)
+{
+    char *buff;
+    size_t len;
+    if (!function_input || !ms)
+        return INVALID_PARAMETER_ERROR;
+
+    buff = ms->inparam_buff;
+    len = ms->inparam_buff_len;
+
+    function_input->copy(buff, len);
+    return SUCCESS;
+}
+
+uint32_t RequestResponse::MarshalFunctionOutput(char **resp_buffer, size_t *resp_length, string *function_output)
+{
+    ms_out_msg_exchange_t *ms;
+    size_t ret_param_len, ms_len;
+    char *temp_buff;
+    size_t retval_len;
+    if (!resp_length)
+        return INVALID_PARAMETER_ERROR;
+    retval_len = function_output->length();
+    ret_param_len = retval_len; //no out parameters
+    temp_buff = (char *)malloc(ret_param_len);
+    if (!temp_buff)
+        return MALLOC_ERROR;
+
+    memcpy(temp_buff, function_output->c_str(), retval_len);
+    ms_len = sizeof(ms_out_msg_exchange_t) + ret_param_len;
+    ms = (ms_out_msg_exchange_t *)malloc(ms_len);
+    if (!ms)
+    {
+        SAFE_FREE(temp_buff);
+        return MALLOC_ERROR;
+    }
+    ms->retval_len = (uint32_t)retval_len;
+    ms->ret_outparam_buff_len = (uint32_t)ret_param_len;
+    memcpy(&ms->ret_outparam_buff, temp_buff, ret_param_len);
+    *resp_buffer = (char *)ms;
+    *resp_length = ms_len;
+    SAFE_FREE(temp_buff);
+    return SUCCESS;
+}
+
+/* Helper Functions for E2E Call Request and Response */
+
+uint32_t RequestResponse::E2ERequestResponse(sgx_enclave_id_t src_enclave_id, sgx_enclave_id_t dest_enclave_id,
+                                             string &serialized_request_input, string *serialized_response_output)
+{
+    ATTESTATION_STATUS ke_status = SUCCESS;
+    // param_struct_t *p_struct_var, struct_var;
+    uint32_t target_fn_id, msg_type;
+    char *marshalled_inp_buff;
+    size_t marshalled_inp_buff_len;
+    char *out_buff;
+    size_t out_buff_len;
+    dh_session_t *dest_session_info;
+    size_t max_out_buff_size;
+    char *retval;
+
+    //Marshals the input parameters for calling function foo1 in Enclave3 into a input buffer
+    // ke_status = marshal_input_parameters_e3_foo1(target_fn_id, msg_type, p_struct_var, &marshalled_inp_buff, &marshalled_inp_buff_len);
+    ke_status = RequestResponse::MarshalFunctionInput(target_fn_id, msg_type, &serialized_request_input,
+                                                      &marshalled_inp_buff, &marshalled_inp_buff_len);
+    if (ke_status != SUCCESS)
+    {
+        return ke_status;
+    }
+
+    //Search the map for the session information associated with the destination enclave id passed in
+    std::map<sgx_enclave_id_t, dh_session_t>::iterator it = g_src_session_info_map.find(dest_enclave_id);
+    if (it != g_src_session_info_map.end())
+    {
+        dest_session_info = &it->second;
+    }
+    else
+    {
+        SAFE_FREE(marshalled_inp_buff);
+        return INVALID_SESSION;
+    }
+
+    //Core Reference Code function
+    ke_status = send_request_receive_response(src_enclave_id, dest_enclave_id, dest_session_info, marshalled_inp_buff,
+                                              marshalled_inp_buff_len, max_out_buff_size, &out_buff, &out_buff_len);
+
+    if (ke_status != SUCCESS)
+    {
+        SAFE_FREE(marshalled_inp_buff);
+        SAFE_FREE(out_buff);
+        return ke_status;
+    }
+
+    // protocol buffer serialized response output
+    string seralized_response_output;
+
+    //Un-marshal the return value and output parameters from foo1 of Enclave3
+    // ke_status = unmarshal_retval_and_output_parameters_e3_foo1(out_buff, p_struct_var, &retval);
+    ke_status = RequestResponse::UnmarshalFunctionOutput(out_buff, serialized_response_output);
+    if (ke_status != SUCCESS)
+    {
+        SAFE_FREE(marshalled_inp_buff);
+        SAFE_FREE(out_buff);
+        return ke_status;
+    }
+
+    SAFE_FREE(marshalled_inp_buff);
+    SAFE_FREE(out_buff);
+    SAFE_FREE(retval);
+    return SUCCESS;
+}
+
+/* Helper Functions for E2E Call Tests */
+
+string RequestResponse::GenerateSerializedEntityRequest()
+{
+    // TODO
+}
+
+string RequestResponse::GenerateSerializedEntitySetRequest()
+{
+    // TODO
+}

@@ -1,0 +1,9 @@
+*build/*
+*/*build/*
+*.o
+.DS_Store
+.vscode
+.vscode/*
+*CMakeFiles*
+*logs/*
+*.log
