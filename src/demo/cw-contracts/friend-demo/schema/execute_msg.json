@@ -33,6 +33,18 @@
         }
       },
       "additionalProperties": false
+    },
+    {
+      "type": "object",
+      "required": [
+        "register"
+      ],
+      "properties": {
+        "register": {
+          "type": "object"
+        }
+      },
+      "additionalProperties": false
     }
   ]
 }

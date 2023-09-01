@@ -42,14 +42,11 @@ pub fn execute(
     match msg {
         ExecuteMsg::Follow { addr } => try_follow(deps, info, addr),
         ExecuteMsg::Reset {} => try_reset(deps, info),
+        ExecuteMsg::Register {} => try_register(deps, info),
     }
 }
 
-pub fn try_follow(
-    deps: DepsMut,
-    info: MessageInfo,
-    addr: String,
-) -> Result<Response, ContractError> {
+pub fn try_register(deps: DepsMut, info: MessageInfo) -> Result<Response, ContractError> {
     let sender: Addr = info.sender.clone();
     STATE.update(
         deps.storage,
@@ -61,13 +58,28 @@ pub fn try_follow(
         },
     )?;
 
+    Ok(Response::new()
+        .add_attribute("method", "register")
+        .add_attribute("sender", sender))
+}
+
+pub fn try_follow(
+    deps: DepsMut,
+    info: MessageInfo,
+    addr: String,
+) -> Result<Response, ContractError> {
+    let sender: Addr = info.sender.clone();
+    let addr_copy: String = addr.clone();
     let mut f = FOLLOWS.load(deps.storage, &sender).unwrap_or_default();
     if !f.contains(&addr) {
         f.push(addr);
     }
     let _ = FOLLOWS.save(deps.storage, &sender, &f);
 
-    Ok(Response::new().add_attribute("method", "try_follow"))
+    Ok(Response::new()
+        .add_attribute("method", "follow")
+        .add_attribute("sender", sender)
+        .add_attribute("address", addr_copy))
 }
 
 pub fn try_reset(deps: DepsMut, info: MessageInfo) -> Result<Response, ContractError> {
@@ -133,12 +145,19 @@ mod tests {
     #[test]
     fn follow() {
         let mut deps = mock_dependencies_with_balance(&coins(2, "token"));
-
+        //init
         let msg = InstantiateMsg {};
         let info = mock_info("creator", &coins(2, "token"));
         let _res = instantiate(deps.as_mut(), mock_env(), info, msg).unwrap();
 
-        // beneficiary can release it
+        //register
+        let info = mock_info("anyone", &coins(2, "token"));
+        let msg = ExecuteMsg::Register {};
+        let _res = execute(deps.as_mut(), mock_env(), info, msg).unwrap();
+        let users = get_users(deps.as_ref());
+        assert_eq!(1, users.len());
+
+        // //follow
         let info = mock_info("anyone", &coins(2, "token"));
         let msg = ExecuteMsg::Follow {
             addr: "aaaa".to_string(),
@@ -148,8 +167,6 @@ mod tests {
         // should increase counter by 1
         let follows = get_follows(deps.as_ref(), "anyone".to_string());
         assert_eq!(1, follows.len());
-        let users = get_users(deps.as_ref());
-        assert_eq!(1, users.len());
     }
 
     #[test]
