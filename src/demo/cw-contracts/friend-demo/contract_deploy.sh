@@ -1,6 +1,6 @@
 cargo wasm
 # store the code on chain
-RES=$(osmosisd tx wasm store artifacts/cw_tpl_osmosis.wasm --from wallet \
+RES=$(osmosisd tx wasm store target/wasm32-unknown-unknown/release/cw_tpl_osmosis.wasm --from wallet \
     --home ../../wallet --chain-id osmo-test-5 --keyring-backend test --gas-prices 0.1uosmo \
     --gas auto --gas-adjustment 1.3 -y --output json -b block --node http://222.106.187.14:53402 )
 
