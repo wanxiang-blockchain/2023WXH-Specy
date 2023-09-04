@@ -1,0 +1,38 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "QueryMsg",
+  "oneOf": [
+    {
+      "type": "object",
+      "required": [
+        "get_follows_by_addr"
+      ],
+      "properties": {
+        "get_follows_by_addr": {
+          "type": "object",
+          "required": [
+            "addr"
+          ],
+          "properties": {
+            "addr": {
+              "type": "string"
+            }
+          }
+        }
+      },
+      "additionalProperties": false
+    },
+    {
+      "type": "object",
+      "required": [
+        "get_all_users"
+      ],
+      "properties": {
+        "get_all_users": {
+          "type": "object"
+        }
+      },
+      "additionalProperties": false
+    }
+  ]
+}
