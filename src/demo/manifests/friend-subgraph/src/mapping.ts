@@ -28,8 +28,11 @@ export function handleWasmEvent(data: cosmos.EventData): void {
         log.info("user already exsit:{}", [sender]);
         if (follow.follows != null) {
           if (address != null) {
-            follow.follows!.push(address);
+            let follows_old = follow.follows
+            follows_old!.push(address);
+            follow.follows = follows_old;
           }
+          log.info("end push length:{}", ["" + follow.follows!.length.toString()]);
         }
       }
       let length = 0;
