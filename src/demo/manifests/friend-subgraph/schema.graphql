@@ -1,0 +1,13 @@
+type Follow @entity{
+  " { Transaction hash }"
+  id: ID!
+
+  " Account that sent the tokens "
+  address: String!
+
+ " Account that received the tokens "
+  follows: [String!]
+}
+
+
+
