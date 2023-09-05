@@ -15,7 +15,7 @@ Entity::Entity(const string &name) {
 
 const string &Entity::get_id() const { return this->id_; }
 
-const string &Entity::get_name() const { return this->name_; }
+string &Entity::get_name() { return this->name_; }
 
 const set<string> &Entity::get_constraints_set() const {
     return this->constraints_;
@@ -84,4 +84,8 @@ shared_ptr<Attribute> Entity::getAttribute(string attribute_name, RuleLanguage::
         return attribute_list[attribute_name];
     }
     return nullptr;
+}
+
+shared_ptr<Attribute> Entity::getAttribute(string attribute_name) {
+    return attribute_list[attribute_name];
 }

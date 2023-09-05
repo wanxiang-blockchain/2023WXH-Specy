@@ -51,9 +51,9 @@ bool Instance::updateValue(json11::Json& instance_json) {
 
     if (instance_kind == InstanceKind::EXPR) {
         RuleLanguage::queryExpr* expr = dynamic_cast<RuleLanguage::queryExpr*>(getExpr());
-        schema_name = expr->entity->get_name() + "s";
+        schema_name = expr->getName() + "s";
     }
-    json11::Json instance_data = instance_json[schema_name][0];
+    json11::Json instance_data = instance_json[schema_name];
     ocall_print_string(instance_data.dump().c_str(), __FILE__, __LINE__);
     for (auto attribute : attribute_list) {
         if (attribute.second->getType() == RuleLanguage::Type::NUMBER) {
@@ -72,6 +72,13 @@ bool Instance::updateValue(json11::Json& instance_json) {
             ocall_print_string(("update string attribute " + attribute.first).c_str(), __FILE__, __LINE__);
             StringAttribute* string_attribute = dynamic_cast<StringAttribute*>(attribute.second.get());
             update_succ &= updateStringValue(instance_data[attribute.first].string_value(), string_attribute);
+        }
+
+        if (attribute.second->getType() == RuleLanguage::Type::INSTANCELIST) {
+            ocall_print_string(("update list attribute " + attribute.first).c_str(), __FILE__, __LINE__);
+            ListAttribute* list_attribute = dynamic_cast<ListAttribute*>(attribute.second.get());
+            update_succ &= updateListValue(instance_data[attribute.first], list_attribute);
+            
         }
     }
     return update_succ;
@@ -92,13 +99,45 @@ bool Instance::updateStringValue(std::string new_value, StringAttribute* attribu
     return true;
 }
 
+bool Instance::updateListValue(const json11::Json& json_value, ListAttribute* attribute) {
+
+    ocall_print_string("Debug: enter updateListValue", __FILE__, __LINE__);
+    if (!json_value.is_array()) {
+        ocall_print_string(("Error! input json is not array!" + json_value.dump()).c_str(), __FILE__, __LINE__);
+        return false;
+    }
+
+    RuleLanguage::Type inter_type = attribute->getInterType();
+    switch (inter_type)
+    {
+    case RuleLanguage::Type::STRING:
+        return attribute->updateStringValue(json_value.array_items());
+        
+    case RuleLanguage::Type::NUMBER:
+        return attribute->updateNumberValue(json_value.array_items());
+
+    case RuleLanguage::Type::BOOLEAN:
+        return attribute->updateBooleanValue(json_value.array_items());
+    
+    default:
+        break;
+    }
+    return false;
+}
+
 bool Instance::needQuery() {
     if (instance_kind == InstanceKind::UNIQUE_ENTITY) {
         return true;
     }
 
     if (instance_kind == InstanceKind::EXPR) {
-        return dynamic_cast<RuleLanguage::queryExpr*>(expr.get()) != nullptr;
+        RuleLanguage::queryExpr* query_expr = dynamic_cast<RuleLanguage::queryExpr*>(expr.get());
+        if (query_expr != nullptr) {
+            std::shared_ptr<Instance> query_expr_instance = query_expr->getInstance();
+            return query_expr_instance == nullptr || query_expr_instance->getInstanceKind() == InstanceKind::SYMBOL;
+        } else {
+            return false;
+        }
     }
 
     return false;
@@ -106,8 +145,16 @@ bool Instance::needQuery() {
 
 bool Instance::needCalculate() {
     if (instance_kind == InstanceKind::EXPR) {
-        return dynamic_cast<RuleLanguage::queryExpr*>(expr.get()) == nullptr;
-    } 
+        RuleLanguage::queryExpr* query_expr = dynamic_cast<RuleLanguage::queryExpr*>(expr.get());
+        if (query_expr == nullptr)
+        {
+            return true;
+        } else {
+            std::shared_ptr<Instance> query_expr_instance = query_expr->getInstance();
+            return query_expr_instance != nullptr && query_expr_instance->getInstanceKind() != InstanceKind::SYMBOL;
+        }
+    }
+    return false;
 }
 
 bool Instance::updateNumberValue(int64_t new_value) {
@@ -126,4 +173,55 @@ bool Instance::calculateValue() {
 
 std::string ObjectAttribute::dumpValue() {
     return instance_value->dumpAttributeValue();
+}
+
+std::string ListAttribute::dumpValue() {
+    std::string value_stirng = "[\n";
+    if (interType == RuleLanguage::Type::NUMBER) {
+        for (auto value : values) {
+            value_stirng.append(std::to_string(value.number_value))
+                .append(" ");
+        }
+    }
+
+    if (interType == RuleLanguage::Type::STRING) {
+        for (auto value : values) {
+            value_stirng.append(value.string_value)
+                .append(" ");
+        }
+    }
+
+    if (interType == RuleLanguage::Type::BOOLEAN) {
+        for (auto value : values) {
+            value_stirng.append(value.boolean_value ? "true" : "false")
+                .append(" ");
+        }
+    }
+    value_stirng.append("\n]");
+    return value_stirng;
+}
+
+bool ListAttribute::updateStringValue(const json11::Json::array& json_array) {
+    for (auto json_value : json_array) {
+        Value value;
+        value.string_value = json_value.string_value();
+        values.push_back(value);
+    }
+    return true;
+}
+bool ListAttribute::updateNumberValue(const json11::Json::array& json_array) {
+    for (auto json_value : json_array) {
+        Value value;
+        value.number_value = json_value.number_value();
+        values.push_back(value);
+    }
+    return true;
+}
+bool ListAttribute::updateBooleanValue(const json11::Json::array& json_array) {
+    for (auto json_value : json_array) {
+        Value value;
+        value.boolean_value = json_value.bool_value();
+        values.push_back(value);
+    }
+    return true;
 }

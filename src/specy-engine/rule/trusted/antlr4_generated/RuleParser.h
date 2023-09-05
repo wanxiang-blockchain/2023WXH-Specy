@@ -41,14 +41,16 @@ public:
     RuleExecutionTrueStmt = 22, RuleExecutionFalseStmt = 23, RuleRulesBlock = 24, 
     RuleRuleList = 25, RuleBasicRule = 26, RuleRuleName = 27, RuleRuleStmtList = 28, 
     RuleRuleStmt = 29, RuleSimpleStmt = 30, RuleComplexStmt = 31, RuleListStmt = 32, 
-    RuleListExpr = 33, RuleRelationStmt = 34, RuleRelationExpr = 35, RuleRelationOperator = 36, 
-    RuleNumberExpr = 37, RuleSelectorIdent = 38, RuleAggregationExpr = 39, 
-    RuleBooleanExpr = 40, RuleBooleanLiteral = 41, RuleLogicalStmt = 42, 
-    RuleLogicalExpr = 43, RuleDefinitionStmt = 44, RuleInstanceName = 45, 
-    RuleQueryExpr = 46, RuleConditionExpr = 47, RuleLogicalOperator = 48, 
-    RuleBasicCondExpr = 49, RuleExpr = 50, RuleAssignStmt = 51, RuleAssignExpr = 52, 
-    RuleIfStmt = 53, RuleSequentialStmt = 54, RuleSequentialExpr = 55, RuleDateStmt = 56, 
-    RuleDateExpr = 57, RuleTimeStmt = 58, RuleTimeExpr = 59, RuleEos = 60
+    RuleListExpr = 33, RuleListFirstExpr = 34, RuleListSecondExpr = 35, 
+    RuleRelationStmt = 36, RuleRelationExpr = 37, RuleStringExpr = 38, RuleCompareOperator = 39, 
+    RuleRelationOperator = 40, RuleNumberExpr = 41, RuleSelectorIdent = 42, 
+    RuleAggregationExpr = 43, RuleBooleanExpr = 44, RuleBooleanLiteral = 45, 
+    RuleLogicalStmt = 46, RuleLogicalExpr = 47, RuleDefinitionStmt = 48, 
+    RuleAssignElement = 49, RuleInstanceName = 50, RuleQueryExpr = 51, RuleConditionExpr = 52, 
+    RuleLogicalOperator = 53, RuleBasicCondExpr = 54, RuleExpr = 55, RuleAssignStmt = 56, 
+    RuleAssignExpr = 57, RuleIfStmt = 58, RuleSequentialStmt = 59, RuleSequentialExpr = 60, 
+    RuleDateStmt = 61, RuleDateExpr = 62, RuleTimeStmt = 63, RuleTimeExpr = 64, 
+    RuleEos = 65
   };
 
   explicit RuleParser(antlr4::TokenStream *input);
@@ -95,8 +97,12 @@ public:
   class ComplexStmtContext;
   class ListStmtContext;
   class ListExprContext;
+  class ListFirstExprContext;
+  class ListSecondExprContext;
   class RelationStmtContext;
   class RelationExprContext;
+  class StringExprContext;
+  class CompareOperatorContext;
   class RelationOperatorContext;
   class NumberExprContext;
   class SelectorIdentContext;
@@ -106,6 +112,7 @@ public:
   class LogicalStmtContext;
   class LogicalExprContext;
   class DefinitionStmtContext;
+  class AssignElementContext;
   class InstanceNameContext;
   class QueryExprContext;
   class ConditionExprContext;
@@ -440,8 +447,9 @@ public:
     virtual size_t getRuleIndex() const override;
     antlr4::tree::TerminalNode *LIST();
     antlr4::tree::TerminalNode *L_BRACKET();
-    antlr4::tree::TerminalNode *IDENTIFIER();
     antlr4::tree::TerminalNode *R_BRACKET();
+    BasicTypeContext *basicType();
+    antlr4::tree::TerminalNode *IDENTIFIER();
 
     virtual void enterRule(antlr4::tree::ParseTreeListener *listener) override;
     virtual void exitRule(antlr4::tree::ParseTreeListener *listener) override;
@@ -700,8 +708,8 @@ public:
     antlr4::tree::TerminalNode *L_PAREN();
     ListExprContext *listExpr();
     antlr4::tree::TerminalNode *R_PAREN();
-    SelectorIdentContext *selectorIdent();
-    antlr4::tree::TerminalNode *IDENTIFIER();
+    ListFirstExprContext *listFirstExpr();
+    ListSecondExprContext *listSecondExpr();
     antlr4::tree::TerminalNode *SET_IN();
     antlr4::tree::TerminalNode *SET_NOT_IN();
 
@@ -713,6 +721,38 @@ public:
   };
 
   ListExprContext* listExpr();
+
+  class  ListFirstExprContext : public antlr4::ParserRuleContext {
+  public:
+    ListFirstExprContext(antlr4::ParserRuleContext *parent, size_t invokingState);
+    virtual size_t getRuleIndex() const override;
+    InstanceNameContext *instanceName();
+    SelectorIdentContext *selectorIdent();
+
+    virtual void enterRule(antlr4::tree::ParseTreeListener *listener) override;
+    virtual void exitRule(antlr4::tree::ParseTreeListener *listener) override;
+
+    virtual antlrcpp::Any accept(antlr4::tree::ParseTreeVisitor *visitor) override;
+   
+  };
+
+  ListFirstExprContext* listFirstExpr();
+
+  class  ListSecondExprContext : public antlr4::ParserRuleContext {
+  public:
+    ListSecondExprContext(antlr4::ParserRuleContext *parent, size_t invokingState);
+    virtual size_t getRuleIndex() const override;
+    InstanceNameContext *instanceName();
+    SelectorIdentContext *selectorIdent();
+
+    virtual void enterRule(antlr4::tree::ParseTreeListener *listener) override;
+    virtual void exitRule(antlr4::tree::ParseTreeListener *listener) override;
+
+    virtual antlrcpp::Any accept(antlr4::tree::ParseTreeVisitor *visitor) override;
+   
+  };
+
+  ListSecondExprContext* listSecondExpr();
 
   class  RelationStmtContext : public antlr4::ParserRuleContext {
   public:
@@ -738,8 +778,10 @@ public:
     antlr4::tree::TerminalNode *R_PAREN();
     std::vector<NumberExprContext *> numberExpr();
     NumberExprContext* numberExpr(size_t i);
-    std::vector<RelationOperatorContext *> relationOperator();
-    RelationOperatorContext* relationOperator(size_t i);
+    RelationOperatorContext *relationOperator();
+    std::vector<StringExprContext *> stringExpr();
+    StringExprContext* stringExpr(size_t i);
+    CompareOperatorContext *compareOperator();
 
     virtual void enterRule(antlr4::tree::ParseTreeListener *listener) override;
     virtual void exitRule(antlr4::tree::ParseTreeListener *listener) override;
@@ -749,6 +791,39 @@ public:
   };
 
   RelationExprContext* relationExpr();
+
+  class  StringExprContext : public antlr4::ParserRuleContext {
+  public:
+    StringExprContext(antlr4::ParserRuleContext *parent, size_t invokingState);
+    virtual size_t getRuleIndex() const override;
+    InstanceNameContext *instanceName();
+    SelectorIdentContext *selectorIdent();
+    antlr4::tree::TerminalNode *INTERPRETED_STRING_LIT();
+
+    virtual void enterRule(antlr4::tree::ParseTreeListener *listener) override;
+    virtual void exitRule(antlr4::tree::ParseTreeListener *listener) override;
+
+    virtual antlrcpp::Any accept(antlr4::tree::ParseTreeVisitor *visitor) override;
+   
+  };
+
+  StringExprContext* stringExpr();
+
+  class  CompareOperatorContext : public antlr4::ParserRuleContext {
+  public:
+    CompareOperatorContext(antlr4::ParserRuleContext *parent, size_t invokingState);
+    virtual size_t getRuleIndex() const override;
+    antlr4::tree::TerminalNode *EQUALS();
+    antlr4::tree::TerminalNode *NOT_EQUALS();
+
+    virtual void enterRule(antlr4::tree::ParseTreeListener *listener) override;
+    virtual void exitRule(antlr4::tree::ParseTreeListener *listener) override;
+
+    virtual antlrcpp::Any accept(antlr4::tree::ParseTreeVisitor *visitor) override;
+   
+  };
+
+  CompareOperatorContext* compareOperator();
 
   class  RelationOperatorContext : public antlr4::ParserRuleContext {
   public:
@@ -925,6 +1000,8 @@ public:
     InstanceNameContext *instanceName();
     antlr4::tree::TerminalNode *ASSIGN();
     ExprContext *expr();
+    SelectorIdentContext *selectorIdent();
+    AssignElementContext *assignElement();
 
     virtual void enterRule(antlr4::tree::ParseTreeListener *listener) override;
     virtual void exitRule(antlr4::tree::ParseTreeListener *listener) override;
@@ -934,6 +1011,22 @@ public:
   };
 
   DefinitionStmtContext* definitionStmt();
+
+  class  AssignElementContext : public antlr4::ParserRuleContext {
+  public:
+    AssignElementContext(antlr4::ParserRuleContext *parent, size_t invokingState);
+    virtual size_t getRuleIndex() const override;
+    InstanceNameContext *instanceName();
+    SelectorIdentContext *selectorIdent();
+
+    virtual void enterRule(antlr4::tree::ParseTreeListener *listener) override;
+    virtual void exitRule(antlr4::tree::ParseTreeListener *listener) override;
+
+    virtual antlrcpp::Any accept(antlr4::tree::ParseTreeVisitor *visitor) override;
+   
+  };
+
+  AssignElementContext* assignElement();
 
   class  InstanceNameContext : public antlr4::ParserRuleContext {
   public:
@@ -954,11 +1047,12 @@ public:
   public:
     QueryExprContext(antlr4::ParserRuleContext *parent, size_t invokingState);
     virtual size_t getRuleIndex() const override;
-    EntityNameContext *entityName();
     antlr4::tree::TerminalNode *WHERE();
     ConditionExprContext *conditionExpr();
     antlr4::tree::TerminalNode *SELECT();
     antlr4::tree::TerminalNode *COLLECT();
+    EntityNameContext *entityName();
+    SelectorIdentContext *selectorIdent();
 
     virtual void enterRule(antlr4::tree::ParseTreeListener *listener) override;
     virtual void exitRule(antlr4::tree::ParseTreeListener *listener) override;

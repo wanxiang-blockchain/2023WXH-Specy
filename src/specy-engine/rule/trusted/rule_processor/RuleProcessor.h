@@ -36,5 +36,5 @@ public:
     // EvaluateRule is used to regulate transaction with rules
     // Params: request_context: context of compliance request which contains necessary regulatory information
     // Return: RuleEnclaveStatus: status of EvaluateRule
-    RuleEnclaveStatus EvaluateRule(RequestContext *const request_context);
+    RuleEnclaveStatus EvaluateRule(RequestContext* request_context);
 };

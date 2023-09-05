@@ -87,9 +87,17 @@ public:
 
     virtual antlrcpp::Any visitListExpr(RuleParser::ListExprContext *context) = 0;
 
+    virtual antlrcpp::Any visitListFirstExpr(RuleParser::ListFirstExprContext *context) = 0;
+
+    virtual antlrcpp::Any visitListSecondExpr(RuleParser::ListSecondExprContext *context) = 0;
+
     virtual antlrcpp::Any visitRelationStmt(RuleParser::RelationStmtContext *context) = 0;
 
     virtual antlrcpp::Any visitRelationExpr(RuleParser::RelationExprContext *context) = 0;
+
+    virtual antlrcpp::Any visitStringExpr(RuleParser::StringExprContext *context) = 0;
+
+    virtual antlrcpp::Any visitCompareOperator(RuleParser::CompareOperatorContext *context) = 0;
 
     virtual antlrcpp::Any visitRelationOperator(RuleParser::RelationOperatorContext *context) = 0;
 
@@ -108,6 +116,8 @@ public:
     virtual antlrcpp::Any visitLogicalExpr(RuleParser::LogicalExprContext *context) = 0;
 
     virtual antlrcpp::Any visitDefinitionStmt(RuleParser::DefinitionStmtContext *context) = 0;
+
+    virtual antlrcpp::Any visitAssignElement(RuleParser::AssignElementContext *context) = 0;
 
     virtual antlrcpp::Any visitInstanceName(RuleParser::InstanceNameContext *context) = 0;
 

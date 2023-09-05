@@ -25,6 +25,7 @@ class Attribute {
     private:
         std::string name;
         RuleLanguage::Type type;
+        std::shared_ptr<Instance> instance;
 
     public:
         Attribute() = default;
@@ -51,6 +52,10 @@ class Attribute {
         }
 
         virtual std::string dumpValue() = 0;
+
+        void setInstance(std::shared_ptr<Instance> instance) {
+            this->instance = instance;
+        }
 
 };
 
@@ -171,9 +176,33 @@ class ObjectAttribute : public Attribute {
         std::string dumpValue();
 };
 
+class ListAttribute : public Attribute {
+    private:
+        std::vector<Value> values;
+        RuleLanguage::Type interType;
+    
+    public:
+        ListAttribute() = default;
+        ~ListAttribute() = default;
+        ListAttribute(std::string name, RuleLanguage::Type type) : Attribute(name, type) {}
+        ListAttribute(std::string name, RuleLanguage::Type type, RuleLanguage::Type intertype) : Attribute(name, type), interType(intertype) {}
+        void setInterType(RuleLanguage::Type type) {
+            interType = type;
+        }
+
+        RuleLanguage::Type getInterType() {
+            return interType;
+        }
+
+        std::string dumpValue();
+        bool updateStringValue(const json11::Json::array& json_array);
+        bool updateNumberValue(const json11::Json::array& json_array);
+        bool updateBooleanValue(const json11::Json::array& json_array);
+};
+
 class Instance {
 
-    private:
+    public:
         std::string name;
         std::string specific_attribute;
         std::unique_ptr<RuleLanguage::Expr> expr;
@@ -181,6 +210,7 @@ class Instance {
         std::map<std::string, std::shared_ptr<Attribute>> attribute_list;
         InstanceKind instance_kind;
         RuleLanguage::Type instance_type;
+        RuleLanguage::Type list_type;
         Value value;
 
     public:
@@ -264,6 +294,10 @@ class Instance {
             return nullptr;
         }
 
+        std::shared_ptr<Attribute> getAttribute(const std::string attribute_name) {
+            return attribute_list[attribute_name];
+        }
+
         const std::map<std::string, std::shared_ptr<Attribute>>& get_attribute_list() const {
             return attribute_list;
         }
@@ -280,9 +314,12 @@ class Instance {
         bool updateNumberValue(int64_t new_value, NumberAttribute* attribute);
         bool updateBooleanValue(bool new_value, BooleanAttribute* attribute);
         bool updateStringValue(std::string new_value, StringAttribute* attribute);
+        bool updateListValue(const json11::Json& json_value, ListAttribute* attribute);
         bool updateNumberValue(int64_t new_value);
         bool updateBooleanValue(bool new_value);
         bool updateStringValue(std::string new_value);
+        
+
 
         bool needQuery();
         bool needCalculate();

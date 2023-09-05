@@ -6,10 +6,21 @@
 using namespace std;
 using namespace RuleLanguage;
 
-SemanticModelEngine::SemanticModelEngine(SymbolCollector* collector) : symbol_collector(collector) {
+SemanticModelEngine::SemanticModelEngine(SymbolCollector* collector, RequestContext* context) : symbol_collector(collector), request_context(context) {
     root = collector->getExecuteRoot();
 }
 
+bool SemanticModelEngine::bindInputData(std::string input_data) {
+    ocall_print_string(("bind input data : " + input_data).c_str(), __FILE__, __LINE__);
+    std::string error_info;
+    json11::Json input_json = json11::Json::parse(input_data, error_info);
+    if (!error_info.empty()) {
+        ocall_print_string(error_info.c_str(), __FILE__, __LINE__);
+        return false;
+    }
+    auto instance = symbol_collector->getInputInstance();
+    return instance->updateValue(input_json);
+}
 
 // handle global instances
 bool SemanticModelEngine::queryData() {
@@ -80,6 +91,12 @@ bool SemanticModelEngine::updateInstanceValue(shared_ptr<Instance> instance) {
 }
 
 bool SemanticModelEngine::execute() {
+
+    if (!bindInputData(request_context->getInputData())) {
+        ocall_print_string("Error: bind input data error!", __FILE__, __LINE__);
+        return false;
+    }
+
     // update global instance value
     if (!queryData()) {
         return false;
@@ -92,20 +109,20 @@ bool SemanticModelEngine::execute() {
 bool SemanticModelEngine::executeStmt(RuleLanguage::Expr* expr) {
     ocall_print_string("enter executeStmt", __FILE__, __LINE__);
     if (dynamic_cast<RuleLanguage::definitionExpr*>(expr) != nullptr) {
-        ocall_print_string("handle difinition expr", __FILE__, __LINE__);
         RuleLanguage::definitionExpr* def_expr = dynamic_cast<RuleLanguage::definitionExpr*>(expr);
+        ocall_print_string(("handle difinition expr " + def_expr->dump()).c_str(), __FILE__, __LINE__);
         return updateInstanceValue(def_expr->instance);
     }
 
     if (dynamic_cast<RuleLanguage::relationExpr*>(expr) != nullptr) {
-        ocall_print_string("calculate relation expr", __FILE__, __LINE__);
         RuleLanguage::relationExpr* relation_expr = dynamic_cast<RuleLanguage::relationExpr*>(expr);
+        ocall_print_string(("calculate relation expr" + relation_expr->dump()).c_str(), __FILE__, __LINE__);
         return calculateRelationExpr(relation_expr);
     }
 
     if (dynamic_cast<RuleLanguage::logicalExpr*>(expr) != nullptr) {
-        ocall_print_string("calculate logical expr", __FILE__, __LINE__);
         RuleLanguage::logicalExpr* logical_expr = dynamic_cast<RuleLanguage::logicalExpr*>(expr);
+        ocall_print_string(("calculate logical expr" + logical_expr->dump()).c_str(), __FILE__, __LINE__);
         return calculateLogicalExpr(logical_expr);
     }
 }
@@ -137,11 +154,10 @@ bool SemanticModelEngine::executeRule(ExecuteRule* rule) {
 }
 
 bool SemanticModelEngine::calculateRelationExpr(RuleLanguage::relationExpr* expr) {
-    int64_t leftValue = calculateNumberExpr(expr->getFirstNumberExpr());
-    auto& numbers = expr->getNumbers();
-    auto& operators = expr->getOperators();
-    int64_t rightValue = calculateNumberExpr(numbers[0].get());
-    switch (operators[0])
+    int64_t leftValue = calculateNumberExpr(expr->getLeftNumberExpr());
+    auto operators = expr->getOperators();
+    int64_t rightValue = calculateNumberExpr(expr->getRightNumberExpr());
+    switch (operators)
     {
     case RuleLanguage::RelationOperator::EQUALS :
         return leftValue == rightValue;

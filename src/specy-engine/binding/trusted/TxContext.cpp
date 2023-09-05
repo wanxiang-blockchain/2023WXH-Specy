@@ -39,6 +39,8 @@ void TxContext::checkRules() {
     e2e_message::E2ERequest e2eRuleCheckRequest;
     e2e_message::RuleCheckRequest* request = new e2e_message::RuleCheckRequest();
     request->set_taskhash(taskRequest->taskhash());
+    request->set_input_data(taskRequest->input_data());
+    request->set_rule_file(taskRequest->rule_file());
     
     e2eRuleCheckRequest.set_func_id((uint64_t)ExportedRuleFunction::kCheckRule);
     e2eRuleCheckRequest.set_allocated_rule_check_input(request);
@@ -109,15 +111,12 @@ void TxContext::generateTaskResponse() {
     BINDING_INFO("generateTaskResponse start!");
     taskResponse = new request_proto::TaskResponse();
     taskResponse->set_taskhash(ruleCheckResponse->taskhash());
-    taskResponse->set_rule_file_hash(ruleCheckResponse->rule_file_hash());
-    request_proto::Result* result = new request_proto::Result();
+    taskResponse->set_output_data(ruleCheckResponse->output_data());
+    taskResponse->set_error_info(ruleCheckResponse->error_info());
+    taskResponse->set_status(ruleCheckResponse->status());
 
-    const e2e_message::RuleCheckResult& rule_check_result = ruleCheckResponse->result();
-    result->set_status(rule_check_result.status());
-    result->set_error_info(rule_check_result.error_info());
-    result->set_task_result(rule_check_result.task_result());
+    
     BINDING_INFO("generateTaskResponse start!");
-    taskResponse->set_allocated_result(result);
     string response_string = taskResponse->SerializeAsString();
     string response_signature = getSignature(response_string.c_str());
 

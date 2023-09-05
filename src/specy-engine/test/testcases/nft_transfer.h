@@ -12,7 +12,6 @@ class MockDatabase_Taska : public MockDatabase_NFT {
 
 };
 
-void InitMockDataBase_NFT_0elements(MockDatabase_NFT& mockDatabase);
-void InitMockDataBase_NFT_4elements(MockDatabase_NFT& mockDatabase);
-void mockTaskRequest_NFTList_0elements(request_proto::TaskRequest* request);
-void mockTaskRequest_NFTList_4elements(request_proto::TaskRequest* request);
+
+void InitMockDataBase_NFT(MockDatabase_NFT& mockDatabase);
+void mockTaskRequest_NFTList(request_proto::TaskRequest* request);

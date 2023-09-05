@@ -4,15 +4,17 @@
 class SemanticModelEngine {
     private:
         SymbolCollector* symbol_collector;
+        RequestContext* request_context;
         std::unique_ptr<ExecuteRule> root;
-
         std::map<std::string, json11::Json> instance_data;
 
     public:
-        SemanticModelEngine(SymbolCollector* collector);
+        SemanticModelEngine(SymbolCollector* collector, RequestContext* context);
         ~SemanticModelEngine() = default;
 
-        // fetch data from the graph
+
+        bool bindInputData(std::string input_data);
+        // fetch global data from the graph
         bool queryData();
         // execute rule file 
         bool execute();

@@ -82,7 +82,7 @@ private:
 
 public:
     SymbolCollector() = default;
-    ~SymbolCollector();
+    ~SymbolCollector() = default;
 
     /* Data Member Getters */
     const std::vector<Entity> get_entity_list() const;
@@ -100,7 +100,8 @@ public:
 
 private:
     /* Internal Handler Member Functions */
-    void KeepTrackOfNewEntity(const std::string &entity_name, std::string &attribute_name, RuleLanguage::Type type);
+    RuleLanguage::Type getTypeFromString(std::string type_string);
+    void KeepTrackOfNewEntity(const std::string &entity_name, RuleParser::AttributeDeclContext* attribute_context);
     void KeepTrackOfNewInstance(const std::string &instance_name, std::string &entity_name);
     void KeepTrackOfNewInstance(const std::string &instance_name, RuleLanguage::Expr* expr);
 
@@ -109,15 +110,20 @@ private:
     /* Functions used to generate semantic model */
     
     std::shared_ptr<Instance> getInstance(std::string name, RuleLanguage::Type type);
+    std::shared_ptr<Instance> getInstance(std::string name);
     std::shared_ptr<Instance> getCurrRuleInstance(std::string name, RuleLanguage::Type type );
 
     std::shared_ptr<Entity> getEntity(std::string name);
     std::shared_ptr<Instance> handleSelectorIdent(RuleParser::SelectorIdentContext *context, RuleLanguage::Type type);
+    std::shared_ptr<Instance> handleSelectorIdent(RuleParser::SelectorIdentContext *context);
 
     Attribute*  createAttribute(std::string name, RuleLanguage::Type type);
     RuleLanguage::logicalExpr* handleLogicalExpr(RuleParser::LogicalExprContext *context);
     RuleLanguage::booleanExpr* handleBooleanExpr(RuleParser::BooleanExprContext *context);
     RuleLanguage::numberExpr* handleNumberExpr(RuleParser::NumberExprContext *context);
+    RuleLanguage::stringExpr* handleStringExpr(RuleParser::StringExprContext *context);
+    RuleLanguage::stringExpr* handleStringExprFromNumberExpr(RuleParser::NumberExprContext *context);
+
     RuleLanguage::queryExpr* handleQueryExpr(RuleParser::QueryExprContext *context);
     RuleLanguage::conditionExpr* handleConditionExpr(RuleParser::ConditionExprContext *context);
     RuleLanguage::basicCondExpr* handleBasicCondExpr(RuleParser::BasicCondExprContext *context);
@@ -134,6 +140,8 @@ private:
     RuleLanguage::ArithmeticOperator getOperator(RuleParser::NumberExprContext* context);
     RuleLanguage::LogicalOperator getLogicalOperator(RuleParser::LogicalOperatorContext *context);
     RuleLanguage::RelationOperator getRelationOperator(RuleParser::RelationOperatorContext *context);
+    RuleLanguage::RelationOperator getCompareOperator(RuleParser::CompareOperatorContext *context);
+    RuleLanguage::Type getAttributeTypeFromDef(RuleParser::BasicTypeContext* context);
     RuleLanguage::Type getAttributeTypeFromDef(RuleParser::TypeAnnoContext* context);
 
     bool getQueryOperator(RuleParser::QueryExprContext *context, RuleLanguage::queryExpr *expr);

@@ -11,11 +11,6 @@ using namespace std;
 using namespace antlr4;
 using namespace rule_check_proto;
 
-SymbolCollector::~SymbolCollector()
-{
-
-}
-
 /* Internal Handler Member Functions */
 
 Attribute* SymbolCollector::createAttribute(std::string name, RuleLanguage::Type type) {
@@ -39,6 +34,9 @@ Attribute* SymbolCollector::createAttribute(std::string name, RuleLanguage::Type
     case RuleLanguage::Type::INSTANCE:
         ans = new ObjectAttribute(name, type);
         break;
+
+    case RuleLanguage::Type::INSTANCELIST:
+        ans = new ListAttribute(name, type);
     
     default:
         break;
@@ -48,19 +46,54 @@ Attribute* SymbolCollector::createAttribute(std::string name, RuleLanguage::Type
 }
 
 
-// mark entity as request needed, only concern specific attribute name
-void SymbolCollector::KeepTrackOfNewEntity(const string &entity_name, string &attribute_name, RuleLanguage::Type type)
+RuleLanguage::Type SymbolCollector::getTypeFromString(std::string type_string) {
+    ocall_print_string("Debug: enter getTypeFromString ", __FILE__, __LINE__);
+    if (type_string.compare("number") == 0) {
+        return RuleLanguage::Type::NUMBER;
+    }
+
+    if (type_string.compare("boolean") == 0) {
+        return RuleLanguage::Type::BOOLEAN;
+    }
+
+    if (type_string.compare("string") == 0) {
+        return RuleLanguage::Type::STRING;
+    }
+
+    return RuleLanguage::Type::INSTANCE;
+}
+
+
+void SymbolCollector::KeepTrackOfNewEntity(const string &entity_name, RuleParser::AttributeDeclContext* attribute_context)
 {
+
+    string attribute_name = attribute_context->attributeName()->getText();
+    auto attribute_type = getAttributeTypeFromDef(attribute_context->typeAnno());
+
     ocall_print_string((string("KeepTrackOfNewEntity: ") +
                         entity_name + string("[") +
                         attribute_name + string("]")).c_str(), __FILE__, __LINE__);
-    
-    auto attribute = createAttribute(attribute_name, type);
+
+    Attribute* attribute = createAttribute(attribute_name, attribute_type);
+
     if (attribute == nullptr) {
         ocall_print_string((string("Error: attribute type not support! ")).c_str(), __FILE__, __LINE__);
         return;
     }
+    
+    if (attribute_type == RuleLanguage::Type::INSTANCELIST) {
+        ocall_print_string((string("Debug: add inter type into list attribute ")).c_str(), __FILE__, __LINE__);
+        auto* context = attribute_context->typeAnno()->compositeType();
+        ocall_print_string((attribute_context->getText()).c_str(), __FILE__, __LINE__);
 
+        ListAttribute* list_attr = dynamic_cast<ListAttribute*>(attribute);
+        if (list_attr == nullptr) {
+             ocall_print_string((string("Error: list_sttr is nullptr ")).c_str(), __FILE__, __LINE__);
+        }
+        list_attr->setInterType(getAttributeTypeFromDef(context->listType()->basicType()));
+    }
+
+    ocall_print_string((string("Debug: add attribute ")).c_str(), __FILE__, __LINE__);
     // decide on whether entity exists
     if (this->entity_map_.find(entity_name) == this->entity_map_.end())
     {
@@ -119,6 +152,9 @@ void SymbolCollector::KeepTrackOfNewInstance(const std::string &instance_name, R
             if (query_expr->getInstance() != nullptr) {
                 instance->addAttributes(query_expr->getInstance()->get_attribute_list());
             }
+
+            instance->setType(query_expr->expr_type);
+            instance->list_type = query_expr->list_type;
         }
         
         instance->setExpr(expr);
@@ -144,9 +180,9 @@ antlrcpp::Any SymbolCollector::visitEntityDecl(RuleParser::EntityDeclContext *co
     string entity_name = context->entityName()->getText();
     const auto& attributes = context->attributeList()->attributeDecl();
     for (auto attribute : attributes) {
-        string attribute_name = attribute->attributeName()->getText();
-        auto attribute_type = getAttributeTypeFromDef(attribute->typeAnno());
-        KeepTrackOfNewEntity(entity_name, attribute_name, attribute_type);
+        // string attribute_name = attribute->attributeName()->getText();
+        // auto attribute_type = getAttributeTypeFromDef(attribute->typeAnno());
+        KeepTrackOfNewEntity(entity_name, attribute);
     }
 
     if (context->UNIQUE()) {
@@ -181,15 +217,6 @@ shared_ptr<Instance> SymbolCollector::handleSelectorIdent(RuleParser::SelectorId
     string attribute_name = context->attributeName()->getText();
     ocall_print_string((string("handleSelectorIdent: ") + instance_name + "." + attribute_name + " with type " + RuleLanguage::TypeToString(type)).c_str(), __FILE__, __LINE__);
 
-    if (global_instance_map_.find(instance_name) != global_instance_map_.end() && global_instance_map_[instance_name]->hasAttribute(attribute_name, type)) {
-        ocall_print_string((string("find selectorident in global instances ")).c_str(), __FILE__, __LINE__);
-        shared_ptr<Instance> instance(new Instance(instance_name));
-        instance->setType(type);
-        instance->setInstanceKind(InstanceKind::SPECIFIC_ATTRIBUTE);
-        instance->addAttribute(attribute_name, global_instance_map_[instance_name]->getAttribute(attribute_name, type));
-        return instance;
-    }
-
     // return a symbol type instance, which not in instance map
     if (entity_map_.find(instance_name) != entity_map_.end() && entity_map_[instance_name]->hasAttribute(attribute_name, type)) {
         ocall_print_string((string("find selectorident in Entities ")).c_str(), __FILE__, __LINE__);
@@ -200,17 +227,88 @@ shared_ptr<Instance> SymbolCollector::handleSelectorIdent(RuleParser::SelectorId
         return instance_temp;
     }
 
+    shared_ptr<Attribute> defined_attribute;
+
+    if (instance_name.compare("inputdata") == 0 && input_instance_->hasAttribute(attribute_name, type)) {
+         ocall_print_string((string("find selectorident in inpudata ")).c_str(), __FILE__, __LINE__);
+        defined_attribute = input_instance_->getAttribute(attribute_name, type);
+    }
+
+    if (instance_name.compare("outputdata") == 0 && output_instance_->hasAttribute(attribute_name, type)) {
+         ocall_print_string((string("find selectorident in output data ")).c_str(), __FILE__, __LINE__);
+        defined_attribute = output_instance_->getAttribute(attribute_name, type);
+    }
+
+    if (global_instance_map_.find(instance_name) != global_instance_map_.end() && global_instance_map_[instance_name]->hasAttribute(attribute_name, type)) {
+        ocall_print_string((string("find selectorident in global instances ")).c_str(), __FILE__, __LINE__);
+        defined_attribute = global_instance_map_[instance_name]->getAttribute(attribute_name, type);
+    }
+
     auto& rule_instances = rule_instance_map_[curr_rule_name_];
     if (rule_instances.find(instance_name) != rule_instances.end() ) {
         ocall_print_string((string("Debug: instance name found in ") + curr_rule_name_).c_str(), __FILE__, __LINE__);
         if (rule_instances[instance_name]->hasAttribute(attribute_name, type)) {
             ocall_print_string((string("Debug: instance attribute type match ") + RuleLanguage::TypeToString(type)).c_str(), __FILE__, __LINE__);
-            shared_ptr<Instance> instance(new Instance(instance_name));
-            instance->setType(type);
-            instance->setInstanceKind(InstanceKind::SPECIFIC_ATTRIBUTE);
-            instance->addAttribute(attribute_name, rule_instances[instance_name]->getAttribute(attribute_name, type));
-            return instance;
+            defined_attribute = rule_instances[instance_name]->getAttribute(attribute_name, type);
         }
+    }
+
+    if (defined_attribute != nullptr) {
+        shared_ptr<Instance> instance(new Instance(instance_name));
+        instance->setType(defined_attribute->getType());
+        instance->setInstanceKind(InstanceKind::SPECIFIC_ATTRIBUTE);
+        instance->addAttribute(attribute_name, defined_attribute);
+        return instance;
+    }
+
+    ocall_print_string((string("Error: undefined instance! ")).c_str(), __FILE__, __LINE__);
+    return nullptr;
+}
+
+shared_ptr<Instance> SymbolCollector::handleSelectorIdent(RuleParser::SelectorIdentContext *context) {
+
+    string instance_name = context->entityName()->getText();
+    string attribute_name = context->attributeName()->getText();
+    ocall_print_string((string("handleSelectorIdent: ") + instance_name + "." + attribute_name).c_str(), __FILE__, __LINE__);
+
+    // return a symbol type instance, which not in instance map
+    if (entity_map_.find(instance_name) != entity_map_.end()) {
+        ocall_print_string((string("find selectorident in Entities ")).c_str(), __FILE__, __LINE__);
+        shared_ptr<Instance> instance_temp(new Instance(instance_name));
+        instance_temp->addAttribute(attribute_name, entity_map_[instance_name]->getAttribute(attribute_name));
+        instance_temp->setInstanceKind(InstanceKind::SYMBOL);
+        return instance_temp;
+    }
+
+    shared_ptr<Attribute> defined_attribute;
+
+    if (instance_name.compare("inputdata") == 0 ) {
+        ocall_print_string((string("find selectorident in inpudata ")).c_str(), __FILE__, __LINE__);
+        defined_attribute = input_instance_->getAttribute(attribute_name);
+    }
+
+    if (instance_name.compare("outputdata") == 0) {
+        ocall_print_string((string("find selectorident in output data ")).c_str(), __FILE__, __LINE__);
+        defined_attribute = output_instance_->getAttribute(attribute_name);
+    }
+
+    if (global_instance_map_.find(instance_name) != global_instance_map_.end()) {
+        ocall_print_string((string("find selectorident in global instances ")).c_str(), __FILE__, __LINE__);
+        defined_attribute = global_instance_map_[instance_name]->getAttribute(attribute_name);
+    }
+
+    auto& rule_instances = rule_instance_map_[curr_rule_name_];
+    if (rule_instances.find(instance_name) != rule_instances.end() ) {
+        ocall_print_string((string("Debug: instance name found in ") + curr_rule_name_).c_str(), __FILE__, __LINE__);
+        defined_attribute = rule_instances[instance_name]->getAttribute(attribute_name);
+    }
+
+    if (defined_attribute != nullptr) {
+        shared_ptr<Instance> instance(new Instance(instance_name));
+        instance->setType(defined_attribute->getType());
+        instance->setInstanceKind(InstanceKind::SPECIFIC_ATTRIBUTE);
+        instance->addAttribute(attribute_name, defined_attribute);
+        return instance;
     }
 
     ocall_print_string((string("Error: undefined instance! ")).c_str(), __FILE__, __LINE__);
@@ -381,7 +479,6 @@ RuleLanguage::numberExpr* SymbolCollector::handleNumberExpr(RuleParser::NumberEx
             return expr;
         }
         ocall_print_string((string("Error: instance == nullptr ")).c_str(), __FILE__, __LINE__);
-
     }
 
     if (context->DECIMAL_LIT()) {
@@ -441,15 +538,46 @@ shared_ptr<Instance> SymbolCollector::getCurrRuleInstance(string name, RuleLangu
     return instance;
 }
 
+shared_ptr<Instance> SymbolCollector::getInstance(string name) {
+    if (name.compare("inputdata") == 0) {
+        return input_instance_;
+    }
+
+    if (name.compare("outputdata") == 0) {
+        return output_instance_;
+    }
+    
+    if (global_instance_map_.find(name) != global_instance_map_.end()) {
+        return global_instance_map_[name];
+    }
+
+    auto& rule_instances = rule_instance_map_[curr_rule_name_];
+    if (rule_instances.find(name) != rule_instances.end()) {
+        return rule_instances[name];
+    }    
+    return nullptr;
+}
+
 shared_ptr<Instance> SymbolCollector::getInstance(string name, RuleLanguage::Type type ) {
-    if (global_instance_map_.find(name) == global_instance_map_.end()) {
-        return nullptr;
+    if (name.compare("inputdata") == 0) {
+        return input_instance_;
     }
-    auto instance = global_instance_map_[name];
-    if (instance->type() != type) {
-        return nullptr;
+    
+    if (global_instance_map_.find(name) != global_instance_map_.end()) {
+        auto instance = global_instance_map_[name];
+        if (instance->type() == type) {
+            return instance;
+        }
     }
-    return instance;
+
+    auto& rule_instances = rule_instance_map_[curr_rule_name_];
+    if (rule_instances.find(name) != rule_instances.end()) {
+        auto instance = rule_instances[name];
+        if (instance->type() == type) {
+            return instance;
+        }
+    }    
+    return nullptr;
 }
 
 shared_ptr<Entity> SymbolCollector::getEntity(string name) {
@@ -469,7 +597,7 @@ RuleLanguage::Type SymbolCollector::getAttributeTypeFromDef(RuleParser::TypeAnno
     
     // TODO: Instance should record entity 
     if (context->compositeType()) {
-        return RuleLanguage::Type::INSTANCE;
+        return RuleLanguage::Type::INSTANCELIST;
     }
 
     if (context->basicType()->NUMBER()) {
@@ -489,6 +617,26 @@ RuleLanguage::Type SymbolCollector::getAttributeTypeFromDef(RuleParser::TypeAnno
     }
 }
 
+
+RuleLanguage::Type SymbolCollector::getAttributeTypeFromDef(RuleParser::BasicTypeContext* context) {
+
+    if (context->NUMBER()) {
+        return RuleLanguage::Type::NUMBER;
+    }
+
+    if (context->BOOLEAN()) {
+        return RuleLanguage::Type::BOOLEAN;
+    }
+
+    if (context->DATE()) {
+        return RuleLanguage::Type::DATE;
+    }
+
+    if (context->STRING()) {
+        return RuleLanguage::Type::STRING;
+    }
+}
+
 RuleLanguage::LogicalOperator SymbolCollector::getLogicalOperator(RuleParser::LogicalOperatorContext *context) {
     if (context->LOGICAL_AND()) {
         return RuleLanguage::LogicalOperator::AND;
@@ -502,6 +650,7 @@ RuleLanguage::LogicalOperator SymbolCollector::getLogicalOperator(RuleParser::Lo
 }
 
 RuleLanguage::conditionExpr* SymbolCollector::handleConditionExpr(RuleParser::ConditionExprContext *context) {
+    ocall_print_string("Debug: handleConditionExpr", __FILE__, __LINE__);
     auto basic_cond_exprs = context->basicCondExpr();
     if (basic_cond_exprs.empty()) {
         ocall_print_string((string("Error: illegal syntax! ")).c_str(), __FILE__, __LINE__);
@@ -537,19 +686,37 @@ RuleLanguage::queryExpr* SymbolCollector::handleQueryExpr(RuleParser::QueryExprC
         return nullptr;
     }
 
-    auto entity_name = context->entityName()->getText();
-    auto entity = getEntity(entity_name);
-    auto instance = getInstance(entity_name, RuleLanguage::Type::INSTANCELIST);
+    shared_ptr<Entity> entity;
+    shared_ptr<Instance> instance;
+
+    if (context->entityName()) {
+        ocall_print_string("Debug: try to get entity or instance", __FILE__, __LINE__);
+        auto entity_name = context->entityName()->getText();
+        entity = getEntity(entity_name);
+        instance = getInstance(entity_name);
+    }
+
+    if (context->selectorIdent()) {
+        // auto entity_name = context->selectorIdent()->entityName()->getText();
+        // std::string attribute_name = context->selectorIdent()->attributeName()->getText();
+        // ocall_print_string(("Debug: try to get entity or instance " + entity_name + " with specific attribute " + attribute_name).c_str(), __FILE__, __LINE__);
+        // entity = getEntity(entity_name);
+        // instance = getInstance(entity_name);
+        instance = handleSelectorIdent(context->selectorIdent());
+        std::string attribute_name = context->selectorIdent()->attributeName()->getText();
+        expr->setAttributeName(attribute_name);
+        ocall_print_string(("Debug: try to get entity or instance  with specific attribute " + attribute_name).c_str(), __FILE__, __LINE__);
+    }
+    
 
     if (entity == nullptr && instance == nullptr) {
         ocall_print_string((string("Error: undefined entity or type miss match! ")).c_str(), __FILE__, __LINE__);
         delete(expr);
         return nullptr;
     }
-
     expr->setEntity(entity);
     expr->setInstance(instance);
-
+    expr->updateExprType();
 
     auto condExpr = handleConditionExpr(context->conditionExpr());
     if (condExpr == nullptr && context->WHERE() == nullptr) {
@@ -562,6 +729,8 @@ RuleLanguage::queryExpr* SymbolCollector::handleQueryExpr(RuleParser::QueryExprC
 }
 
 RuleLanguage::basicCondExpr* SymbolCollector::handleBasicCondExpr(RuleParser::BasicCondExprContext *context) {
+    ocall_print_string("Debug: enter handleBasicCondExpr", __FILE__, __LINE__);
+
     if (context->relationExpr()) {
         auto expr = new RuleLanguage::basicCondExpr();
         expr->setRelationExpr(handleRelationExpr(context->relationExpr()));
@@ -607,34 +776,163 @@ RuleLanguage::RelationOperator SymbolCollector::getRelationOperator(RuleParser::
     return RuleLanguage::RelationOperator::RELATION_NON;
 }
 
+RuleLanguage::RelationOperator SymbolCollector::getCompareOperator(RuleParser::CompareOperatorContext *context) {
+    
+    if (context->EQUALS()) {
+        return RuleLanguage::RelationOperator::EQUALS;
+    }
+
+    if (context->NOT_EQUALS()) {
+        return RuleLanguage::RelationOperator::NOT_EQUALS;
+    }
+
+    return RuleLanguage::RelationOperator::RELATION_NON;
+}
+
+RuleLanguage::stringExpr* SymbolCollector::handleStringExprFromNumberExpr(RuleParser::NumberExprContext *context) {
+    ocall_print_string("Debug: enter handleStringExprFromNumberExpr", __FILE__, __LINE__);
+
+    if (context->selectorIdent()) {
+        auto instance = handleSelectorIdent(context->selectorIdent(), RuleLanguage::Type::STRING);
+        if (instance == nullptr) {
+            ocall_print_string("Error: undefined instance", __FILE__, __LINE__);
+            return nullptr;
+        }
+        RuleLanguage::stringExpr* expr = new RuleLanguage::stringExpr();
+        expr->setInstance(instance);
+        return expr;
+    }
+
+    return nullptr;
+}
+
+RuleLanguage::stringExpr* SymbolCollector::handleStringExpr(RuleParser::StringExprContext *context) {
+    ocall_print_string("Debug: enter handleStringExpr", __FILE__, __LINE__);
+
+    if (context->instanceName()) {
+        shared_ptr<Instance> instance = getInstance(context->instanceName()->getText(), RuleLanguage::Type::STRING);
+        RuleLanguage::stringExpr* expr = new RuleLanguage::stringExpr();
+        expr->setInstance(instance);
+        return expr;
+    }
+
+    if (context->selectorIdent()) {
+        string instance_name = context->selectorIdent()->entityName()->getText();
+        string attribute_name = context->selectorIdent()->attributeName()->getText();
+        auto defined_instance = getInstance(instance_name, RuleLanguage::INSTANCE);
+        if (defined_instance == nullptr) {
+            defined_instance = getInstance(instance_name, RuleLanguage::INSTANCELIST);
+            if (defined_instance == nullptr) {
+                ocall_print_string("Error: undefined instance", __FILE__, __LINE__);
+                return nullptr;
+            }
+        }
+        shared_ptr<Instance> instance(new Instance(instance_name));
+        auto defined_attribute = defined_instance->getAttribute(attribute_name, RuleLanguage::Type::STRING);
+        if (defined_attribute == nullptr) {
+            ocall_print_string("Error: undefined attribute", __FILE__, __LINE__);
+            return nullptr;
+        }
+        instance->addAttribute(attribute_name, defined_attribute);
+        RuleLanguage::stringExpr* expr = new RuleLanguage::stringExpr();
+        expr->setInstance(instance);
+        return expr;
+    }
+
+    if (context->INTERPRETED_STRING_LIT()) {
+        RuleLanguage::stringExpr* expr = new RuleLanguage::stringExpr();
+        expr->setLiteralValue(context->INTERPRETED_STRING_LIT()->getText());
+        return expr;
+    }
+
+    return nullptr;
+}
+
+
 RuleLanguage::relationExpr* SymbolCollector::handleRelationExpr(RuleParser::RelationExprContext *context) {
+    ocall_print_string("Debug: enter handleRelationExpr", __FILE__, __LINE__);
+    
     if (context->relationExpr()) {
         return handleRelationExpr(context->relationExpr());
     }
-    auto numbers = context->numberExpr();
-    auto operators = context->relationOperator();
 
-    if (numbers.size() < 2) {
-        ocall_print_string((string("Error: illegal syntax! ")).c_str(), __FILE__, __LINE__);
-        return nullptr;
+    if (!context->numberExpr().empty()) {
+        auto numbers = context->numberExpr();
+        auto operators = context->relationOperator();
+
+        if (numbers.size() != 2) {
+            ocall_print_string((string("Error: illegal syntax! ")).c_str(), __FILE__, __LINE__);
+            return nullptr;
+        }
+        auto expr = new RuleLanguage::relationExpr();
+        auto left_number_expr = handleNumberExpr(numbers[0]);
+        expr->setLeftNumberExpr(left_number_expr);
+        auto right_number_expr = handleNumberExpr(numbers[1]);
+        expr->setRightNumberExpr(right_number_expr);
+        expr->setOperator(getRelationOperator(operators));
+
+        if (left_number_expr == nullptr && right_number_expr == nullptr) {
+            ocall_print_string("Debug: handle string expr", __FILE__, __LINE__);
+            auto left_string_expr = handleStringExprFromNumberExpr(numbers[0]);
+            expr->setLeftStringExpr(left_string_expr);
+            auto right_string_expr = handleStringExprFromNumberExpr(numbers[1]);
+            expr->setRightStringExpr(right_string_expr);
+            expr->setOperator(getRelationOperator(operators));
+        }
+
+        return expr;
     }
 
-    auto expr = new RuleLanguage::relationExpr();
-    auto first_number_expr = handleNumberExpr(numbers[0]);
-    expr->setFirstExpr(first_number_expr);
+    if (!context->stringExpr().empty()) {
+        auto strings = context->stringExpr();
+        if (strings.size() < 2) {
+            ocall_print_string((string("Error: illegal syntax! ")).c_str(), __FILE__, __LINE__);
+            return nullptr;
+        }
 
-    for (int i = 1; i < numbers.size(); i++) {
-        expr->addNumberExpr(handleNumberExpr(numbers[i]));
-        expr->addOperator(getRelationOperator(operators[i - 1]));
+        auto expr = new RuleLanguage::relationExpr();
+        RuleLanguage::stringExpr* left_string_expr = handleStringExpr(strings[0]);
+        RuleLanguage::stringExpr* right_string_expr = handleStringExpr(strings[1]);
+        expr->setLeftStringExpr(left_string_expr);
+        expr->setRightStringExpr(right_string_expr);
+        expr->setOperator(getCompareOperator(context->compareOperator()));
+        return expr;
     }
-
-    return expr;
     
+    return nullptr;
 }
 
 RuleLanguage::listExpr* SymbolCollector::handleListExpr(RuleParser::ListExprContext *context) {
-    ocall_print_string((string("Error: list Expr is not support yet! ")).c_str(), __FILE__, __LINE__);
-    return nullptr;
+    ocall_print_string("Debug: enter handleListExpr ", __FILE__, __LINE__);
+
+    auto left_context = context->listFirstExpr();
+    auto right_context = context->listSecondExpr();
+
+    RuleLanguage::listExpr* expr = new RuleLanguage::listExpr();
+
+    if (left_context->instanceName()) {
+        expr->left_instance = getInstance(left_context->instanceName()->getText());
+    }
+
+    if (left_context->selectorIdent()) {
+        expr->left_instance = handleSelectorIdent(left_context->selectorIdent());
+    }
+
+    if (right_context->instanceName()) {
+        expr->right_instance = getInstance(right_context->instanceName()->getText());
+    }
+
+    if (right_context->selectorIdent()) {
+        expr->right_instance = handleSelectorIdent(right_context->selectorIdent());
+    }
+
+    if (context->SET_IN()) {
+        expr->inside = true;
+    } else if (context->SET_NOT_IN()) {
+        expr->inside = false;
+    }
+    
+    return expr->isLegal() ? expr : nullptr;
 }
 
 
@@ -642,29 +940,60 @@ RuleLanguage::listExpr* SymbolCollector::handleListExpr(RuleParser::ListExprCont
 antlrcpp::Any SymbolCollector::visitDefinitionStmt(RuleParser::DefinitionStmtContext *context)
 {
     ocall_print_string((string(" enter visitDefinitionStmt ")).c_str(), __FILE__, __LINE__);
-    string instance_name = context->instanceName()->getText();
-    ocall_print_string((string(" instance name : ") + instance_name).c_str(), __FILE__, __LINE__);
+    if (context->selectorIdent()) {
+        ocall_print_string("Debug: handle assignment of output data", __FILE__, __LINE__);
+        string attribute_name = context->selectorIdent()->attributeName()->getText();
+        shared_ptr<Attribute> attribute = output_instance_->getAttribute(attribute_name);
+        if (attribute == nullptr) {
+            ocall_print_string("Error: undefined attribute", __FILE__, __LINE__);
+            return nullptr;
+        }
+        if (context->assignElement()->instanceName()) {
+            string instance_name = context->assignElement()->instanceName()->getText();
+            shared_ptr<Instance> instance = getInstance(instance_name, attribute->getType());
+            if (instance == nullptr) {
+                ocall_print_string(("Error: undefined instance " + attribute_name).c_str(), __FILE__, __LINE__);
 
-    auto exprCtx = context->expr();
-    if (exprCtx->logicalExpr()) {
-        ocall_print_string((string(" handle logical expr : ")).c_str(), __FILE__, __LINE__);
-        auto logical_expr = handleLogicalExpr(exprCtx->logicalExpr());
-        KeepTrackOfNewInstance(instance_name, logical_expr);
-    } else if (exprCtx->numberExpr()) {
-        ocall_print_string((string(" handle number expr : ")).c_str(), __FILE__, __LINE__);
+            }
+            attribute->setInstance(instance);
+        }
 
-        auto number_expr = handleNumberExpr(exprCtx->numberExpr());
-        KeepTrackOfNewInstance(instance_name, number_expr);
-    } else if (exprCtx->queryExpr()) {
-        ocall_print_string((string(" handle query expr : ")).c_str(), __FILE__, __LINE__);
-        auto query_expr = handleQueryExpr(exprCtx->queryExpr());
-        KeepTrackOfNewInstance(instance_name, query_expr);
+        if (context->assignElement()->selectorIdent()) {
+            shared_ptr<Instance> instance = handleSelectorIdent(context->assignElement()->selectorIdent(), attribute->getType());
+            if (instance == nullptr) {
+                ocall_print_string(("Error: undefined instance or attribute " + context->assignElement()->selectorIdent()->getText()).c_str(), __FILE__, __LINE__);
+            }
+            attribute->setInstance(instance);
+        }
+        return nullptr;
     }
 
-    RuleLanguage::definitionExpr* expr = new RuleLanguage::definitionExpr();
-    expr->instance = rule_instance_map_[curr_rule_name_][instance_name];
-    unique_ptr<RuleLanguage::Expr> expr_ptr(expr);
-    rule_stmt_map_[curr_rule_name_].push_back(std::move(expr_ptr));
+
+    if (context->instanceName()) {
+
+        string instance_name = context->instanceName()->getText();
+        ocall_print_string((string(" instance name : ") + instance_name).c_str(), __FILE__, __LINE__);
+
+        auto exprCtx = context->expr();
+        if (exprCtx->logicalExpr()) {
+            ocall_print_string((string(" handle logical expr : ")).c_str(), __FILE__, __LINE__);
+            auto logical_expr = handleLogicalExpr(exprCtx->logicalExpr());
+            KeepTrackOfNewInstance(instance_name, logical_expr);
+        } else if (exprCtx->numberExpr()) {
+            ocall_print_string((string(" handle number expr : ")).c_str(), __FILE__, __LINE__);
+            auto number_expr = handleNumberExpr(exprCtx->numberExpr());
+            KeepTrackOfNewInstance(instance_name, number_expr);
+        } else if (exprCtx->queryExpr()) {
+            ocall_print_string((string(" handle query expr : ")).c_str(), __FILE__, __LINE__);
+            auto query_expr = handleQueryExpr(exprCtx->queryExpr());
+            KeepTrackOfNewInstance(instance_name, query_expr);
+        }
+
+        RuleLanguage::definitionExpr* expr = new RuleLanguage::definitionExpr();
+        expr->instance = rule_instance_map_[curr_rule_name_][instance_name];
+        unique_ptr<RuleLanguage::Expr> expr_ptr(expr);
+        rule_stmt_map_[curr_rule_name_].push_back(std::move(expr_ptr));
+    }
 
     return nullptr;
 }
@@ -825,7 +1154,7 @@ antlrcpp::Any SymbolCollector::visitInputBlock(RuleParser::InputBlockContext *co
         input_instance_->setInstanceKind(InstanceKind::UNIQUE_ENTITY);
     }
 
-    global_instance_map_["inputdata"] = input_instance_;
+    // global_instance_map_["inputdata"] = input_instance_;
 
     return RuleParserBaseVisitor::visitInputBlock(context);
 }
@@ -877,7 +1206,7 @@ antlrcpp::Any SymbolCollector::visitOutputBlock(RuleParser::OutputBlockContext *
         output_instance_->setInstanceKind(InstanceKind::UNIQUE_ENTITY);
     }
 
-    global_instance_map_["outputdata"] = output_instance_;
+    // global_instance_map_["outputdata"] = output_instance_;
 
     return RuleParserBaseVisitor::visitOutputBlock(context);
 }

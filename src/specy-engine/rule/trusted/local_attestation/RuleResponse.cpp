@@ -63,64 +63,6 @@ bool get_RuleCheckRequest_from_ms(ms_in_msg_exchange_t* ms,
     return true;
 }
 
-// encode contract id with task hash in request id by using delimiter ":"
-string generate_request_id(const RuleCheckRequest& request_input) {
-
-    // transfer txhash to hex string format
-    const string& taskhash_raw = request_input.taskhash();
-    // string tx_hash("0x");
-    // string hex("0123456789abcdef");
-
-    // for (int i = 0; i < taskhash_raw.length(); i++) {
-    //     char c = taskhash_raw.at(i);
-    //     tx_hash.push_back(hex[(c & 0xf0) >> 4]);
-    //     tx_hash.push_back(hex[c & 0x0f]);
-    // }
-
-    return taskhash_raw;
-}
-
-RuleEnclaveStatus get_rulefile_content(const string& request_id,
-                                       string& rule_content) {
-    RULE_INFO_STRING("enter get_rulefile_content");
-    RULE_INFO_STRING("request id is  : " + request_id);
-    
-    QueryBuilder query_builder;
-    EntityRule entity(request_id);
-    string query_string = query_builder.GenerateQueryString(entity);
-
-    // Json entity_binding;
-    Json query_result;
-    DataProvider data_provider;
-    if (data_provider.QueryDataFromGraphnodeJson(query_string, "specy", query_result) != RuleEnclaveStatus::kOK) {
-        return RuleEnclaveStatus::kEntity_Query_Rulefile_error;
-    }
-    // if (data_provider.ParseEntityOutputJSON(query_result, &entity_binding) != RuleEnclaveStatus::kOK ) {
-    //     return RuleEnclaveStatus::kEntity_Query_Rulefile_error;
-    // }
-
-    RULE_INFO_STRING(query_result.dump());
-
-    // TODO: handle response data
-    Json rule_text = query_result["data"]["tasks"][0]["rule_file"];
-    rule_content = rule_text.string_value();
-    RULE_INFO_STRING("Rule Enclave: get rulefile text");
-    RULE_INFO_STRING(rule_content);
-
-    return RuleEnclaveStatus::kOK;
-}
-
-void fill_rule_check_result(RuleCheckResult* rule_check_result,
-                            const vector<bool>& status_list,
-                            RequestContext* request_context) {
-    for (int i = 0; i < status_list.size(); i++) {
-        
-        rule_check_result->set_status(status_list[i]);
-        rule_check_result->set_error_info("");
-        rule_check_result->set_task_result(request_context->result_byte);
-    }
-}
-
 string serialize_function_output(RuleCheckResponse* rulecheck_response) {
     E2EResponse e2e_response;
     e2e_response.set_allocated_rule_check_output(rulecheck_response);
@@ -135,42 +77,22 @@ RuleEnclaveStatus fill_rule_check_response(
     const RuleCheckRequest& request_input, RuleCheckResponse* response_output) {
     RULE_INFO_STRING("enter fill_rule_check_response");
 
-    // init rule check response
-    RuleCheckResult* rule_result = new RuleCheckResult();
-    rule_result->set_status(false);
-
-    // check rule and fill response
-    RULE_INFO_STRING("Rule Enclave: start query rule items");
-    bool response_status = true;
-    RuleEnclaveStatus status_code = RuleEnclaveStatus::kOK;
-   
-    // get rule file content
-    string rule_content;
-    // vector<string> rule_id_list;
-    // string rule_file_name = rule_item.rulefilename();
-    string request_id = generate_request_id(request_input);
-    status_code = get_rulefile_content(request_id, rule_content);
-
-    if (status_code != RuleEnclaveStatus::kOK) {
-        return status_code;
-    }
-
+    string request_id = request_input.taskhash();
+    string rule_content = request_input.rule_file();
+    string input_data = request_input.input_data();
     // allocate a new request context pointer
-    RequestContext* request_context = new RequestContext(request_id, rule_content);
+    RequestContext* request_context = new RequestContext(request_id, rule_content, input_data);
     vector<bool> status_list;
 
     // call delegate function to get rule result
-    status_code =
+    RuleEnclaveStatus status_code =
         check_rule(request_id, rule_content, &status_list, request_context);
     if (status_code != RuleEnclaveStatus::kOK) {
         return status_code;
     }
 
-    // file result
-    fill_rule_check_result(rule_result, status_list, request_context);
-    response_output->set_allocated_result(rule_result);
+    // TODO: file result
     response_output->set_taskhash(request_input.taskhash());
-    response_output->set_rule_file_hash(request_context->rule_file_hash);
     RULE_INFO_STRING(string("rule check response is: " +
                             response_output->SerializeAsString()));
     delete(request_context);

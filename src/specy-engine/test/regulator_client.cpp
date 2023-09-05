@@ -73,12 +73,12 @@ TEST_F(RegulatorClientTest, NFTListFail1) {
 
     // registe your own database
     MockDatabase_NFT* database_ = new MockDatabase_Taska();
-    InitMockDataBase_NFT_4elements(*database_);
+    InitMockDataBase_NFT(*database_);
     testdatabase = database_;
 
     // generate test request and send
     request_proto::TaskRequest request;
-    mockTaskRequest_NFTList_4elements(&request);
+    mockTaskRequest_NFTList(&request);
 
     EXPECT_TRUE(stream->Write(request));
 

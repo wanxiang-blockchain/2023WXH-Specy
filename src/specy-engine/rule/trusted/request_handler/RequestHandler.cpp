@@ -37,16 +37,6 @@ RuleEnclaveStatus RequestHandler::CheckRule(const string &req_id, const string &
     RuleProcessor rule_processor;
     rule_processor.EvaluateRule(request_context);
     // TODO build rule check result
-
-    status_list->clear();
-
-    auto evaluation_result = request_context->get_rule_evaluation_result();
-    status_list->push_back(evaluation_result);
-
-    ocall_print_string((string("CheckRule: rule text = ") +
-                        rule_text + string(",\n evaluation result: ") +
-                        (evaluation_result == true ? "SATISFIED" : "UNSATISFIED"))
-                           .c_str(), __FILE__, __LINE__);
     
     ocall_print_string("exit CheckRule", __FILE__, __LINE__);
     return RuleEnclaveStatus::kOK;

@@ -41,7 +41,7 @@ struct TableStruct_RuleCheck_2eproto {
     PROTOBUF_SECTION_VARIABLE(protodesc_cold);
   static const ::google::protobuf::internal::AuxillaryParseTableField aux[]
     PROTOBUF_SECTION_VARIABLE(protodesc_cold);
-  static const ::google::protobuf::internal::ParseTable schema[3]
+  static const ::google::protobuf::internal::ParseTable schema[2]
     PROTOBUF_SECTION_VARIABLE(protodesc_cold);
   static const ::google::protobuf::internal::FieldMetadata field_metadata[];
   static const ::google::protobuf::internal::SerializationTable serialization_table[];
@@ -55,15 +55,11 @@ extern RuleCheckRequestDefaultTypeInternal _RuleCheckRequest_default_instance_;
 class RuleCheckResponse;
 class RuleCheckResponseDefaultTypeInternal;
 extern RuleCheckResponseDefaultTypeInternal _RuleCheckResponse_default_instance_;
-class RuleCheckResult;
-class RuleCheckResultDefaultTypeInternal;
-extern RuleCheckResultDefaultTypeInternal _RuleCheckResult_default_instance_;
 }  // namespace e2e_message
 namespace google {
 namespace protobuf {
 template<> ::e2e_message::RuleCheckRequest* Arena::CreateMaybeMessage<::e2e_message::RuleCheckRequest>(Arena*);
 template<> ::e2e_message::RuleCheckResponse* Arena::CreateMaybeMessage<::e2e_message::RuleCheckResponse>(Arena*);
-template<> ::e2e_message::RuleCheckResult* Arena::CreateMaybeMessage<::e2e_message::RuleCheckResult>(Arena*);
 }  // namespace protobuf
 }  // namespace google
 namespace e2e_message {
@@ -179,154 +175,42 @@ class RuleCheckRequest :
   ::std::string* release_taskhash();
   void set_allocated_taskhash(::std::string* taskhash);
 
+  // string rule_file = 2;
+  void clear_rule_file();
+  static const int kRuleFileFieldNumber = 2;
+  const ::std::string& rule_file() const;
+  void set_rule_file(const ::std::string& value);
+  #if LANG_CXX11
+  void set_rule_file(::std::string&& value);
+  #endif
+  void set_rule_file(const char* value);
+  void set_rule_file(const char* value, size_t size);
+  ::std::string* mutable_rule_file();
+  ::std::string* release_rule_file();
+  void set_allocated_rule_file(::std::string* rule_file);
+
+  // string input_data = 3;
+  void clear_input_data();
+  static const int kInputDataFieldNumber = 3;
+  const ::std::string& input_data() const;
+  void set_input_data(const ::std::string& value);
+  #if LANG_CXX11
+  void set_input_data(::std::string&& value);
+  #endif
+  void set_input_data(const char* value);
+  void set_input_data(const char* value, size_t size);
+  ::std::string* mutable_input_data();
+  ::std::string* release_input_data();
+  void set_allocated_input_data(::std::string* input_data);
+
   // @@protoc_insertion_point(class_scope:e2e_message.RuleCheckRequest)
  private:
   class HasBitSetters;
 
   ::google::protobuf::internal::InternalMetadataWithArena _internal_metadata_;
   ::google::protobuf::internal::ArenaStringPtr taskhash_;
-  mutable ::google::protobuf::internal::CachedSize _cached_size_;
-  friend struct ::TableStruct_RuleCheck_2eproto;
-};
-// -------------------------------------------------------------------
-
-class RuleCheckResult :
-    public ::google::protobuf::Message /* @@protoc_insertion_point(class_definition:e2e_message.RuleCheckResult) */ {
- public:
-  RuleCheckResult();
-  virtual ~RuleCheckResult();
-
-  RuleCheckResult(const RuleCheckResult& from);
-
-  inline RuleCheckResult& operator=(const RuleCheckResult& from) {
-    CopyFrom(from);
-    return *this;
-  }
-  #if LANG_CXX11
-  RuleCheckResult(RuleCheckResult&& from) noexcept
-    : RuleCheckResult() {
-    *this = ::std::move(from);
-  }
-
-  inline RuleCheckResult& operator=(RuleCheckResult&& from) noexcept {
-    if (GetArenaNoVirtual() == from.GetArenaNoVirtual()) {
-      if (this != &from) InternalSwap(&from);
-    } else {
-      CopyFrom(from);
-    }
-    return *this;
-  }
-  #endif
-  static const ::google::protobuf::Descriptor* descriptor() {
-    return default_instance().GetDescriptor();
-  }
-  static const RuleCheckResult& default_instance();
-
-  static void InitAsDefaultInstance();  // FOR INTERNAL USE ONLY
-  static inline const RuleCheckResult* internal_default_instance() {
-    return reinterpret_cast<const RuleCheckResult*>(
-               &_RuleCheckResult_default_instance_);
-  }
-  static constexpr int kIndexInFileMessages =
-    1;
-
-  void Swap(RuleCheckResult* other);
-  friend void swap(RuleCheckResult& a, RuleCheckResult& b) {
-    a.Swap(&b);
-  }
-
-  // implements Message ----------------------------------------------
-
-  inline RuleCheckResult* New() const final {
-    return CreateMaybeMessage<RuleCheckResult>(nullptr);
-  }
-
-  RuleCheckResult* New(::google::protobuf::Arena* arena) const final {
-    return CreateMaybeMessage<RuleCheckResult>(arena);
-  }
-  void CopyFrom(const ::google::protobuf::Message& from) final;
-  void MergeFrom(const ::google::protobuf::Message& from) final;
-  void CopyFrom(const RuleCheckResult& from);
-  void MergeFrom(const RuleCheckResult& from);
-  PROTOBUF_ATTRIBUTE_REINITIALIZES void Clear() final;
-  bool IsInitialized() const final;
-
-  size_t ByteSizeLong() const final;
-  #if GOOGLE_PROTOBUF_ENABLE_EXPERIMENTAL_PARSER
-  static const char* _InternalParse(const char* begin, const char* end, void* object, ::google::protobuf::internal::ParseContext* ctx);
-  ::google::protobuf::internal::ParseFunc _ParseFunc() const final { return _InternalParse; }
-  #else
-  bool MergePartialFromCodedStream(
-      ::google::protobuf::io::CodedInputStream* input) final;
-  #endif  // GOOGLE_PROTOBUF_ENABLE_EXPERIMENTAL_PARSER
-  void SerializeWithCachedSizes(
-      ::google::protobuf::io::CodedOutputStream* output) const final;
-  ::google::protobuf::uint8* InternalSerializeWithCachedSizesToArray(
-      ::google::protobuf::uint8* target) const final;
-  int GetCachedSize() const final { return _cached_size_.Get(); }
-
-  private:
-  void SharedCtor();
-  void SharedDtor();
-  void SetCachedSize(int size) const final;
-  void InternalSwap(RuleCheckResult* other);
-  private:
-  inline ::google::protobuf::Arena* GetArenaNoVirtual() const {
-    return nullptr;
-  }
-  inline void* MaybeArenaPtr() const {
-    return nullptr;
-  }
-  public:
-
-  ::google::protobuf::Metadata GetMetadata() const final;
-
-  // nested types ----------------------------------------------------
-
-  // accessors -------------------------------------------------------
-
-  // bytes task_result = 2;
-  void clear_task_result();
-  static const int kTaskResultFieldNumber = 2;
-  const ::std::string& task_result() const;
-  void set_task_result(const ::std::string& value);
-  #if LANG_CXX11
-  void set_task_result(::std::string&& value);
-  #endif
-  void set_task_result(const char* value);
-  void set_task_result(const void* value, size_t size);
-  ::std::string* mutable_task_result();
-  ::std::string* release_task_result();
-  void set_allocated_task_result(::std::string* task_result);
-
-  // string error_info = 3;
-  void clear_error_info();
-  static const int kErrorInfoFieldNumber = 3;
-  const ::std::string& error_info() const;
-  void set_error_info(const ::std::string& value);
-  #if LANG_CXX11
-  void set_error_info(::std::string&& value);
-  #endif
-  void set_error_info(const char* value);
-  void set_error_info(const char* value, size_t size);
-  ::std::string* mutable_error_info();
-  ::std::string* release_error_info();
-  void set_allocated_error_info(::std::string* error_info);
-
-  // bool status = 1;
-  void clear_status();
-  static const int kStatusFieldNumber = 1;
-  bool status() const;
-  void set_status(bool value);
-
-  // @@protoc_insertion_point(class_scope:e2e_message.RuleCheckResult)
- private:
-  class HasBitSetters;
-
-  ::google::protobuf::internal::InternalMetadataWithArena _internal_metadata_;
-  ::google::protobuf::internal::ArenaStringPtr task_result_;
-  ::google::protobuf::internal::ArenaStringPtr error_info_;
-  bool status_;
+  ::google::protobuf::internal::ArenaStringPtr rule_file_;
+  ::google::protobuf::internal::ArenaStringPtr input_data_;
   mutable ::google::protobuf::internal::CachedSize _cached_size_;
   friend struct ::TableStruct_RuleCheck_2eproto;
 };
@@ -370,7 +254,7 @@ class RuleCheckResponse :
                &_RuleCheckResponse_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    2;
+    1;
 
   void Swap(RuleCheckResponse* other);
   friend void swap(RuleCheckResponse& a, RuleCheckResponse& b) {
@@ -441,42 +325,39 @@ class RuleCheckResponse :
   ::std::string* release_taskhash();
   void set_allocated_taskhash(::std::string* taskhash);
 
-  // bytes rule_file_hash = 3;
-  void clear_rule_file_hash();
-  static const int kRuleFileHashFieldNumber = 3;
-  const ::std::string& rule_file_hash() const;
-  void set_rule_file_hash(const ::std::string& value);
+  // string error_info = 3;
+  void clear_error_info();
+  static const int kErrorInfoFieldNumber = 3;
+  const ::std::string& error_info() const;
+  void set_error_info(const ::std::string& value);
   #if LANG_CXX11
-  void set_rule_file_hash(::std::string&& value);
+  void set_error_info(::std::string&& value);
   #endif
-  void set_rule_file_hash(const char* value);
-  void set_rule_file_hash(const void* value, size_t size);
-  ::std::string* mutable_rule_file_hash();
-  ::std::string* release_rule_file_hash();
-  void set_allocated_rule_file_hash(::std::string* rule_file_hash);
+  void set_error_info(const char* value);
+  void set_error_info(const char* value, size_t size);
+  ::std::string* mutable_error_info();
+  ::std::string* release_error_info();
+  void set_allocated_error_info(::std::string* error_info);
 
-  // bytes signature = 4;
-  void clear_signature();
-  static const int kSignatureFieldNumber = 4;
-  const ::std::string& signature() const;
-  void set_signature(const ::std::string& value);
+  // string output_data = 4;
+  void clear_output_data();
+  static const int kOutputDataFieldNumber = 4;
+  const ::std::string& output_data() const;
+  void set_output_data(const ::std::string& value);
   #if LANG_CXX11
-  void set_signature(::std::string&& value);
+  void set_output_data(::std::string&& value);
   #endif
-  void set_signature(const char* value);
-  void set_signature(const void* value, size_t size);
-  ::std::string* mutable_signature();
-  ::std::string* release_signature();
-  void set_allocated_signature(::std::string* signature);
+  void set_output_data(const char* value);
+  void set_output_data(const char* value, size_t size);
+  ::std::string* mutable_output_data();
+  ::std::string* release_output_data();
+  void set_allocated_output_data(::std::string* output_data);
 
-  // .e2e_message.RuleCheckResult result = 2;
-  bool has_result() const;
-  void clear_result();
-  static const int kResultFieldNumber = 2;
-  const ::e2e_message::RuleCheckResult& result() const;
-  ::e2e_message::RuleCheckResult* release_result();
-  ::e2e_message::RuleCheckResult* mutable_result();
-  void set_allocated_result(::e2e_message::RuleCheckResult* result);
+  // bool status = 2;
+  void clear_status();
+  static const int kStatusFieldNumber = 2;
+  bool status() const;
+  void set_status(bool value);
 
   // @@protoc_insertion_point(class_scope:e2e_message.RuleCheckResponse)
  private:
@@ -484,9 +365,9 @@ class RuleCheckResponse :
 
   ::google::protobuf::internal::InternalMetadataWithArena _internal_metadata_;
   ::google::protobuf::internal::ArenaStringPtr taskhash_;
-  ::google::protobuf::internal::ArenaStringPtr rule_file_hash_;
-  ::google::protobuf::internal::ArenaStringPtr signature_;
-  ::e2e_message::RuleCheckResult* result_;
+  ::google::protobuf::internal::ArenaStringPtr error_info_;
+  ::google::protobuf::internal::ArenaStringPtr output_data_;
+  bool status_;
   mutable ::google::protobuf::internal::CachedSize _cached_size_;
   friend struct ::TableStruct_RuleCheck_2eproto;
 };
@@ -554,128 +435,110 @@ inline void RuleCheckRequest::set_allocated_taskhash(::std::string* taskhash) {
   // @@protoc_insertion_point(field_set_allocated:e2e_message.RuleCheckRequest.taskhash)
 }
 
-// -------------------------------------------------------------------
-
-// RuleCheckResult
-
-// bool status = 1;
-inline void RuleCheckResult::clear_status() {
-  status_ = false;
+// string rule_file = 2;
+inline void RuleCheckRequest::clear_rule_file() {
+  rule_file_.ClearToEmptyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
 }
-inline bool RuleCheckResult::status() const {
-  // @@protoc_insertion_point(field_get:e2e_message.RuleCheckResult.status)
-  return status_;
+inline const ::std::string& RuleCheckRequest::rule_file() const {
+  // @@protoc_insertion_point(field_get:e2e_message.RuleCheckRequest.rule_file)
+  return rule_file_.GetNoArena();
 }
-inline void RuleCheckResult::set_status(bool value) {
+inline void RuleCheckRequest::set_rule_file(const ::std::string& value) {
   
-  status_ = value;
-  // @@protoc_insertion_point(field_set:e2e_message.RuleCheckResult.status)
-}
-
-// bytes task_result = 2;
-inline void RuleCheckResult::clear_task_result() {
-  task_result_.ClearToEmptyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
-}
-inline const ::std::string& RuleCheckResult::task_result() const {
-  // @@protoc_insertion_point(field_get:e2e_message.RuleCheckResult.task_result)
-  return task_result_.GetNoArena();
-}
-inline void RuleCheckResult::set_task_result(const ::std::string& value) {
-  
-  task_result_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), value);
-  // @@protoc_insertion_point(field_set:e2e_message.RuleCheckResult.task_result)
+  rule_file_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), value);
+  // @@protoc_insertion_point(field_set:e2e_message.RuleCheckRequest.rule_file)
 }
 #if LANG_CXX11
-inline void RuleCheckResult::set_task_result(::std::string&& value) {
+inline void RuleCheckRequest::set_rule_file(::std::string&& value) {
   
-  task_result_.SetNoArena(
+  rule_file_.SetNoArena(
     &::google::protobuf::internal::GetEmptyStringAlreadyInited(), ::std::move(value));
-  // @@protoc_insertion_point(field_set_rvalue:e2e_message.RuleCheckResult.task_result)
+  // @@protoc_insertion_point(field_set_rvalue:e2e_message.RuleCheckRequest.rule_file)
 }
 #endif
-inline void RuleCheckResult::set_task_result(const char* value) {
+inline void RuleCheckRequest::set_rule_file(const char* value) {
   GOOGLE_DCHECK(value != nullptr);
   
-  task_result_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), ::std::string(value));
-  // @@protoc_insertion_point(field_set_char:e2e_message.RuleCheckResult.task_result)
+  rule_file_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), ::std::string(value));
+  // @@protoc_insertion_point(field_set_char:e2e_message.RuleCheckRequest.rule_file)
 }
-inline void RuleCheckResult::set_task_result(const void* value, size_t size) {
+inline void RuleCheckRequest::set_rule_file(const char* value, size_t size) {
   
-  task_result_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(),
+  rule_file_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(),
       ::std::string(reinterpret_cast<const char*>(value), size));
-  // @@protoc_insertion_point(field_set_pointer:e2e_message.RuleCheckResult.task_result)
+  // @@protoc_insertion_point(field_set_pointer:e2e_message.RuleCheckRequest.rule_file)
 }
-inline ::std::string* RuleCheckResult::mutable_task_result() {
+inline ::std::string* RuleCheckRequest::mutable_rule_file() {
   
-  // @@protoc_insertion_point(field_mutable:e2e_message.RuleCheckResult.task_result)
-  return task_result_.MutableNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+  // @@protoc_insertion_point(field_mutable:e2e_message.RuleCheckRequest.rule_file)
+  return rule_file_.MutableNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
 }
-inline ::std::string* RuleCheckResult::release_task_result() {
-  // @@protoc_insertion_point(field_release:e2e_message.RuleCheckResult.task_result)
+inline ::std::string* RuleCheckRequest::release_rule_file() {
+  // @@protoc_insertion_point(field_release:e2e_message.RuleCheckRequest.rule_file)
   
-  return task_result_.ReleaseNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+  return rule_file_.ReleaseNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
 }
-inline void RuleCheckResult::set_allocated_task_result(::std::string* task_result) {
-  if (task_result != nullptr) {
+inline void RuleCheckRequest::set_allocated_rule_file(::std::string* rule_file) {
+  if (rule_file != nullptr) {
     
   } else {
     
   }
-  task_result_.SetAllocatedNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), task_result);
-  // @@protoc_insertion_point(field_set_allocated:e2e_message.RuleCheckResult.task_result)
+  rule_file_.SetAllocatedNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), rule_file);
+  // @@protoc_insertion_point(field_set_allocated:e2e_message.RuleCheckRequest.rule_file)
 }
 
-// string error_info = 3;
-inline void RuleCheckResult::clear_error_info() {
-  error_info_.ClearToEmptyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+// string input_data = 3;
+inline void RuleCheckRequest::clear_input_data() {
+  input_data_.ClearToEmptyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
 }
-inline const ::std::string& RuleCheckResult::error_info() const {
-  // @@protoc_insertion_point(field_get:e2e_message.RuleCheckResult.error_info)
-  return error_info_.GetNoArena();
+inline const ::std::string& RuleCheckRequest::input_data() const {
+  // @@protoc_insertion_point(field_get:e2e_message.RuleCheckRequest.input_data)
+  return input_data_.GetNoArena();
 }
-inline void RuleCheckResult::set_error_info(const ::std::string& value) {
+inline void RuleCheckRequest::set_input_data(const ::std::string& value) {
   
-  error_info_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), value);
-  // @@protoc_insertion_point(field_set:e2e_message.RuleCheckResult.error_info)
+  input_data_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), value);
+  // @@protoc_insertion_point(field_set:e2e_message.RuleCheckRequest.input_data)
 }
 #if LANG_CXX11
-inline void RuleCheckResult::set_error_info(::std::string&& value) {
+inline void RuleCheckRequest::set_input_data(::std::string&& value) {
   
-  error_info_.SetNoArena(
+  input_data_.SetNoArena(
     &::google::protobuf::internal::GetEmptyStringAlreadyInited(), ::std::move(value));
-  // @@protoc_insertion_point(field_set_rvalue:e2e_message.RuleCheckResult.error_info)
+  // @@protoc_insertion_point(field_set_rvalue:e2e_message.RuleCheckRequest.input_data)
 }
 #endif
-inline void RuleCheckResult::set_error_info(const char* value) {
+inline void RuleCheckRequest::set_input_data(const char* value) {
   GOOGLE_DCHECK(value != nullptr);
   
-  error_info_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), ::std::string(value));
-  // @@protoc_insertion_point(field_set_char:e2e_message.RuleCheckResult.error_info)
+  input_data_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), ::std::string(value));
+  // @@protoc_insertion_point(field_set_char:e2e_message.RuleCheckRequest.input_data)
 }
-inline void RuleCheckResult::set_error_info(const char* value, size_t size) {
+inline void RuleCheckRequest::set_input_data(const char* value, size_t size) {
   
-  error_info_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(),
+  input_data_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(),
       ::std::string(reinterpret_cast<const char*>(value), size));
-  // @@protoc_insertion_point(field_set_pointer:e2e_message.RuleCheckResult.error_info)
+  // @@protoc_insertion_point(field_set_pointer:e2e_message.RuleCheckRequest.input_data)
 }
-inline ::std::string* RuleCheckResult::mutable_error_info() {
+inline ::std::string* RuleCheckRequest::mutable_input_data() {
   
-  // @@protoc_insertion_point(field_mutable:e2e_message.RuleCheckResult.error_info)
-  return error_info_.MutableNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+  // @@protoc_insertion_point(field_mutable:e2e_message.RuleCheckRequest.input_data)
+  return input_data_.MutableNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
 }
-inline ::std::string* RuleCheckResult::release_error_info() {
-  // @@protoc_insertion_point(field_release:e2e_message.RuleCheckResult.error_info)
+inline ::std::string* RuleCheckRequest::release_input_data() {
+  // @@protoc_insertion_point(field_release:e2e_message.RuleCheckRequest.input_data)
   
-  return error_info_.ReleaseNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+  return input_data_.ReleaseNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
 }
-inline void RuleCheckResult::set_allocated_error_info(::std::string* error_info) {
-  if (error_info != nullptr) {
+inline void RuleCheckRequest::set_allocated_input_data(::std::string* input_data) {
+  if (input_data != nullptr) {
     
   } else {
     
   }
-  error_info_.SetAllocatedNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), error_info);
-  // @@protoc_insertion_point(field_set_allocated:e2e_message.RuleCheckResult.error_info)
+  input_data_.SetAllocatedNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), input_data);
+  // @@protoc_insertion_point(field_set_allocated:e2e_message.RuleCheckRequest.input_data)
 }
 
 // -------------------------------------------------------------------
@@ -735,168 +598,129 @@ inline void RuleCheckResponse::set_allocated_taskhash(::std::string* taskhash) {
   // @@protoc_insertion_point(field_set_allocated:e2e_message.RuleCheckResponse.taskhash)
 }
 
-// .e2e_message.RuleCheckResult result = 2;
-inline bool RuleCheckResponse::has_result() const {
-  return this != internal_default_instance() && result_ != nullptr;
+// bool status = 2;
+inline void RuleCheckResponse::clear_status() {
+  status_ = false;
 }
-inline void RuleCheckResponse::clear_result() {
-  if (GetArenaNoVirtual() == nullptr && result_ != nullptr) {
-    delete result_;
-  }
-  result_ = nullptr;
+inline bool RuleCheckResponse::status() const {
+  // @@protoc_insertion_point(field_get:e2e_message.RuleCheckResponse.status)
+  return status_;
 }
-inline const ::e2e_message::RuleCheckResult& RuleCheckResponse::result() const {
-  const ::e2e_message::RuleCheckResult* p = result_;
-  // @@protoc_insertion_point(field_get:e2e_message.RuleCheckResponse.result)
-  return p != nullptr ? *p : *reinterpret_cast<const ::e2e_message::RuleCheckResult*>(
-      &::e2e_message::_RuleCheckResult_default_instance_);
-}
-inline ::e2e_message::RuleCheckResult* RuleCheckResponse::release_result() {
-  // @@protoc_insertion_point(field_release:e2e_message.RuleCheckResponse.result)
+inline void RuleCheckResponse::set_status(bool value) {
   
-  ::e2e_message::RuleCheckResult* temp = result_;
-  result_ = nullptr;
-  return temp;
-}
-inline ::e2e_message::RuleCheckResult* RuleCheckResponse::mutable_result() {
-  
-  if (result_ == nullptr) {
-    auto* p = CreateMaybeMessage<::e2e_message::RuleCheckResult>(GetArenaNoVirtual());
-    result_ = p;
-  }
-  // @@protoc_insertion_point(field_mutable:e2e_message.RuleCheckResponse.result)
-  return result_;
-}
-inline void RuleCheckResponse::set_allocated_result(::e2e_message::RuleCheckResult* result) {
-  ::google::protobuf::Arena* message_arena = GetArenaNoVirtual();
-  if (message_arena == nullptr) {
-    delete result_;
-  }
-  if (result) {
-    ::google::protobuf::Arena* submessage_arena = nullptr;
-    if (message_arena != submessage_arena) {
-      result = ::google::protobuf::internal::GetOwnedMessage(
-          message_arena, result, submessage_arena);
-    }
-    
-  } else {
-    
-  }
-  result_ = result;
-  // @@protoc_insertion_point(field_set_allocated:e2e_message.RuleCheckResponse.result)
+  status_ = value;
+  // @@protoc_insertion_point(field_set:e2e_message.RuleCheckResponse.status)
 }
 
-// bytes rule_file_hash = 3;
-inline void RuleCheckResponse::clear_rule_file_hash() {
-  rule_file_hash_.ClearToEmptyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+// string error_info = 3;
+inline void RuleCheckResponse::clear_error_info() {
+  error_info_.ClearToEmptyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
 }
-inline const ::std::string& RuleCheckResponse::rule_file_hash() const {
-  // @@protoc_insertion_point(field_get:e2e_message.RuleCheckResponse.rule_file_hash)
-  return rule_file_hash_.GetNoArena();
+inline const ::std::string& RuleCheckResponse::error_info() const {
+  // @@protoc_insertion_point(field_get:e2e_message.RuleCheckResponse.error_info)
+  return error_info_.GetNoArena();
 }
-inline void RuleCheckResponse::set_rule_file_hash(const ::std::string& value) {
+inline void RuleCheckResponse::set_error_info(const ::std::string& value) {
   
-  rule_file_hash_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), value);
-  // @@protoc_insertion_point(field_set:e2e_message.RuleCheckResponse.rule_file_hash)
+  error_info_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), value);
+  // @@protoc_insertion_point(field_set:e2e_message.RuleCheckResponse.error_info)
 }
 #if LANG_CXX11
-inline void RuleCheckResponse::set_rule_file_hash(::std::string&& value) {
+inline void RuleCheckResponse::set_error_info(::std::string&& value) {
   
-  rule_file_hash_.SetNoArena(
+  error_info_.SetNoArena(
     &::google::protobuf::internal::GetEmptyStringAlreadyInited(), ::std::move(value));
-  // @@protoc_insertion_point(field_set_rvalue:e2e_message.RuleCheckResponse.rule_file_hash)
+  // @@protoc_insertion_point(field_set_rvalue:e2e_message.RuleCheckResponse.error_info)
 }
 #endif
-inline void RuleCheckResponse::set_rule_file_hash(const char* value) {
+inline void RuleCheckResponse::set_error_info(const char* value) {
   GOOGLE_DCHECK(value != nullptr);
   
-  rule_file_hash_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), ::std::string(value));
-  // @@protoc_insertion_point(field_set_char:e2e_message.RuleCheckResponse.rule_file_hash)
+  error_info_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), ::std::string(value));
+  // @@protoc_insertion_point(field_set_char:e2e_message.RuleCheckResponse.error_info)
 }
-inline void RuleCheckResponse::set_rule_file_hash(const void* value, size_t size) {
+inline void RuleCheckResponse::set_error_info(const char* value, size_t size) {
   
-  rule_file_hash_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(),
+  error_info_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(),
       ::std::string(reinterpret_cast<const char*>(value), size));
-  // @@protoc_insertion_point(field_set_pointer:e2e_message.RuleCheckResponse.rule_file_hash)
+  // @@protoc_insertion_point(field_set_pointer:e2e_message.RuleCheckResponse.error_info)
 }
-inline ::std::string* RuleCheckResponse::mutable_rule_file_hash() {
+inline ::std::string* RuleCheckResponse::mutable_error_info() {
   
-  // @@protoc_insertion_point(field_mutable:e2e_message.RuleCheckResponse.rule_file_hash)
-  return rule_file_hash_.MutableNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+  // @@protoc_insertion_point(field_mutable:e2e_message.RuleCheckResponse.error_info)
+  return error_info_.MutableNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
 }
-inline ::std::string* RuleCheckResponse::release_rule_file_hash() {
-  // @@protoc_insertion_point(field_release:e2e_message.RuleCheckResponse.rule_file_hash)
+inline ::std::string* RuleCheckResponse::release_error_info() {
+  // @@protoc_insertion_point(field_release:e2e_message.RuleCheckResponse.error_info)
   
-  return rule_file_hash_.ReleaseNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+  return error_info_.ReleaseNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
 }
-inline void RuleCheckResponse::set_allocated_rule_file_hash(::std::string* rule_file_hash) {
-  if (rule_file_hash != nullptr) {
+inline void RuleCheckResponse::set_allocated_error_info(::std::string* error_info) {
+  if (error_info != nullptr) {
     
   } else {
     
   }
-  rule_file_hash_.SetAllocatedNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), rule_file_hash);
-  // @@protoc_insertion_point(field_set_allocated:e2e_message.RuleCheckResponse.rule_file_hash)
+  error_info_.SetAllocatedNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), error_info);
+  // @@protoc_insertion_point(field_set_allocated:e2e_message.RuleCheckResponse.error_info)
 }
 
-// bytes signature = 4;
-inline void RuleCheckResponse::clear_signature() {
-  signature_.ClearToEmptyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+// string output_data = 4;
+inline void RuleCheckResponse::clear_output_data() {
+  output_data_.ClearToEmptyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
 }
-inline const ::std::string& RuleCheckResponse::signature() const {
-  // @@protoc_insertion_point(field_get:e2e_message.RuleCheckResponse.signature)
-  return signature_.GetNoArena();
+inline const ::std::string& RuleCheckResponse::output_data() const {
+  // @@protoc_insertion_point(field_get:e2e_message.RuleCheckResponse.output_data)
+  return output_data_.GetNoArena();
 }
-inline void RuleCheckResponse::set_signature(const ::std::string& value) {
+inline void RuleCheckResponse::set_output_data(const ::std::string& value) {
   
-  signature_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), value);
-  // @@protoc_insertion_point(field_set:e2e_message.RuleCheckResponse.signature)
+  output_data_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), value);
+  // @@protoc_insertion_point(field_set:e2e_message.RuleCheckResponse.output_data)
 }
 #if LANG_CXX11
-inline void RuleCheckResponse::set_signature(::std::string&& value) {
+inline void RuleCheckResponse::set_output_data(::std::string&& value) {
   
-  signature_.SetNoArena(
+  output_data_.SetNoArena(
     &::google::protobuf::internal::GetEmptyStringAlreadyInited(), ::std::move(value));
-  // @@protoc_insertion_point(field_set_rvalue:e2e_message.RuleCheckResponse.signature)
+  // @@protoc_insertion_point(field_set_rvalue:e2e_message.RuleCheckResponse.output_data)
 }
 #endif
-inline void RuleCheckResponse::set_signature(const char* value) {
+inline void RuleCheckResponse::set_output_data(const char* value) {
   GOOGLE_DCHECK(value != nullptr);
   
-  signature_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), ::std::string(value));
-  // @@protoc_insertion_point(field_set_char:e2e_message.RuleCheckResponse.signature)
+  output_data_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), ::std::string(value));
+  // @@protoc_insertion_point(field_set_char:e2e_message.RuleCheckResponse.output_data)
 }
-inline void RuleCheckResponse::set_signature(const void* value, size_t size) {
+inline void RuleCheckResponse::set_output_data(const char* value, size_t size) {
   
-  signature_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(),
+  output_data_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(),
       ::std::string(reinterpret_cast<const char*>(value), size));
-  // @@protoc_insertion_point(field_set_pointer:e2e_message.RuleCheckResponse.signature)
+  // @@protoc_insertion_point(field_set_pointer:e2e_message.RuleCheckResponse.output_data)
 }
-inline ::std::string* RuleCheckResponse::mutable_signature() {
+inline ::std::string* RuleCheckResponse::mutable_output_data() {
   
-  // @@protoc_insertion_point(field_mutable:e2e_message.RuleCheckResponse.signature)
-  return signature_.MutableNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+  // @@protoc_insertion_point(field_mutable:e2e_message.RuleCheckResponse.output_data)
+  return output_data_.MutableNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
 }
-inline ::std::string* RuleCheckResponse::release_signature() {
-  // @@protoc_insertion_point(field_release:e2e_message.RuleCheckResponse.signature)
+inline ::std::string* RuleCheckResponse::release_output_data() {
+  // @@protoc_insertion_point(field_release:e2e_message.RuleCheckResponse.output_data)
   
-  return signature_.ReleaseNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+  return output_data_.ReleaseNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
 }
-inline void RuleCheckResponse::set_allocated_signature(::std::string* signature) {
-  if (signature != nullptr) {
+inline void RuleCheckResponse::set_allocated_output_data(::std::string* output_data) {
+  if (output_data != nullptr) {
     
   } else {
     
   }
-  signature_.SetAllocatedNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), signature);
-  // @@protoc_insertion_point(field_set_allocated:e2e_message.RuleCheckResponse.signature)
+  output_data_.SetAllocatedNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), output_data);
+  // @@protoc_insertion_point(field_set_allocated:e2e_message.RuleCheckResponse.output_data)
 }
 
 #ifdef __GNUC__
   #pragma GCC diagnostic pop
 #endif  // __GNUC__
-// -------------------------------------------------------------------
-
 // -------------------------------------------------------------------
 
 

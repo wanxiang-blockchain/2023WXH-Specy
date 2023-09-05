@@ -27,7 +27,7 @@ class Entity : public EntityType {
     /* Data Member Getters */
 
     const std::string &get_id() const;
-    const std::string &get_name() const;
+    std::string &get_name();
     const std::map<std::string, std::shared_ptr<Attribute>>& get_attribute_list() const;
     const std::set<std::string> &get_constraints_set() const;
     bool hasAttribute(std::string& attributr_name, RuleLanguage::Type type);
@@ -39,6 +39,8 @@ class Entity : public EntityType {
 
     void addAttribute(const std::string &attribute_name, std::shared_ptr<Attribute>& attribute);
     std::shared_ptr<Attribute> getAttribute(std::string attribute_name, RuleLanguage::Type type);
+    std::shared_ptr<Attribute> getAttribute(std::string attribute_name);
+
 
     void addConstraint(const std::string &attribute_name);
     void clearAttributes();

@@ -116,11 +116,23 @@ public:
   virtual void enterListExpr(RuleParser::ListExprContext *ctx) = 0;
   virtual void exitListExpr(RuleParser::ListExprContext *ctx) = 0;
 
+  virtual void enterListFirstExpr(RuleParser::ListFirstExprContext *ctx) = 0;
+  virtual void exitListFirstExpr(RuleParser::ListFirstExprContext *ctx) = 0;
+
+  virtual void enterListSecondExpr(RuleParser::ListSecondExprContext *ctx) = 0;
+  virtual void exitListSecondExpr(RuleParser::ListSecondExprContext *ctx) = 0;
+
   virtual void enterRelationStmt(RuleParser::RelationStmtContext *ctx) = 0;
   virtual void exitRelationStmt(RuleParser::RelationStmtContext *ctx) = 0;
 
   virtual void enterRelationExpr(RuleParser::RelationExprContext *ctx) = 0;
   virtual void exitRelationExpr(RuleParser::RelationExprContext *ctx) = 0;
+
+  virtual void enterStringExpr(RuleParser::StringExprContext *ctx) = 0;
+  virtual void exitStringExpr(RuleParser::StringExprContext *ctx) = 0;
+
+  virtual void enterCompareOperator(RuleParser::CompareOperatorContext *ctx) = 0;
+  virtual void exitCompareOperator(RuleParser::CompareOperatorContext *ctx) = 0;
 
   virtual void enterRelationOperator(RuleParser::RelationOperatorContext *ctx) = 0;
   virtual void exitRelationOperator(RuleParser::RelationOperatorContext *ctx) = 0;
@@ -148,6 +160,9 @@ public:
 
   virtual void enterDefinitionStmt(RuleParser::DefinitionStmtContext *ctx) = 0;
   virtual void exitDefinitionStmt(RuleParser::DefinitionStmtContext *ctx) = 0;
+
+  virtual void enterAssignElement(RuleParser::AssignElementContext *ctx) = 0;
+  virtual void exitAssignElement(RuleParser::AssignElementContext *ctx) = 0;
 
   virtual void enterInstanceName(RuleParser::InstanceNameContext *ctx) = 0;
   virtual void exitInstanceName(RuleParser::InstanceNameContext *ctx) = 0;

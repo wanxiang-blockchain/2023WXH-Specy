@@ -46,7 +46,7 @@ struct TableStruct_Regulator_2eproto {
     PROTOBUF_SECTION_VARIABLE(protodesc_cold);
   static const ::PROTOBUF_NAMESPACE_ID::internal::AuxiliaryParseTableField aux[]
     PROTOBUF_SECTION_VARIABLE(protodesc_cold);
-  static const ::PROTOBUF_NAMESPACE_ID::internal::ParseTable schema[3]
+  static const ::PROTOBUF_NAMESPACE_ID::internal::ParseTable schema[2]
     PROTOBUF_SECTION_VARIABLE(protodesc_cold);
   static const ::PROTOBUF_NAMESPACE_ID::internal::FieldMetadata field_metadata[];
   static const ::PROTOBUF_NAMESPACE_ID::internal::SerializationTable serialization_table[];
@@ -55,9 +55,6 @@ struct TableStruct_Regulator_2eproto {
 extern const ::PROTOBUF_NAMESPACE_ID::internal::DescriptorTable descriptor_table_Regulator_2eproto;
 ::PROTOBUF_NAMESPACE_ID::Metadata descriptor_table_Regulator_2eproto_metadata_getter(int index);
 namespace request_proto {
-class Result;
-struct ResultDefaultTypeInternal;
-extern ResultDefaultTypeInternal _Result_default_instance_;
 class TaskRequest;
 struct TaskRequestDefaultTypeInternal;
 extern TaskRequestDefaultTypeInternal _TaskRequest_default_instance_;
@@ -66,7 +63,6 @@ struct TaskResponseDefaultTypeInternal;
 extern TaskResponseDefaultTypeInternal _TaskResponse_default_instance_;
 }  // namespace request_proto
 PROTOBUF_NAMESPACE_OPEN
-template<> ::request_proto::Result* Arena::CreateMaybeMessage<::request_proto::Result>(Arena*);
 template<> ::request_proto::TaskRequest* Arena::CreateMaybeMessage<::request_proto::TaskRequest>(Arena*);
 template<> ::request_proto::TaskResponse* Arena::CreateMaybeMessage<::request_proto::TaskResponse>(Arena*);
 PROTOBUF_NAMESPACE_CLOSE
@@ -188,6 +184,8 @@ class TaskRequest PROTOBUF_FINAL :
 
   enum : int {
     kTaskhashFieldNumber = 1,
+    kRuleFileFieldNumber = 2,
+    kInputDataFieldNumber = 3,
   };
   // bytes taskhash = 1;
   void clear_taskhash();
@@ -205,6 +203,38 @@ class TaskRequest PROTOBUF_FINAL :
   std::string* _internal_mutable_taskhash();
   public:
 
+  // string rule_file = 2;
+  void clear_rule_file();
+  const std::string& rule_file() const;
+  void set_rule_file(const std::string& value);
+  void set_rule_file(std::string&& value);
+  void set_rule_file(const char* value);
+  void set_rule_file(const char* value, size_t size);
+  std::string* mutable_rule_file();
+  std::string* release_rule_file();
+  void set_allocated_rule_file(std::string* rule_file);
+  private:
+  const std::string& _internal_rule_file() const;
+  void _internal_set_rule_file(const std::string& value);
+  std::string* _internal_mutable_rule_file();
+  public:
+
+  // string input_data = 3;
+  void clear_input_data();
+  const std::string& input_data() const;
+  void set_input_data(const std::string& value);
+  void set_input_data(std::string&& value);
+  void set_input_data(const char* value);
+  void set_input_data(const char* value, size_t size);
+  std::string* mutable_input_data();
+  std::string* release_input_data();
+  void set_allocated_input_data(std::string* input_data);
+  private:
+  const std::string& _internal_input_data() const;
+  void _internal_set_input_data(const std::string& value);
+  std::string* _internal_mutable_input_data();
+  public:
+
   // @@protoc_insertion_point(class_scope:request_proto.TaskRequest)
  private:
   class _Internal;
@@ -213,179 +243,8 @@ class TaskRequest PROTOBUF_FINAL :
   typedef void InternalArenaConstructable_;
   typedef void DestructorSkippable_;
   ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr taskhash_;
-  mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
-  friend struct ::TableStruct_Regulator_2eproto;
-};
-// -------------------------------------------------------------------
-
-class Result PROTOBUF_FINAL :
-    public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:request_proto.Result) */ {
- public:
-  inline Result() : Result(nullptr) {}
-  virtual ~Result();
-  explicit constexpr Result(::PROTOBUF_NAMESPACE_ID::internal::ConstantInitialized);
-
-  Result(const Result& from);
-  Result(Result&& from) noexcept
-    : Result() {
-    *this = ::std::move(from);
-  }
-
-  inline Result& operator=(const Result& from) {
-    CopyFrom(from);
-    return *this;
-  }
-  inline Result& operator=(Result&& from) noexcept {
-    if (GetArena() == from.GetArena()) {
-      if (this != &from) InternalSwap(&from);
-    } else {
-      CopyFrom(from);
-    }
-    return *this;
-  }
-
-  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* descriptor() {
-    return GetDescriptor();
-  }
-  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* GetDescriptor() {
-    return GetMetadataStatic().descriptor;
-  }
-  static const ::PROTOBUF_NAMESPACE_ID::Reflection* GetReflection() {
-    return GetMetadataStatic().reflection;
-  }
-  static const Result& default_instance() {
-    return *internal_default_instance();
-  }
-  static inline const Result* internal_default_instance() {
-    return reinterpret_cast<const Result*>(
-               &_Result_default_instance_);
-  }
-  static constexpr int kIndexInFileMessages =
-    1;
-
-  friend void swap(Result& a, Result& b) {
-    a.Swap(&b);
-  }
-  inline void Swap(Result* other) {
-    if (other == this) return;
-    if (GetArena() == other->GetArena()) {
-      InternalSwap(other);
-    } else {
-      ::PROTOBUF_NAMESPACE_ID::internal::GenericSwap(this, other);
-    }
-  }
-  void UnsafeArenaSwap(Result* other) {
-    if (other == this) return;
-    GOOGLE_DCHECK(GetArena() == other->GetArena());
-    InternalSwap(other);
-  }
-
-  // implements Message ----------------------------------------------
-
-  inline Result* New() const final {
-    return CreateMaybeMessage<Result>(nullptr);
-  }
-
-  Result* New(::PROTOBUF_NAMESPACE_ID::Arena* arena) const final {
-    return CreateMaybeMessage<Result>(arena);
-  }
-  void CopyFrom(const ::PROTOBUF_NAMESPACE_ID::Message& from) final;
-  void MergeFrom(const ::PROTOBUF_NAMESPACE_ID::Message& from) final;
-  void CopyFrom(const Result& from);
-  void MergeFrom(const Result& from);
-  PROTOBUF_ATTRIBUTE_REINITIALIZES void Clear() final;
-  bool IsInitialized() const final;
-
-  size_t ByteSizeLong() const final;
-  const char* _InternalParse(const char* ptr, ::PROTOBUF_NAMESPACE_ID::internal::ParseContext* ctx) final;
-  ::PROTOBUF_NAMESPACE_ID::uint8* _InternalSerialize(
-      ::PROTOBUF_NAMESPACE_ID::uint8* target, ::PROTOBUF_NAMESPACE_ID::io::EpsCopyOutputStream* stream) const final;
-  int GetCachedSize() const final { return _cached_size_.Get(); }
-
-  private:
-  inline void SharedCtor();
-  inline void SharedDtor();
-  void SetCachedSize(int size) const final;
-  void InternalSwap(Result* other);
-  friend class ::PROTOBUF_NAMESPACE_ID::internal::AnyMetadata;
-  static ::PROTOBUF_NAMESPACE_ID::StringPiece FullMessageName() {
-    return "request_proto.Result";
-  }
-  protected:
-  explicit Result(::PROTOBUF_NAMESPACE_ID::Arena* arena);
-  private:
-  static void ArenaDtor(void* object);
-  inline void RegisterArenaDtor(::PROTOBUF_NAMESPACE_ID::Arena* arena);
-  public:
-
-  ::PROTOBUF_NAMESPACE_ID::Metadata GetMetadata() const final;
-  private:
-  static ::PROTOBUF_NAMESPACE_ID::Metadata GetMetadataStatic() {
-    return ::descriptor_table_Regulator_2eproto_metadata_getter(kIndexInFileMessages);
-  }
-
-  public:
-
-  // nested types ----------------------------------------------------
-
-  // accessors -------------------------------------------------------
-
-  enum : int {
-    kTaskResultFieldNumber = 2,
-    kErrorInfoFieldNumber = 3,
-    kStatusFieldNumber = 1,
-  };
-  // bytes task_result = 2;
-  void clear_task_result();
-  const std::string& task_result() const;
-  void set_task_result(const std::string& value);
-  void set_task_result(std::string&& value);
-  void set_task_result(const char* value);
-  void set_task_result(const void* value, size_t size);
-  std::string* mutable_task_result();
-  std::string* release_task_result();
-  void set_allocated_task_result(std::string* task_result);
-  private:
-  const std::string& _internal_task_result() const;
-  void _internal_set_task_result(const std::string& value);
-  std::string* _internal_mutable_task_result();
-  public:
-
-  // string error_info = 3;
-  void clear_error_info();
-  const std::string& error_info() const;
-  void set_error_info(const std::string& value);
-  void set_error_info(std::string&& value);
-  void set_error_info(const char* value);
-  void set_error_info(const char* value, size_t size);
-  std::string* mutable_error_info();
-  std::string* release_error_info();
-  void set_allocated_error_info(std::string* error_info);
-  private:
-  const std::string& _internal_error_info() const;
-  void _internal_set_error_info(const std::string& value);
-  std::string* _internal_mutable_error_info();
-  public:
-
-  // bool status = 1;
-  void clear_status();
-  bool status() const;
-  void set_status(bool value);
-  private:
-  bool _internal_status() const;
-  void _internal_set_status(bool value);
-  public:
-
-  // @@protoc_insertion_point(class_scope:request_proto.Result)
- private:
-  class _Internal;
-
-  template <typename T> friend class ::PROTOBUF_NAMESPACE_ID::Arena::InternalHelper;
-  typedef void InternalArenaConstructable_;
-  typedef void DestructorSkippable_;
-  ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr task_result_;
-  ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr error_info_;
-  bool status_;
+  ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr rule_file_;
+  ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr input_data_;
   mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
   friend struct ::TableStruct_Regulator_2eproto;
 };
@@ -434,7 +293,7 @@ class TaskResponse PROTOBUF_FINAL :
                &_TaskResponse_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    2;
+    1;
 
   friend void swap(TaskResponse& a, TaskResponse& b) {
     a.Swap(&b);
@@ -505,9 +364,10 @@ class TaskResponse PROTOBUF_FINAL :
 
   enum : int {
     kTaskhashFieldNumber = 1,
-    kRuleFileHashFieldNumber = 3,
-    kSignatureFieldNumber = 4,
-    kResultFieldNumber = 2,
+    kErrorInfoFieldNumber = 3,
+    kOutputDataFieldNumber = 4,
+    kSignatureFieldNumber = 5,
+    kStatusFieldNumber = 2,
   };
   // bytes taskhash = 1;
   void clear_taskhash();
@@ -525,23 +385,39 @@ class TaskResponse PROTOBUF_FINAL :
   std::string* _internal_mutable_taskhash();
   public:
 
-  // bytes rule_file_hash = 3;
-  void clear_rule_file_hash();
-  const std::string& rule_file_hash() const;
-  void set_rule_file_hash(const std::string& value);
-  void set_rule_file_hash(std::string&& value);
-  void set_rule_file_hash(const char* value);
-  void set_rule_file_hash(const void* value, size_t size);
-  std::string* mutable_rule_file_hash();
-  std::string* release_rule_file_hash();
-  void set_allocated_rule_file_hash(std::string* rule_file_hash);
+  // string error_info = 3;
+  void clear_error_info();
+  const std::string& error_info() const;
+  void set_error_info(const std::string& value);
+  void set_error_info(std::string&& value);
+  void set_error_info(const char* value);
+  void set_error_info(const char* value, size_t size);
+  std::string* mutable_error_info();
+  std::string* release_error_info();
+  void set_allocated_error_info(std::string* error_info);
   private:
-  const std::string& _internal_rule_file_hash() const;
-  void _internal_set_rule_file_hash(const std::string& value);
-  std::string* _internal_mutable_rule_file_hash();
+  const std::string& _internal_error_info() const;
+  void _internal_set_error_info(const std::string& value);
+  std::string* _internal_mutable_error_info();
   public:
 
-  // bytes signature = 4;
+  // string output_data = 4;
+  void clear_output_data();
+  const std::string& output_data() const;
+  void set_output_data(const std::string& value);
+  void set_output_data(std::string&& value);
+  void set_output_data(const char* value);
+  void set_output_data(const char* value, size_t size);
+  std::string* mutable_output_data();
+  std::string* release_output_data();
+  void set_allocated_output_data(std::string* output_data);
+  private:
+  const std::string& _internal_output_data() const;
+  void _internal_set_output_data(const std::string& value);
+  std::string* _internal_mutable_output_data();
+  public:
+
+  // bytes signature = 5;
   void clear_signature();
   const std::string& signature() const;
   void set_signature(const std::string& value);
@@ -557,23 +433,14 @@ class TaskResponse PROTOBUF_FINAL :
   std::string* _internal_mutable_signature();
   public:
 
-  // .request_proto.Result result = 2;
-  bool has_result() const;
+  // bool status = 2;
+  void clear_status();
+  bool status() const;
+  void set_status(bool value);
   private:
-  bool _internal_has_result() const;
+  bool _internal_status() const;
+  void _internal_set_status(bool value);
   public:
-  void clear_result();
-  const ::request_proto::Result& result() const;
-  ::request_proto::Result* release_result();
-  ::request_proto::Result* mutable_result();
-  void set_allocated_result(::request_proto::Result* result);
-  private:
-  const ::request_proto::Result& _internal_result() const;
-  ::request_proto::Result* _internal_mutable_result();
-  public:
-  void unsafe_arena_set_allocated_result(
-      ::request_proto::Result* result);
-  ::request_proto::Result* unsafe_arena_release_result();
 
   // @@protoc_insertion_point(class_scope:request_proto.TaskResponse)
  private:
@@ -583,9 +450,10 @@ class TaskResponse PROTOBUF_FINAL :
   typedef void InternalArenaConstructable_;
   typedef void DestructorSkippable_;
   ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr taskhash_;
-  ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr rule_file_hash_;
+  ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr error_info_;
+  ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr output_data_;
   ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr signature_;
-  ::request_proto::Result* result_;
+  bool status_;
   mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
   friend struct ::TableStruct_Regulator_2eproto;
 };
@@ -661,150 +529,126 @@ inline void TaskRequest::set_allocated_taskhash(std::string* taskhash) {
   // @@protoc_insertion_point(field_set_allocated:request_proto.TaskRequest.taskhash)
 }
 
-// -------------------------------------------------------------------
-
-// Result
-
-// bool status = 1;
-inline void Result::clear_status() {
-  status_ = false;
+// string rule_file = 2;
+inline void TaskRequest::clear_rule_file() {
+  rule_file_.ClearToEmpty();
 }
-inline bool Result::_internal_status() const {
-  return status_;
+inline const std::string& TaskRequest::rule_file() const {
+  // @@protoc_insertion_point(field_get:request_proto.TaskRequest.rule_file)
+  return _internal_rule_file();
 }
-inline bool Result::status() const {
-  // @@protoc_insertion_point(field_get:request_proto.Result.status)
-  return _internal_status();
+inline void TaskRequest::set_rule_file(const std::string& value) {
+  _internal_set_rule_file(value);
+  // @@protoc_insertion_point(field_set:request_proto.TaskRequest.rule_file)
 }
-inline void Result::_internal_set_status(bool value) {
+inline std::string* TaskRequest::mutable_rule_file() {
+  // @@protoc_insertion_point(field_mutable:request_proto.TaskRequest.rule_file)
+  return _internal_mutable_rule_file();
+}
+inline const std::string& TaskRequest::_internal_rule_file() const {
+  return rule_file_.Get();
+}
+inline void TaskRequest::_internal_set_rule_file(const std::string& value) {
   
-  status_ = value;
+  rule_file_.Set(::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr::EmptyDefault{}, value, GetArena());
 }
-inline void Result::set_status(bool value) {
-  _internal_set_status(value);
-  // @@protoc_insertion_point(field_set:request_proto.Result.status)
-}
-
-// bytes task_result = 2;
-inline void Result::clear_task_result() {
-  task_result_.ClearToEmpty();
-}
-inline const std::string& Result::task_result() const {
-  // @@protoc_insertion_point(field_get:request_proto.Result.task_result)
-  return _internal_task_result();
-}
-inline void Result::set_task_result(const std::string& value) {
-  _internal_set_task_result(value);
-  // @@protoc_insertion_point(field_set:request_proto.Result.task_result)
-}
-inline std::string* Result::mutable_task_result() {
-  // @@protoc_insertion_point(field_mutable:request_proto.Result.task_result)
-  return _internal_mutable_task_result();
-}
-inline const std::string& Result::_internal_task_result() const {
-  return task_result_.Get();
-}
-inline void Result::_internal_set_task_result(const std::string& value) {
+inline void TaskRequest::set_rule_file(std::string&& value) {
   
-  task_result_.Set(::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr::EmptyDefault{}, value, GetArena());
-}
-inline void Result::set_task_result(std::string&& value) {
-  
-  task_result_.Set(
+  rule_file_.Set(
     ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr::EmptyDefault{}, ::std::move(value), GetArena());
-  // @@protoc_insertion_point(field_set_rvalue:request_proto.Result.task_result)
+  // @@protoc_insertion_point(field_set_rvalue:request_proto.TaskRequest.rule_file)
 }
-inline void Result::set_task_result(const char* value) {
+inline void TaskRequest::set_rule_file(const char* value) {
   GOOGLE_DCHECK(value != nullptr);
   
-  task_result_.Set(::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr::EmptyDefault{}, ::std::string(value), GetArena());
-  // @@protoc_insertion_point(field_set_char:request_proto.Result.task_result)
+  rule_file_.Set(::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr::EmptyDefault{}, ::std::string(value), GetArena());
+  // @@protoc_insertion_point(field_set_char:request_proto.TaskRequest.rule_file)
 }
-inline void Result::set_task_result(const void* value,
+inline void TaskRequest::set_rule_file(const char* value,
     size_t size) {
   
-  task_result_.Set(::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr::EmptyDefault{}, ::std::string(
+  rule_file_.Set(::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr::EmptyDefault{}, ::std::string(
       reinterpret_cast<const char*>(value), size), GetArena());
-  // @@protoc_insertion_point(field_set_pointer:request_proto.Result.task_result)
+  // @@protoc_insertion_point(field_set_pointer:request_proto.TaskRequest.rule_file)
 }
-inline std::string* Result::_internal_mutable_task_result() {
+inline std::string* TaskRequest::_internal_mutable_rule_file() {
   
-  return task_result_.Mutable(::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr::EmptyDefault{}, GetArena());
+  return rule_file_.Mutable(::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr::EmptyDefault{}, GetArena());
 }
-inline std::string* Result::release_task_result() {
-  // @@protoc_insertion_point(field_release:request_proto.Result.task_result)
-  return task_result_.Release(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), GetArena());
+inline std::string* TaskRequest::release_rule_file() {
+  // @@protoc_insertion_point(field_release:request_proto.TaskRequest.rule_file)
+  return rule_file_.Release(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), GetArena());
 }
-inline void Result::set_allocated_task_result(std::string* task_result) {
-  if (task_result != nullptr) {
+inline void TaskRequest::set_allocated_rule_file(std::string* rule_file) {
+  if (rule_file != nullptr) {
     
   } else {
     
   }
-  task_result_.SetAllocated(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), task_result,
+  rule_file_.SetAllocated(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), rule_file,
       GetArena());
-  // @@protoc_insertion_point(field_set_allocated:request_proto.Result.task_result)
+  // @@protoc_insertion_point(field_set_allocated:request_proto.TaskRequest.rule_file)
 }
 
-// string error_info = 3;
-inline void Result::clear_error_info() {
-  error_info_.ClearToEmpty();
+// string input_data = 3;
+inline void TaskRequest::clear_input_data() {
+  input_data_.ClearToEmpty();
 }
-inline const std::string& Result::error_info() const {
-  // @@protoc_insertion_point(field_get:request_proto.Result.error_info)
-  return _internal_error_info();
+inline const std::string& TaskRequest::input_data() const {
+  // @@protoc_insertion_point(field_get:request_proto.TaskRequest.input_data)
+  return _internal_input_data();
 }
-inline void Result::set_error_info(const std::string& value) {
-  _internal_set_error_info(value);
-  // @@protoc_insertion_point(field_set:request_proto.Result.error_info)
+inline void TaskRequest::set_input_data(const std::string& value) {
+  _internal_set_input_data(value);
+  // @@protoc_insertion_point(field_set:request_proto.TaskRequest.input_data)
 }
-inline std::string* Result::mutable_error_info() {
-  // @@protoc_insertion_point(field_mutable:request_proto.Result.error_info)
-  return _internal_mutable_error_info();
+inline std::string* TaskRequest::mutable_input_data() {
+  // @@protoc_insertion_point(field_mutable:request_proto.TaskRequest.input_data)
+  return _internal_mutable_input_data();
 }
-inline const std::string& Result::_internal_error_info() const {
-  return error_info_.Get();
+inline const std::string& TaskRequest::_internal_input_data() const {
+  return input_data_.Get();
 }
-inline void Result::_internal_set_error_info(const std::string& value) {
+inline void TaskRequest::_internal_set_input_data(const std::string& value) {
   
-  error_info_.Set(::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr::EmptyDefault{}, value, GetArena());
+  input_data_.Set(::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr::EmptyDefault{}, value, GetArena());
 }
-inline void Result::set_error_info(std::string&& value) {
+inline void TaskRequest::set_input_data(std::string&& value) {
   
-  error_info_.Set(
+  input_data_.Set(
     ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr::EmptyDefault{}, ::std::move(value), GetArena());
-  // @@protoc_insertion_point(field_set_rvalue:request_proto.Result.error_info)
+  // @@protoc_insertion_point(field_set_rvalue:request_proto.TaskRequest.input_data)
 }
-inline void Result::set_error_info(const char* value) {
+inline void TaskRequest::set_input_data(const char* value) {
   GOOGLE_DCHECK(value != nullptr);
   
-  error_info_.Set(::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr::EmptyDefault{}, ::std::string(value), GetArena());
-  // @@protoc_insertion_point(field_set_char:request_proto.Result.error_info)
+  input_data_.Set(::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr::EmptyDefault{}, ::std::string(value), GetArena());
+  // @@protoc_insertion_point(field_set_char:request_proto.TaskRequest.input_data)
 }
-inline void Result::set_error_info(const char* value,
+inline void TaskRequest::set_input_data(const char* value,
     size_t size) {
   
-  error_info_.Set(::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr::EmptyDefault{}, ::std::string(
+  input_data_.Set(::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr::EmptyDefault{}, ::std::string(
       reinterpret_cast<const char*>(value), size), GetArena());
-  // @@protoc_insertion_point(field_set_pointer:request_proto.Result.error_info)
+  // @@protoc_insertion_point(field_set_pointer:request_proto.TaskRequest.input_data)
 }
-inline std::string* Result::_internal_mutable_error_info() {
+inline std::string* TaskRequest::_internal_mutable_input_data() {
   
-  return error_info_.Mutable(::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr::EmptyDefault{}, GetArena());
+  return input_data_.Mutable(::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr::EmptyDefault{}, GetArena());
 }
-inline std::string* Result::release_error_info() {
-  // @@protoc_insertion_point(field_release:request_proto.Result.error_info)
-  return error_info_.Release(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), GetArena());
+inline std::string* TaskRequest::release_input_data() {
+  // @@protoc_insertion_point(field_release:request_proto.TaskRequest.input_data)
+  return input_data_.Release(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), GetArena());
 }
-inline void Result::set_allocated_error_info(std::string* error_info) {
-  if (error_info != nullptr) {
+inline void TaskRequest::set_allocated_input_data(std::string* input_data) {
+  if (input_data != nullptr) {
     
   } else {
     
   }
-  error_info_.SetAllocated(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), error_info,
+  input_data_.SetAllocated(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), input_data,
       GetArena());
-  // @@protoc_insertion_point(field_set_allocated:request_proto.Result.error_info)
+  // @@protoc_insertion_point(field_set_allocated:request_proto.TaskRequest.input_data)
 }
 
 // -------------------------------------------------------------------
@@ -872,151 +716,149 @@ inline void TaskResponse::set_allocated_taskhash(std::string* taskhash) {
   // @@protoc_insertion_point(field_set_allocated:request_proto.TaskResponse.taskhash)
 }
 
-// .request_proto.Result result = 2;
-inline bool TaskResponse::_internal_has_result() const {
-  return this != internal_default_instance() && result_ != nullptr;
+// bool status = 2;
+inline void TaskResponse::clear_status() {
+  status_ = false;
 }
-inline bool TaskResponse::has_result() const {
-  return _internal_has_result();
+inline bool TaskResponse::_internal_status() const {
+  return status_;
 }
-inline void TaskResponse::clear_result() {
-  if (GetArena() == nullptr && result_ != nullptr) {
-    delete result_;
-  }
-  result_ = nullptr;
+inline bool TaskResponse::status() const {
+  // @@protoc_insertion_point(field_get:request_proto.TaskResponse.status)
+  return _internal_status();
 }
-inline const ::request_proto::Result& TaskResponse::_internal_result() const {
-  const ::request_proto::Result* p = result_;
-  return p != nullptr ? *p : reinterpret_cast<const ::request_proto::Result&>(
-      ::request_proto::_Result_default_instance_);
-}
-inline const ::request_proto::Result& TaskResponse::result() const {
-  // @@protoc_insertion_point(field_get:request_proto.TaskResponse.result)
-  return _internal_result();
-}
-inline void TaskResponse::unsafe_arena_set_allocated_result(
-    ::request_proto::Result* result) {
-  if (GetArena() == nullptr) {
-    delete reinterpret_cast<::PROTOBUF_NAMESPACE_ID::MessageLite*>(result_);
-  }
-  result_ = result;
-  if (result) {
-    
-  } else {
-    
-  }
-  // @@protoc_insertion_point(field_unsafe_arena_set_allocated:request_proto.TaskResponse.result)
-}
-inline ::request_proto::Result* TaskResponse::release_result() {
+inline void TaskResponse::_internal_set_status(bool value) {
   
-  ::request_proto::Result* temp = result_;
-  result_ = nullptr;
-  if (GetArena() != nullptr) {
-    temp = ::PROTOBUF_NAMESPACE_ID::internal::DuplicateIfNonNull(temp);
-  }
-  return temp;
+  status_ = value;
 }
-inline ::request_proto::Result* TaskResponse::unsafe_arena_release_result() {
-  // @@protoc_insertion_point(field_release:request_proto.TaskResponse.result)
-  
-  ::request_proto::Result* temp = result_;
-  result_ = nullptr;
-  return temp;
-}
-inline ::request_proto::Result* TaskResponse::_internal_mutable_result() {
-  
-  if (result_ == nullptr) {
-    auto* p = CreateMaybeMessage<::request_proto::Result>(GetArena());
-    result_ = p;
-  }
-  return result_;
-}
-inline ::request_proto::Result* TaskResponse::mutable_result() {
-  // @@protoc_insertion_point(field_mutable:request_proto.TaskResponse.result)
-  return _internal_mutable_result();
-}
-inline void TaskResponse::set_allocated_result(::request_proto::Result* result) {
-  ::PROTOBUF_NAMESPACE_ID::Arena* message_arena = GetArena();
-  if (message_arena == nullptr) {
-    delete result_;
-  }
-  if (result) {
-    ::PROTOBUF_NAMESPACE_ID::Arena* submessage_arena =
-      ::PROTOBUF_NAMESPACE_ID::Arena::GetArena(result);
-    if (message_arena != submessage_arena) {
-      result = ::PROTOBUF_NAMESPACE_ID::internal::GetOwnedMessage(
-          message_arena, result, submessage_arena);
-    }
-    
-  } else {
-    
-  }
-  result_ = result;
-  // @@protoc_insertion_point(field_set_allocated:request_proto.TaskResponse.result)
+inline void TaskResponse::set_status(bool value) {
+  _internal_set_status(value);
+  // @@protoc_insertion_point(field_set:request_proto.TaskResponse.status)
 }
 
-// bytes rule_file_hash = 3;
-inline void TaskResponse::clear_rule_file_hash() {
-  rule_file_hash_.ClearToEmpty();
+// string error_info = 3;
+inline void TaskResponse::clear_error_info() {
+  error_info_.ClearToEmpty();
 }
-inline const std::string& TaskResponse::rule_file_hash() const {
-  // @@protoc_insertion_point(field_get:request_proto.TaskResponse.rule_file_hash)
-  return _internal_rule_file_hash();
+inline const std::string& TaskResponse::error_info() const {
+  // @@protoc_insertion_point(field_get:request_proto.TaskResponse.error_info)
+  return _internal_error_info();
 }
-inline void TaskResponse::set_rule_file_hash(const std::string& value) {
-  _internal_set_rule_file_hash(value);
-  // @@protoc_insertion_point(field_set:request_proto.TaskResponse.rule_file_hash)
+inline void TaskResponse::set_error_info(const std::string& value) {
+  _internal_set_error_info(value);
+  // @@protoc_insertion_point(field_set:request_proto.TaskResponse.error_info)
 }
-inline std::string* TaskResponse::mutable_rule_file_hash() {
-  // @@protoc_insertion_point(field_mutable:request_proto.TaskResponse.rule_file_hash)
-  return _internal_mutable_rule_file_hash();
+inline std::string* TaskResponse::mutable_error_info() {
+  // @@protoc_insertion_point(field_mutable:request_proto.TaskResponse.error_info)
+  return _internal_mutable_error_info();
 }
-inline const std::string& TaskResponse::_internal_rule_file_hash() const {
-  return rule_file_hash_.Get();
+inline const std::string& TaskResponse::_internal_error_info() const {
+  return error_info_.Get();
 }
-inline void TaskResponse::_internal_set_rule_file_hash(const std::string& value) {
+inline void TaskResponse::_internal_set_error_info(const std::string& value) {
   
-  rule_file_hash_.Set(::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr::EmptyDefault{}, value, GetArena());
+  error_info_.Set(::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr::EmptyDefault{}, value, GetArena());
 }
-inline void TaskResponse::set_rule_file_hash(std::string&& value) {
+inline void TaskResponse::set_error_info(std::string&& value) {
   
-  rule_file_hash_.Set(
+  error_info_.Set(
     ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr::EmptyDefault{}, ::std::move(value), GetArena());
-  // @@protoc_insertion_point(field_set_rvalue:request_proto.TaskResponse.rule_file_hash)
+  // @@protoc_insertion_point(field_set_rvalue:request_proto.TaskResponse.error_info)
 }
-inline void TaskResponse::set_rule_file_hash(const char* value) {
+inline void TaskResponse::set_error_info(const char* value) {
   GOOGLE_DCHECK(value != nullptr);
   
-  rule_file_hash_.Set(::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr::EmptyDefault{}, ::std::string(value), GetArena());
-  // @@protoc_insertion_point(field_set_char:request_proto.TaskResponse.rule_file_hash)
+  error_info_.Set(::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr::EmptyDefault{}, ::std::string(value), GetArena());
+  // @@protoc_insertion_point(field_set_char:request_proto.TaskResponse.error_info)
 }
-inline void TaskResponse::set_rule_file_hash(const void* value,
+inline void TaskResponse::set_error_info(const char* value,
     size_t size) {
   
-  rule_file_hash_.Set(::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr::EmptyDefault{}, ::std::string(
+  error_info_.Set(::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr::EmptyDefault{}, ::std::string(
       reinterpret_cast<const char*>(value), size), GetArena());
-  // @@protoc_insertion_point(field_set_pointer:request_proto.TaskResponse.rule_file_hash)
+  // @@protoc_insertion_point(field_set_pointer:request_proto.TaskResponse.error_info)
 }
-inline std::string* TaskResponse::_internal_mutable_rule_file_hash() {
+inline std::string* TaskResponse::_internal_mutable_error_info() {
   
-  return rule_file_hash_.Mutable(::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr::EmptyDefault{}, GetArena());
+  return error_info_.Mutable(::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr::EmptyDefault{}, GetArena());
 }
-inline std::string* TaskResponse::release_rule_file_hash() {
-  // @@protoc_insertion_point(field_release:request_proto.TaskResponse.rule_file_hash)
-  return rule_file_hash_.Release(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), GetArena());
+inline std::string* TaskResponse::release_error_info() {
+  // @@protoc_insertion_point(field_release:request_proto.TaskResponse.error_info)
+  return error_info_.Release(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), GetArena());
 }
-inline void TaskResponse::set_allocated_rule_file_hash(std::string* rule_file_hash) {
-  if (rule_file_hash != nullptr) {
+inline void TaskResponse::set_allocated_error_info(std::string* error_info) {
+  if (error_info != nullptr) {
     
   } else {
     
   }
-  rule_file_hash_.SetAllocated(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), rule_file_hash,
+  error_info_.SetAllocated(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), error_info,
       GetArena());
-  // @@protoc_insertion_point(field_set_allocated:request_proto.TaskResponse.rule_file_hash)
+  // @@protoc_insertion_point(field_set_allocated:request_proto.TaskResponse.error_info)
 }
 
-// bytes signature = 4;
+// string output_data = 4;
+inline void TaskResponse::clear_output_data() {
+  output_data_.ClearToEmpty();
+}
+inline const std::string& TaskResponse::output_data() const {
+  // @@protoc_insertion_point(field_get:request_proto.TaskResponse.output_data)
+  return _internal_output_data();
+}
+inline void TaskResponse::set_output_data(const std::string& value) {
+  _internal_set_output_data(value);
+  // @@protoc_insertion_point(field_set:request_proto.TaskResponse.output_data)
+}
+inline std::string* TaskResponse::mutable_output_data() {
+  // @@protoc_insertion_point(field_mutable:request_proto.TaskResponse.output_data)
+  return _internal_mutable_output_data();
+}
+inline const std::string& TaskResponse::_internal_output_data() const {
+  return output_data_.Get();
+}
+inline void TaskResponse::_internal_set_output_data(const std::string& value) {
+  
+  output_data_.Set(::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr::EmptyDefault{}, value, GetArena());
+}
+inline void TaskResponse::set_output_data(std::string&& value) {
+  
+  output_data_.Set(
+    ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr::EmptyDefault{}, ::std::move(value), GetArena());
+  // @@protoc_insertion_point(field_set_rvalue:request_proto.TaskResponse.output_data)
+}
+inline void TaskResponse::set_output_data(const char* value) {
+  GOOGLE_DCHECK(value != nullptr);
+  
+  output_data_.Set(::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr::EmptyDefault{}, ::std::string(value), GetArena());
+  // @@protoc_insertion_point(field_set_char:request_proto.TaskResponse.output_data)
+}
+inline void TaskResponse::set_output_data(const char* value,
+    size_t size) {
+  
+  output_data_.Set(::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr::EmptyDefault{}, ::std::string(
+      reinterpret_cast<const char*>(value), size), GetArena());
+  // @@protoc_insertion_point(field_set_pointer:request_proto.TaskResponse.output_data)
+}
+inline std::string* TaskResponse::_internal_mutable_output_data() {
+  
+  return output_data_.Mutable(::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr::EmptyDefault{}, GetArena());
+}
+inline std::string* TaskResponse::release_output_data() {
+  // @@protoc_insertion_point(field_release:request_proto.TaskResponse.output_data)
+  return output_data_.Release(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), GetArena());
+}
+inline void TaskResponse::set_allocated_output_data(std::string* output_data) {
+  if (output_data != nullptr) {
+    
+  } else {
+    
+  }
+  output_data_.SetAllocated(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), output_data,
+      GetArena());
+  // @@protoc_insertion_point(field_set_allocated:request_proto.TaskResponse.output_data)
+}
+
+// bytes signature = 5;
 inline void TaskResponse::clear_signature() {
   signature_.ClearToEmpty();
 }
@@ -1080,8 +922,6 @@ inline void TaskResponse::set_allocated_signature(std::string* signature) {
 #ifdef __GNUC__
   #pragma GCC diagnostic pop
 #endif  // __GNUC__
-// -------------------------------------------------------------------
-
 // -------------------------------------------------------------------
 
 

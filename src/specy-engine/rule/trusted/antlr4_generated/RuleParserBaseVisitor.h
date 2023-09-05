@@ -151,11 +151,27 @@ public:
     return visitChildren(ctx);
   }
 
+  virtual antlrcpp::Any visitListFirstExpr(RuleParser::ListFirstExprContext *ctx) override {
+    return visitChildren(ctx);
+  }
+
+  virtual antlrcpp::Any visitListSecondExpr(RuleParser::ListSecondExprContext *ctx) override {
+    return visitChildren(ctx);
+  }
+
   virtual antlrcpp::Any visitRelationStmt(RuleParser::RelationStmtContext *ctx) override {
     return visitChildren(ctx);
   }
 
   virtual antlrcpp::Any visitRelationExpr(RuleParser::RelationExprContext *ctx) override {
+    return visitChildren(ctx);
+  }
+
+  virtual antlrcpp::Any visitStringExpr(RuleParser::StringExprContext *ctx) override {
+    return visitChildren(ctx);
+  }
+
+  virtual antlrcpp::Any visitCompareOperator(RuleParser::CompareOperatorContext *ctx) override {
     return visitChildren(ctx);
   }
 
@@ -192,6 +208,10 @@ public:
   }
 
   virtual antlrcpp::Any visitDefinitionStmt(RuleParser::DefinitionStmtContext *ctx) override {
+    return visitChildren(ctx);
+  }
+
+  virtual antlrcpp::Any visitAssignElement(RuleParser::AssignElementContext *ctx) override {
     return visitChildren(ctx);
   }
 

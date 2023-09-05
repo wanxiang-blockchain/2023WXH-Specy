@@ -2,6 +2,7 @@
 #include <iostream>
 #include <memory>
 #include <vector>
+#include <map>
 #include <string>
 
 class Instance;
@@ -12,7 +13,8 @@ namespace RuleLanguage
 {
     
 enum Type {
-    NUMBER = 0,
+    NON = 0,
+    NUMBER,
     BOOLEAN,
     STRING,
     LIST,
@@ -139,11 +141,52 @@ class numberExpr : public Expr {
         std::shared_ptr<Instance> instance;
 };
 
+class stringExpr : public Expr {
+    private:
+        bool literal;
+        std::string literal_value;
+        std::shared_ptr<Instance> instance;
+    public:
+        stringExpr() = default;
+        ~stringExpr() = default;
+        Type type() {
+            return Type::STRING;
+        }
+        std::string dump();
+
+        void setLiteralValue(std::string value) {
+            literal_value = value;
+        }
+
+        void setInstance(std::shared_ptr<Instance> instance) {
+            this->instance = instance;
+        } 
+
+        void setLiteral() {
+            literal = true;
+        }
+
+        bool isLiteral() {
+            return literal;
+        }
+
+        std::string getLiteralValue() {
+            return literal_value;
+        }
+
+        std::shared_ptr<Instance> getInstance() {
+            return instance;
+        }
+
+};
+
 class relationExpr : public Expr {
     private:
-        std::unique_ptr<numberExpr> first_expr;
-        std::vector<std::unique_ptr<numberExpr>> numbers;
-        std::vector<RelationOperator> operators;
+        std::unique_ptr<numberExpr> left_number_expr;
+        std::unique_ptr<numberExpr> right_number_expr;
+        std::unique_ptr<stringExpr> left_string_expr;
+        std::unique_ptr<stringExpr> right_string_expr;
+        RelationOperator operators;
 
     public:
         relationExpr() = default;
@@ -153,34 +196,60 @@ class relationExpr : public Expr {
             return Type::BOOLEAN;
         }
 
-        void setFirstExpr(numberExpr* expr) {
-            first_expr.reset(expr);
+        void setOperator(RelationOperator op) {
+            operators = op;
         }
 
-        void addNumberExpr(numberExpr* expr) {
-            std::unique_ptr<numberExpr> expr_ptr(expr);
-            numbers.push_back(std::move(expr_ptr));
+        numberExpr* getLeftNumberExpr() {
+            return left_number_expr.get();
         }
 
-        void addOperator(RelationOperator op) {
-            operators.push_back(op);
+        numberExpr* getRightNumberExpr() {
+            return right_number_expr.get();
         }
 
-        numberExpr* getFirstNumberExpr() {
-            return first_expr.get();
+        stringExpr* getLeftStringExpr() {
+            return left_string_expr.get();
         }
 
-        std::vector<std::unique_ptr<numberExpr>>& getNumbers() {
-            return numbers;
+        stringExpr* getRightStringExpr() {
+            return right_string_expr.get();
         }
 
-        std::vector<RelationOperator>& getOperators() {
+        RelationOperator getOperators() {
             return operators;
+        }
+
+        void setLeftStringExpr(stringExpr* expr) {
+            left_string_expr.reset(expr);
+        }
+
+        void setRightStringExpr(stringExpr* expr) {
+            right_string_expr.reset(expr);
+        }
+
+         void setLeftNumberExpr(numberExpr* expr) {
+            left_number_expr.reset(expr);
+        }
+
+        void setRightNumberExpr(numberExpr* expr) {
+            right_number_expr.reset(expr);
         }
 };
 
 class listExpr : public Expr {
+    public:
+        std::shared_ptr<Instance> left_instance;
+        std::shared_ptr<Instance> right_instance;
+        // true = in; false = not in
+        bool inside;
 
+        bool isLegal();
+
+        Type type() {
+            return Type::BOOLEAN;
+        }
+        std::string dump();
 };
 
 class booleanExpr : public Expr {
@@ -315,13 +384,15 @@ class queryExpr : public Expr {
     public:
         bool select;
         bool collect;
-        // Instance* instance;
-        // Entity* entity;
-        // conditionExpr* expr;
+        // type is type of selected Entity/Instance/Attribute
+        RuleLanguage::Type expr_type;
+        // list_type is the basic type of a list
+        RuleLanguage::Type list_type;
 
         std::shared_ptr<Instance> instance;
         std::shared_ptr<Entity> entity;
         std::unique_ptr<conditionExpr> expr;
+        std::string attribute_name;
     
     public:
         queryExpr() = default;
@@ -330,6 +401,7 @@ class queryExpr : public Expr {
         bool isSelect();
         bool isCollect();
         Type type();
+        void updateExprType();
 
         void setSelect(bool value) {
             select = value;
@@ -363,6 +435,17 @@ class queryExpr : public Expr {
             return expr.get();
         }
 
+        void setAttributeName(std::string& name) {
+            attribute_name = name;
+        }
+
+        std::string getAttributeName() {
+            return attribute_name;
+        }
+
+        std::string getQueryTable();
+        const std::map<std::string, std::shared_ptr<Attribute>>& getAttributs();
+        std::string getName();
 
 };
 

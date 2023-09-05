@@ -32,7 +32,7 @@ class EntitySet : public EntityType {
     /* Data Member Getters */
 
     const std::string &get_id() const;
-    const std::string &get_name() const override;
+    const std::string &get_name() const ;
     const std::vector<rule_check_proto::Constraint> &get_constraint_list()
         const;
     

@@ -7,6 +7,6 @@ class EntityRule : public EntityType {
     EntityRule() = default;
     EntityRule(const std::string& contract_name)
         : contract_name_(contract_name) {}
-    const std::string& get_name() const override { return this->contract_name_; }
+    const std::string& get_name() const  { return this->contract_name_; }
     std::string contract_name_;
 };

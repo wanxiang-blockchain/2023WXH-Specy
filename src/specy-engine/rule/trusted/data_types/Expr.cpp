@@ -16,7 +16,7 @@ bool queryExpr::isCollect() {
 }
 
 Type queryExpr::type() {
-    return select ? Type::INSTANCE : Type::INSTANCELIST;
+    return expr_type;
 }
 
 std::string queryExpr::dump() {
@@ -56,11 +56,18 @@ std::string booleanExpr::dump() {
 
 std::string relationExpr::dump() {
     ocall_print_string((std::string("enter relationExpr dump")).c_str(), __FILE__, __LINE__);
-    std::string relation_str = first_expr->dump();
-    for (int i = 0; i < numbers.size(); i++) {
-        relation_str = relation_str + " " + RelationOperatorToString(operators[i]) + " " + numbers[i]->dump();
+    if (left_number_expr != nullptr && right_number_expr != nullptr) {
+        std::string relation_str = left_number_expr->dump();
+        relation_str = relation_str + " " + RelationOperatorToString(operators) + " " + right_number_expr->dump();
+        return relation_str;
     }
-    return relation_str;
+
+    if (left_string_expr != nullptr && right_string_expr != nullptr) {
+        std::string relation_str = left_string_expr->dump();
+        relation_str = relation_str + " " + RelationOperatorToString(operators) + " " + right_string_expr->dump();
+        return relation_str;
+    }
+    return "";
 }
 
 std::string logicalExpr::dump() {
@@ -253,4 +260,98 @@ Type definitionExpr::type() {
 }
 std::string definitionExpr::dump() {
     return instance->dump();
+}
+
+std::string stringExpr::dump() {
+    if (instance != nullptr) {
+        return instance->dump();
+    }
+
+    return literal_value;
+}
+
+bool listExpr::isLegal() {
+    RuleLanguage::Type left_type = left_instance->type();
+    RuleLanguage::Type right_type = right_instance->type();
+
+    RuleLanguage::Type left_inter_type = left_instance->list_type;
+    RuleLanguage::Type right_inter_type = right_instance->list_type;
+    
+    if (right_type != RuleLanguage::Type::INSTANCELIST) {
+        return false;
+    }
+
+    if (left_inter_type != right_inter_type) {
+        return false;
+    }
+}
+
+void queryExpr::updateExprType() {
+    if (entity != nullptr) {
+        ocall_print_string("Debug7:  ", __FILE__, __LINE__);
+        if (!attribute_name.empty()) {
+            Attribute* attribute = entity->getAttribute(attribute_name).get();
+            expr_type = attribute->getType();
+            if (expr_type == RuleLanguage::Type::INSTANCELIST) {
+                ListAttribute* list_attr = dynamic_cast<ListAttribute*>(attribute);
+                list_type = list_attr->getInterType();
+            }
+        } else {
+            expr_type = RuleLanguage::Type::INSTANCE;
+        }
+    }
+
+    if (instance != nullptr) {
+        ocall_print_string("Debug6:  ", __FILE__, __LINE__);
+        if (!attribute_name.empty()) {
+            Attribute* attribute = instance->getAttribute(attribute_name).get();
+            expr_type = attribute->getType();
+            if (expr_type == RuleLanguage::Type::INSTANCELIST) {
+                ListAttribute* list_attr = dynamic_cast<ListAttribute*>(attribute);
+                list_type = list_attr->getInterType();
+            }
+        } else {
+            expr_type = instance->type();
+            if (instance->type() == RuleLanguage::Type::INSTANCELIST) {
+                list_type = instance->list_type;
+            }
+        }
+    }
+}
+
+std::string listExpr::dump() {
+    std::string left_str = left_instance->dump();
+    std::string right_str = right_instance->dump();
+    std::string operate = inside ? " in " : " not in ";
+    return left_str + operate + right_str;
+}
+
+std::string queryExpr::getQueryTable() {
+    if (instance != nullptr) {
+        return instance->getName() + "s";
+    }
+
+    if (entity != nullptr) {
+        return entity->get_name() + "s";
+    }
+}
+
+const std::map<std::string, std::shared_ptr<Attribute>>& queryExpr::getAttributs() {
+    if (instance != nullptr) {
+        return instance->get_attribute_list();
+    }
+
+    if (entity != nullptr) {
+        return entity->get_attribute_list();
+    }
+}
+
+std::string queryExpr::getName() {
+    if (instance != nullptr) {
+        return instance->getName();
+    }
+
+    if (entity != nullptr) {
+        return entity->get_name();
+    }
 }

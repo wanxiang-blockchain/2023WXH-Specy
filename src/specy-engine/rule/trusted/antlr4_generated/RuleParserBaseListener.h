@@ -118,11 +118,23 @@ public:
   virtual void enterListExpr(RuleParser::ListExprContext * /*ctx*/) override { }
   virtual void exitListExpr(RuleParser::ListExprContext * /*ctx*/) override { }
 
+  virtual void enterListFirstExpr(RuleParser::ListFirstExprContext * /*ctx*/) override { }
+  virtual void exitListFirstExpr(RuleParser::ListFirstExprContext * /*ctx*/) override { }
+
+  virtual void enterListSecondExpr(RuleParser::ListSecondExprContext * /*ctx*/) override { }
+  virtual void exitListSecondExpr(RuleParser::ListSecondExprContext * /*ctx*/) override { }
+
   virtual void enterRelationStmt(RuleParser::RelationStmtContext * /*ctx*/) override { }
   virtual void exitRelationStmt(RuleParser::RelationStmtContext * /*ctx*/) override { }
 
   virtual void enterRelationExpr(RuleParser::RelationExprContext * /*ctx*/) override { }
   virtual void exitRelationExpr(RuleParser::RelationExprContext * /*ctx*/) override { }
+
+  virtual void enterStringExpr(RuleParser::StringExprContext * /*ctx*/) override { }
+  virtual void exitStringExpr(RuleParser::StringExprContext * /*ctx*/) override { }
+
+  virtual void enterCompareOperator(RuleParser::CompareOperatorContext * /*ctx*/) override { }
+  virtual void exitCompareOperator(RuleParser::CompareOperatorContext * /*ctx*/) override { }
 
   virtual void enterRelationOperator(RuleParser::RelationOperatorContext * /*ctx*/) override { }
   virtual void exitRelationOperator(RuleParser::RelationOperatorContext * /*ctx*/) override { }
@@ -150,6 +162,9 @@ public:
 
   virtual void enterDefinitionStmt(RuleParser::DefinitionStmtContext * /*ctx*/) override { }
   virtual void exitDefinitionStmt(RuleParser::DefinitionStmtContext * /*ctx*/) override { }
+
+  virtual void enterAssignElement(RuleParser::AssignElementContext * /*ctx*/) override { }
+  virtual void exitAssignElement(RuleParser::AssignElementContext * /*ctx*/) override { }
 
   virtual void enterInstanceName(RuleParser::InstanceNameContext * /*ctx*/) override { }
   virtual void exitInstanceName(RuleParser::InstanceNameContext * /*ctx*/) override { }

@@ -70,10 +70,9 @@ void GenerateQuerySentences (const string& rule_text, vector<string>& sentences)
 }
 
 // EvaluateRule is used to regulate transaction with rules
-RuleEnclaveStatus RuleProcessor::EvaluateRule(RequestContext *const request_context)
+RuleEnclaveStatus RuleProcessor::EvaluateRule(RequestContext* request_context)
 {
     ocall_print_string("enter EvaluateRule", __FILE__, __LINE__);
-
     RuleEnclaveStatus status_code = RuleEnclaveStatus::kOK;
     
     ocall_print_string("parse rule text", __FILE__, __LINE__);
@@ -101,9 +100,8 @@ RuleEnclaveStatus RuleProcessor::EvaluateRule(RequestContext *const request_cont
 
     entity_collector.dump();
 
-    SemanticModelEngine semantic_model(&entity_collector);
-    bool execute_result = semantic_model.execute();
-
+    SemanticModelEngine semantic_model(&entity_collector, request_context);
+    semantic_model.execute();
 
     return RuleEnclaveStatus::kOK;
 }
