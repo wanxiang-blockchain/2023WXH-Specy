@@ -33,9 +33,9 @@ export default {
 };
 </script>
   
-<style scoped>
+<style scoped lang="scss">
 .footer {
-  background-color: #000;
+  background-color: rgb(45, 114, 179);
   /* Black background */
   padding: 20px 0;
   /* position: fixed; */
