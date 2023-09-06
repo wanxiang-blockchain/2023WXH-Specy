@@ -11,7 +11,7 @@ import {
   BigDecimal
 } from "@graphprotocol/graph-ts";
 
-export class Follow extends Entity {
+export class Follower extends Entity {
   constructor(id: string) {
     super();
     this.set("id", Value.fromString(id));
@@ -19,22 +19,22 @@ export class Follow extends Entity {
 
   save(): void {
     let id = this.get("id");
-    assert(id != null, "Cannot save Follow entity without an ID");
+    assert(id != null, "Cannot save Follower entity without an ID");
     if (id) {
       assert(
         id.kind == ValueKind.STRING,
-        `Entities of type Follow must have an ID of type String but the id '${id.displayData()}' is of type ${id.displayKind()}`
+        `Entities of type Follower must have an ID of type String but the id '${id.displayData()}' is of type ${id.displayKind()}`
       );
-      store.set("Follow", id.toString(), this);
+      store.set("Follower", id.toString(), this);
     }
   }
 
-  static loadInBlock(id: string): Follow | null {
-    return changetype<Follow | null>(store.get_in_block("Follow", id));
+  static loadInBlock(id: string): Follower | null {
+    return changetype<Follower | null>(store.get_in_block("Follower", id));
   }
 
-  static load(id: string): Follow | null {
-    return changetype<Follow | null>(store.get("Follow", id));
+  static load(id: string): Follower | null {
+    return changetype<Follower | null>(store.get("Follower", id));
   }
 
   get id(): string {

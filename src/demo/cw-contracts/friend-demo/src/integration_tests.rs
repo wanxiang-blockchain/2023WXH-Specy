@@ -62,9 +62,10 @@ mod tests {
         #[test]
         fn folow() {
             let (mut app, cw_template_contract) = proper_instantiate();
-
+            let mut follows = Vec::new();
+            follows.push("ssss".to_string());
             let msg = ExecuteMsg::Follow {
-                addr: "sss".to_string(),
+                new_follows: follows,
             };
             let cosmos_msg = cw_template_contract.call(msg).unwrap();
             app.execute(Addr::unchecked(USER), cosmos_msg).unwrap();

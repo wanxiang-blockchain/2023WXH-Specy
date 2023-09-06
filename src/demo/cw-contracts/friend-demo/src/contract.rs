@@ -40,7 +40,7 @@ pub fn execute(
     msg: ExecuteMsg,
 ) -> Result<Response, ContractError> {
     match msg {
-        ExecuteMsg::Follow { addr } => try_follow(deps, info, addr),
+        ExecuteMsg::Follow { new_follows } => try_follow(deps, info, new_follows),
         ExecuteMsg::Reset {} => try_reset(deps, info),
         ExecuteMsg::Register {} => try_register(deps, info),
     }
@@ -66,20 +66,32 @@ pub fn try_register(deps: DepsMut, info: MessageInfo) -> Result<Response, Contra
 pub fn try_follow(
     deps: DepsMut,
     info: MessageInfo,
-    addr: String,
+    new_follows: Vec<String>,
 ) -> Result<Response, ContractError> {
     let sender: Addr = info.sender.clone();
-    let addr_copy: String = addr.clone();
+    let mut follows_string = String::new();
     let mut f = FOLLOWS.load(deps.storage, &sender).unwrap_or_default();
-    if !f.contains(&addr) {
-        f.push(addr);
+
+    for addr in new_follows {
+        let addr_copy = addr.clone();
+
+        if !f.contains(&addr) {
+            f.push(addr);
+
+            if !follows_string.is_empty() {
+                follows_string.push(',');
+            }
+
+            follows_string.push_str(&addr_copy);
+        }
     }
+
     let _ = FOLLOWS.save(deps.storage, &sender, &f);
 
     Ok(Response::new()
         .add_attribute("method", "follow")
         .add_attribute("sender", sender)
-        .add_attribute("address", addr_copy))
+        .add_attribute("address", follows_string))
 }
 
 pub fn try_reset(deps: DepsMut, info: MessageInfo) -> Result<Response, ContractError> {
@@ -157,10 +169,12 @@ mod tests {
         let users = get_users(deps.as_ref());
         assert_eq!(1, users.len());
 
-        // //follow
+        //follow
         let info = mock_info("anyone", &coins(2, "token"));
+        let mut follows = Vec::new();
+        follows.push("aaa".to_string());
         let msg = ExecuteMsg::Follow {
-            addr: "aaaa".to_string(),
+            new_follows: follows,
         };
         let _res = execute(deps.as_mut(), mock_env(), info, msg).unwrap();
 
@@ -177,10 +191,18 @@ mod tests {
         let info = mock_info("creator", &coins(2, "token"));
         let _res = instantiate(deps.as_mut(), mock_env(), info, msg).unwrap();
 
+        //register
+        let info = mock_info("anyone", &coins(2, "token"));
+        let msg = ExecuteMsg::Register {};
+        let _res = execute(deps.as_mut(), mock_env(), info, msg).unwrap();
+        let users = get_users(deps.as_ref());
+        assert_eq!(1, users.len());
         // beneficiary can release it
         let info = mock_info("anyone", &coins(2, "token"));
+        let mut follows = Vec::new();
+        follows.push("aaa".to_string());
         let msg = ExecuteMsg::Follow {
-            addr: "aaaa".to_string(),
+            new_follows: follows,
         };
         let _res = execute(deps.as_mut(), mock_env(), info, msg).unwrap();
 
