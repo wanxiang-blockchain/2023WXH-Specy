@@ -13,7 +13,7 @@
         </thead>
         <tbody>
           <tr v-for="(row, index) in currentPageData" :key="index">
-            <td>{{ row.name }}</td>
+            <td @click="detail(row)">{{ row.name }}</td>
             <td>{{ row.connectionId }}</td>
             <td>{{ row.msg }}</td>
             <td class="status"><i class="fal fa-check-badge"></i></td>
@@ -48,50 +48,51 @@
   </div>
 </template>
   
-  <script>
-export default {
-  props: {
-    title: {
-      type: String,
-      required: true,
-    },
-    tableData: {
-      type: Array,
-      required: true,
-    },
-    itemsPerPage: {
-      type: Number,
-      default: 5, // You can adjust the default value
-    },
+  <script setup>
+import { ref, computed } from "vue";
+import { useStore } from "vuex";
+import { useRouter } from "vue-router";
+const props = defineProps({
+  title: {
+    type: String,
+    required: true,
   },
-  data() {
-    return {
-      currentPage: 1,
-      handledTableData: [],
-    };
+  tableData: {
+    type: Array,
+    required: true,
   },
-  computed: {
-    totalPages() {
-      return Math.ceil(this.tableData.length / this.itemsPerPage);
-    },
-    currentPageData() {
-      const startIndex = (this.currentPage - 1) * this.itemsPerPage;
-      const endIndex = startIndex + this.itemsPerPage;
-      for (let i = 0; i < this.tableData.length; i++) {
-        let json = JSON.parse(this.tableData[i].msg);
-        this.handledTableData[i] = Object.assign({}, this.tableData[i]);
-        this.handledTableData[i].msg = json["@type"];
-      }
-      return this.handledTableData.slice(startIndex, endIndex);
-    },
+  itemsPerPage: {
+    type: Number,
+    default: 5, // You can adjust the default value
   },
-  methods: {
-    goToPage(page) {
-      if (page >= 1 && page <= this.totalPages) {
-        this.currentPage = page;
-      }
-    },
-  },
+});
+let store = useStore();
+const router = useRouter();
+const currentPage = ref(1);
+const handledTableData = ref([]);
+let totalPages = computed(() => {
+  return Math.ceil(props.tableData.length / props.itemsPerPage);
+});
+let currentPageData = computed(() => {
+  if (props.tableData.length != 0) {
+    const startIndex = (currentPage.value - 1) * props.itemsPerPage;
+    const endIndex = startIndex + props.itemsPerPage;
+    for (let i = 0; i < props.tableData.length; i++) {
+      let json = JSON.parse(props.tableData[i].msg);
+      handledTableData.value[i] = Object.assign({}, props.tableData[i]);
+      handledTableData.value[i].msg = json["@type"];
+    }
+    return handledTableData.value.slice(startIndex, endIndex);
+  }
+});
+const goToPage = (page) => {
+  if (page >= 1 && page <= totalPages) {
+    currentPage = page;
+  }
+};
+const detail = (task) => {
+  store.dispatch("task/setTask", task);
+  router.push("/detail");
 };
 </script>
   

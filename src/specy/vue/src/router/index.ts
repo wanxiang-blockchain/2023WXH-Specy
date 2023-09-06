@@ -2,6 +2,7 @@ import { createRouter, createWebHistory } from "vue-router";
 
 import DataView from "../views/DataView.vue";
 import PortfolioView from "../views/PortfolioView.vue";
+import DetailView from "../views/DetailTaskView.vue"
 import HomeView from "../views/HomeView.vue"
 import CreateTaskView from "@/views/TaskView.vue";
 
@@ -10,7 +11,8 @@ const routes = [
   { path: "/", component: PortfolioView },
   { path: "/data", component: DataView },
   { path: "/home", component: HomeView },
-  { path: "/task", component: CreateTaskView }
+  { path: "/task", component: CreateTaskView },
+  { path: "/detail", component: DetailView }
 ];
 
 const router = createRouter({
