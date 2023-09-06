@@ -1,4 +1,4 @@
-type Follow @entity{
+type Follower @entity{
   " { Transaction hash }"
   id: ID!
 

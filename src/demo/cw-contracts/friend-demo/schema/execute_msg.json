@@ -11,11 +11,14 @@
         "follow": {
           "type": "object",
           "required": [
-            "addr"
+            "new_follows"
           ],
           "properties": {
-            "addr": {
-              "type": "string"
+            "new_follows": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
             }
           }
         }

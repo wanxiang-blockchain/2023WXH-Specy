@@ -11,6 +11,9 @@
     "create-local": "graph create friend-subgraph --node http://localhost:8020",
     "deploy-local": "graph deploy friend-subgraph -l v0.1.0 --ipfs http://localhost:5001 --node http://localhost:8020",
     "remove-local": "graph remove friend-subgraph --node http://localhost:8020",
+    "create-test": "graph create friend-subgraph --node http://10.100.117.55:8020",
+    "deploy-test": "graph deploy friend-subgraph -l v0.1.0 --ipfs http://10.100.117.55:5001 --node http://10.100.117.55:8020",
+    "remove-test": "graph remove friend-subgraph --node http://10.100.117.55:8020",
     "create": "graph create friend-subgraph --node https://api.thegraph.com/deploy/",
     "deploy": "graph deploy friend-subgraph --ipfs https://api.thegraph.com/ipfs/ --node https://api.thegraph.com/deploy/"
   },
