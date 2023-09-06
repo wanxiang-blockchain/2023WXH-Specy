@@ -19,10 +19,30 @@ class Value {
         int64_t number_value;
         bool boolean_value;
         std::string string_value;
+        bool match(RuleLanguage::Type type, Value& other_value) {
+            if (type == RuleLanguage::Type::NUMBER) {
+                return number_value == other_value.number_value;
+            }
+
+            if (type == RuleLanguage::Type::STRING) {
+                return string_value.compare(other_value.string_value) == 0;
+            }
+
+            if (type == RuleLanguage::Type::NUMBER) {
+                return boolean_value == other_value.boolean_value;
+            }
+        }
+
+        std::string dump() {
+            std::string number_value_str = std::to_string(number_value);
+            std::string boolean_value_str = boolean_value ? "true" : "false";
+
+            return "number_value: " + number_value_str + "\nboolean_value: " + boolean_value_str + "\nstring_value: " + string_value;
+        }
 };
 
 class Attribute {
-    private:
+    public:
         std::string name;
         RuleLanguage::Type type;
         std::shared_ptr<Instance> instance;
@@ -30,6 +50,7 @@ class Attribute {
     public:
         Attribute() = default;
         ~Attribute() = default;
+        Attribute(const Attribute& other) : name(other.name), type(other.type), instance(other.instance) {}
         Attribute(std::string attribute_name, RuleLanguage::Type attribute_type) : name(attribute_name), type(attribute_type) {}
         bool isAttributeType(RuleLanguage::Type type) {
             return type == this->type;
@@ -51,10 +72,20 @@ class Attribute {
             return "";
         }
 
+        virtual bool updateValueFromRelatedInstance() {
+            return false;
+        }
+
+        virtual json11::Json dumpJson() = 0;
+
         virtual std::string dumpValue() = 0;
 
         void setInstance(std::shared_ptr<Instance> instance) {
             this->instance = instance;
+        }
+
+        std::shared_ptr<Instance> getInstance() {
+            return instance;
         }
 
 };
@@ -89,6 +120,14 @@ class NumberAttribute : public Attribute {
         std::string dumpValue() {
             return std::to_string(number_value);
         }
+
+        json11::Json dumpJson() {
+            json11::Json::object attribute {
+                {name, json11::Json((int)number_value)}
+            };
+            json11::Json ans = attribute;
+            return ans;
+        }
 };
 
 class BooleanAttribute : public Attribute {
@@ -120,6 +159,14 @@ class BooleanAttribute : public Attribute {
 
         std::string dumpValue() {
             return boolean_value ? "true" : "false";
+        }
+
+        json11::Json dumpJson() {
+            json11::Json::object attribute {
+                {name, json11::Json(boolean_value)}
+            };
+            json11::Json ans = attribute;
+            return ans;
         }
 };
 
@@ -153,6 +200,14 @@ class StringAttribute : public Attribute {
         std::string dumpValue() {
             return string_value;
         }
+
+        json11::Json dumpJson() {
+            json11::Json::object attribute {
+                {name, json11::Json(string_value)}
+            };
+            json11::Json ans = attribute;
+            return ans;
+        }
 };
 
 class ObjectAttribute : public Attribute {
@@ -174,6 +229,8 @@ class ObjectAttribute : public Attribute {
         std::string dump() override;
 
         std::string dumpValue();
+
+        json11::Json dumpJson();
 };
 
 class ListAttribute : public Attribute {
@@ -190,6 +247,10 @@ class ListAttribute : public Attribute {
             interType = type;
         }
 
+        std::vector<Value>& getValues() {
+            return values;
+        }
+
         RuleLanguage::Type getInterType() {
             return interType;
         }
@@ -198,6 +259,10 @@ class ListAttribute : public Attribute {
         bool updateStringValue(const json11::Json::array& json_array);
         bool updateNumberValue(const json11::Json::array& json_array);
         bool updateBooleanValue(const json11::Json::array& json_array);
+        bool updateValue(const json11::Json& json_value);
+
+        bool updateValueFromRelatedInstance();
+        json11::Json dumpJson();
 };
 
 class Instance {
@@ -212,6 +277,7 @@ class Instance {
         RuleLanguage::Type instance_type;
         RuleLanguage::Type list_type;
         Value value;
+        std::vector<Value> list_values;
 
     public:
         Instance() = default;
@@ -286,6 +352,8 @@ class Instance {
         }
 
         std::string dump();
+        json11::Json dumpJson();
+
         std::string dumpAttributeValue();
         std::shared_ptr<Attribute> getAttribute(const std::string attribute_name, RuleLanguage::Type type) {
             if (hasAttribute(attribute_name, type)) {
@@ -310,16 +378,13 @@ class Instance {
             return attribute_list[specific_attribute];
         }
 
-        bool updateValue(json11::Json& instance_json);
-        bool updateNumberValue(int64_t new_value, NumberAttribute* attribute);
-        bool updateBooleanValue(bool new_value, BooleanAttribute* attribute);
-        bool updateStringValue(std::string new_value, StringAttribute* attribute);
-        bool updateListValue(const json11::Json& json_value, ListAttribute* attribute);
+        bool updateAttributeValue(json11::Json& instance_json);
+
+        bool updateListValue(const json11::Json& json_value);
+        
         bool updateNumberValue(int64_t new_value);
         bool updateBooleanValue(bool new_value);
         bool updateStringValue(std::string new_value);
-        
-
 
         bool needQuery();
         bool needCalculate();

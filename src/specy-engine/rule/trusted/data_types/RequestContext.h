@@ -51,7 +51,7 @@ class RequestContext {
     void setResult(bool rule_result);
     bool getResult();
 
-    void setOutputData(std::string& output);
+    void setOutputData(const std::string& output);
     std::string getOutputData();
 
     std::string getInputData() {

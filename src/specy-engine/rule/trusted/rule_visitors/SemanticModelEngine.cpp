@@ -8,6 +8,7 @@ using namespace RuleLanguage;
 
 SemanticModelEngine::SemanticModelEngine(SymbolCollector* collector, RequestContext* context) : symbol_collector(collector), request_context(context) {
     root = collector->getExecuteRoot();
+    output_instance = symbol_collector->getOutputInstance();
 }
 
 bool SemanticModelEngine::bindInputData(std::string input_data) {
@@ -19,7 +20,7 @@ bool SemanticModelEngine::bindInputData(std::string input_data) {
         return false;
     }
     auto instance = symbol_collector->getInputInstance();
-    return instance->updateValue(input_json);
+    return instance->updateAttributeValue(input_json);
 }
 
 // handle global instances
@@ -35,7 +36,7 @@ bool SemanticModelEngine::queryData() {
         ocall_print_string(query_string.c_str(), __FILE__, __LINE__);
         json11::Json instance_json;
         auto ans = provider.QueryDataFromGraphnodeJson(query_string, entities_space, instance_json);
-        if (!instance.second->updateValue(instance_json)) {
+        if (!instance.second->updateAttributeValue(instance_json)) {
             ocall_print_string((string("Error: update ") + instance.first + string(" value error")).c_str(), __FILE__, __LINE__);
             return false;
         }
@@ -49,9 +50,17 @@ bool SemanticModelEngine::queryData() {
 }
 
 bool SemanticModelEngine::updateInstanceValue(shared_ptr<Instance> instance) {
+    ocall_print_string("Debug: enter updateInstanceValue", __FILE__, __LINE__);
+    string addr = std::to_string(reinterpret_cast<uint64_t>(instance.get()));
+    ocall_print_string((instance->name + ": " + addr.c_str()).c_str(), __FILE__, __LINE__);
     QueryBuilder builder;
     DataProvider provider;
     string entities_space = symbol_collector->getEntitiesSpace();
+    if (instance->getName().compare("outputdata") == 0) {
+        ocall_print_string("Debug: handle outputdata", __FILE__, __LINE__);
+        auto attribute = output_instance->getAttribute(instance->specific_attribute);
+        return attribute->updateValueFromRelatedInstance();
+    }
 
     if (instance->needQuery()) {
         string query_str = builder.generateQueryString(instance);
@@ -60,7 +69,7 @@ bool SemanticModelEngine::updateInstanceValue(shared_ptr<Instance> instance) {
         if (provider.QueryDataFromGraphnodeJson(query_str, entities_space, instance_json) != RuleEnclaveStatus::kOK) {
             return false;
         }
-        if (!instance->updateValue(instance_json)) {
+        if (!instance->updateAttributeValue(instance_json)) {
             return false;
         }
     }
@@ -80,6 +89,10 @@ bool SemanticModelEngine::updateInstanceValue(shared_ptr<Instance> instance) {
         case RuleLanguage::Type::STRING :
             ocall_print_string("Debug: Calculate instance string value", __FILE__, __LINE__);
             return instance->updateStringValue(getStringValueFromInstance(instance.get()));
+
+        case RuleLanguage::Type::INSTANCELIST :
+            ocall_print_string("Debug: Calculate instance list value", __FILE__, __LINE__);
+            return instance->updateListValue(getListValueFromInstance(instance.get()));
         
         default:
             ocall_print_string("Error: instance type error!", __FILE__, __LINE__);
@@ -87,6 +100,7 @@ bool SemanticModelEngine::updateInstanceValue(shared_ptr<Instance> instance) {
             break;
         }
     }
+
     return true;
 }
 
@@ -103,7 +117,20 @@ bool SemanticModelEngine::execute() {
     }
     // execute rule
     ocall_print_string("start execute", __FILE__, __LINE__);
-    return executeRule(root.get());
+    bool execute_result = executeRule(root.get());
+    if (execute_result){
+        ocall_print_string("execute result is true", __FILE__, __LINE__);
+    } else {
+        ocall_print_string("execute result is false", __FILE__, __LINE__);
+    }
+    
+    request_context->setResult(execute_result);
+    ocall_print_string("execute result output is ", __FILE__, __LINE__);
+    json11::Json execute_output = output_instance->dumpJson();
+    ocall_print_string(execute_output.dump().c_str(), __FILE__, __LINE__);
+    request_context->setOutputData(execute_output.dump());
+    
+    return true;
 }
 
 bool SemanticModelEngine::executeStmt(RuleLanguage::Expr* expr) {
@@ -130,17 +157,14 @@ bool SemanticModelEngine::executeStmt(RuleLanguage::Expr* expr) {
 bool SemanticModelEngine::executeRule(ExecuteRule* rule) {
     
 
-    string rule_name = rule->rule_name;
-    auto& rule_stmts = symbol_collector->getRuleStmtMap()[rule_name];
+    curr_rule_name = rule->rule_name;
+    auto& rule_stmts = symbol_collector->getRuleStmtMap()[curr_rule_name];
     bool execute_result = true;
 
     // start execute rule
     for (int i = 0; i < rule_stmts.size(); i++) {
         execute_result &= executeStmt(rule_stmts[i].get());
     }
-
-    // FIX: this is just for test
-    execute_result = false;
 
     if (rule->true_branch != nullptr && execute_result) {
         return executeRule(rule->true_branch);
@@ -299,6 +323,110 @@ int64_t SemanticModelEngine::getNumberValueFromInstance(Instance* instance) {
     return 0;
 }
 
+bool SemanticModelEngine::getMatchValues(RuleLanguage::basicCondExpr* condition_expr,
+                                         const std::vector<Value>& list_value,
+                                         const RuleLanguage::Type list_type,
+                                         std::vector<Value>& match_values) {
+    //for now support list only 
+    ocall_print_string("Debug: enter getMatchValues", __FILE__, __LINE__);
+    RuleLanguage::listExpr* expr = condition_expr->getListExpr();
+    if (expr == nullptr) {
+        ocall_print_string("Error: for now, support list only!", __FILE__, __LINE__);
+        return false;
+    }
+
+    string right_instance_name = expr->right_instance->name;
+    shared_ptr<Instance> right_instancc = symbol_collector->getRuleInstanceMap()[curr_rule_name][right_instance_name];
+    auto& right_values = right_instancc->list_values;
+
+    ocall_print_string("left value is", __FILE__, __LINE__);
+    for (auto value : list_value) {
+        ocall_print_string(value.dump().c_str(), __FILE__, __LINE__);
+    }
+
+
+    ocall_print_string("right value is", __FILE__, __LINE__);
+    for (auto value : right_values) {
+        ocall_print_string(value.dump().c_str(), __FILE__, __LINE__);
+    }
+
+    if (expr->inside) {
+        ocall_print_string("left value in right list", __FILE__, __LINE__);
+        for (auto lvalue : list_value) {
+            for (auto rvalue : right_values) {
+                if (lvalue.match(list_type, rvalue)) {
+                    match_values.push_back(lvalue);
+                    break;
+                }
+            }
+        }
+        return true;
+    }
+
+    if (!expr->inside) {
+        ocall_print_string("left value not in right list", __FILE__, __LINE__);
+        for (auto lvalue : list_value) {
+            bool match = false;
+            for (auto rvalue : right_values) {
+                match |= lvalue.match(list_type,rvalue);
+            }
+            if (!match) {
+                match_values.push_back(lvalue);
+            }
+        }
+        return true;
+    }
+
+    return false;
+}
+
+json11::Json SemanticModelEngine::calculateQueryExpr(RuleLanguage::queryExpr* expr) {
+
+    ocall_print_string("Debug: enter calculateQueryExpr", __FILE__, __LINE__);
+    RuleLanguage::conditionExpr* condition_expr = expr->getExpr();
+    auto& list_value = expr->getInstance()->list_values;
+    auto list_type = expr->getInstance()->list_type;
+    json11::Json result;
+
+    RuleLanguage::basicCondExpr* first_condition = condition_expr->getBasicExpr();
+    std::vector<Value> match_values;
+    if (!getMatchValues(first_condition, list_value, list_type, match_values)) {
+        ocall_print_string("Error: select or collect data from list error!", __FILE__, __LINE__);
+        return result;
+    }
+
+    json11::Json::array json_result;
+    for (auto value : match_values) {
+        if (list_type == RuleLanguage::Type::BOOLEAN) {
+            json_result.push_back(json11::Json(value.boolean_value));
+        }
+
+        if (list_type == RuleLanguage::Type::NUMBER) {
+            json_result.push_back(json11::Json(static_cast<int>(value.number_value)));
+        }
+
+        if (list_type == RuleLanguage::Type::STRING) {
+            json_result.push_back(json11::Json(value.string_value));
+        }
+    }
+    
+    result = json_result;
+    ocall_print_string(("Debug: dump result json " + result.dump()).c_str(), __FILE__, __LINE__);
+    return result;
+}
+
+json11::Json SemanticModelEngine::getListValueFromInstance(Instance* instance) {
+    
+    ocall_print_string("Debug: getListValueFromInstance", __FILE__, __LINE__);
+    RuleLanguage::Expr* expr = instance->getExpr();
+    RuleLanguage::queryExpr* query_expr = dynamic_cast<RuleLanguage::queryExpr*>(expr);
+    if (query_expr == nullptr) {
+        ocall_print_string("Error: we only support query expr in list now!", __FILE__, __LINE__);
+    }
+
+    return calculateQueryExpr(query_expr);
+}
+
 
 bool SemanticModelEngine::getBooleanValueFromInstance(Instance* instance) {
     if (instance->getInstanceKind() == InstanceKind::SPECIFIC_ATTRIBUTE) {
@@ -328,4 +456,9 @@ string SemanticModelEngine::getStringValueFromInstance(Instance* instance) {
         StringAttribute* string_attr = dynamic_cast<StringAttribute*>(attribute);
         return string_attr->getValue();
     }
+}
+
+
+json11::Json SemanticModelEngine::getOutputData() {
+    return output_instance->dumpJson();
 }

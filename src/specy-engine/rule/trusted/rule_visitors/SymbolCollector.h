@@ -147,6 +147,9 @@ private:
     bool getQueryOperator(RuleParser::QueryExprContext *context, RuleLanguage::queryExpr *expr);
     bool generateExecuteTree(RuleParser::ExecuteRuleDefContext* context);
 
+    std::shared_ptr<Attribute> getNewAttribute(std::shared_ptr<Attribute>& attribute);
+
+
 
     
 

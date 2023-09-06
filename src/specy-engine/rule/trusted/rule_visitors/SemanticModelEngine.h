@@ -6,6 +6,8 @@ class SemanticModelEngine {
         SymbolCollector* symbol_collector;
         RequestContext* request_context;
         std::unique_ptr<ExecuteRule> root;
+        std::string curr_rule_name;
+        std::shared_ptr<Instance> output_instance;
         std::map<std::string, json11::Json> instance_data;
 
     public:
@@ -21,6 +23,8 @@ class SemanticModelEngine {
         // execute 
         bool executeRule(ExecuteRule* rule);
 
+        json11::Json getOutputData();
+
     private:
         bool calculateRelationExpr(RuleLanguage::relationExpr* expr);
         bool calculateBooleanExpr (RuleLanguage::booleanExpr* expr);
@@ -32,4 +36,10 @@ class SemanticModelEngine {
         bool updateInstanceValue(std::shared_ptr<Instance> instance);
         bool executeStmt(RuleLanguage::Expr* expr);
 
+        bool getMatchValues(RuleLanguage::basicCondExpr* condition_expr,
+                            const std::vector<Value>& list_value,
+                            const RuleLanguage::Type list_type,
+                            std::vector<Value>& match_values);
+        json11::Json calculateQueryExpr(RuleLanguage::queryExpr* expr);
+        json11::Json getListValueFromInstance(Instance* instance);
 };

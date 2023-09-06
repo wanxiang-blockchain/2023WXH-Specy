@@ -342,6 +342,10 @@ class basicCondExpr : public Expr {
             return rExpr.get();
         }
 
+        listExpr* getListExpr() {
+            return lExpr.get();
+        }
+
         LogicalOperator getOperator() {
             return logical_operator;
         }

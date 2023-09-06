@@ -211,6 +211,35 @@ antlrcpp::Any SymbolCollector::visitBasicRule(RuleParser::BasicRuleContext *cont
     return RuleParserBaseVisitor::visitBasicRule(context);
 }
 
+shared_ptr<Attribute> SymbolCollector::getNewAttribute(shared_ptr<Attribute>& attribute) {
+    if (attribute->getType() == RuleLanguage::Type::INSTANCELIST) {
+        ListAttribute* list_attr = dynamic_cast<ListAttribute*>(attribute.get());
+        ListAttribute* new_attr = new ListAttribute(attribute->name, attribute->type);
+        new_attr->setInterType(list_attr->getInterType());
+        shared_ptr<Attribute> result(new_attr);
+        return result;
+    }
+
+    if (attribute->getType() == RuleLanguage::Type::NUMBER) {
+        NumberAttribute* new_attr = new NumberAttribute(attribute->name, attribute->type);
+        shared_ptr<Attribute> result(new_attr);
+        return result;
+    }
+
+    if (attribute->getType() == RuleLanguage::Type::STRING) {
+        StringAttribute* new_attr = new StringAttribute(attribute->name, attribute->type);
+        shared_ptr<Attribute> result(new_attr);
+        return result;
+    }
+
+    if (attribute->getType() == RuleLanguage::Type::BOOLEAN) {
+        BooleanAttribute* new_attr = new BooleanAttribute(attribute->name, attribute->type);
+        shared_ptr<Attribute> result(new_attr);
+        return result;
+    }
+    return nullptr;
+}
+
 shared_ptr<Instance> SymbolCollector::handleSelectorIdent(RuleParser::SelectorIdentContext *context, RuleLanguage::Type type) {
 
     string instance_name = context->entityName()->getText();
@@ -220,9 +249,9 @@ shared_ptr<Instance> SymbolCollector::handleSelectorIdent(RuleParser::SelectorId
     // return a symbol type instance, which not in instance map
     if (entity_map_.find(instance_name) != entity_map_.end() && entity_map_[instance_name]->hasAttribute(attribute_name, type)) {
         ocall_print_string((string("find selectorident in Entities ")).c_str(), __FILE__, __LINE__);
-        // string instance_new_name = instance_name + "." + attribute_name;
         shared_ptr<Instance> instance_temp(new Instance(instance_name));
-        instance_temp->addAttribute(attribute_name, entity_map_[instance_name]->getAttribute(attribute_name, type));
+        shared_ptr<Attribute> defined_attribute = entity_map_[instance_name]->getAttribute(attribute_name, type);
+        instance_temp->addAttribute(attribute_name, defined_attribute);
         instance_temp->setInstanceKind(InstanceKind::SYMBOL);
         return instance_temp;
     }
@@ -232,6 +261,7 @@ shared_ptr<Instance> SymbolCollector::handleSelectorIdent(RuleParser::SelectorId
     if (instance_name.compare("inputdata") == 0 && input_instance_->hasAttribute(attribute_name, type)) {
          ocall_print_string((string("find selectorident in inpudata ")).c_str(), __FILE__, __LINE__);
         defined_attribute = input_instance_->getAttribute(attribute_name, type);
+        
     }
 
     if (instance_name.compare("outputdata") == 0 && output_instance_->hasAttribute(attribute_name, type)) {
@@ -271,16 +301,18 @@ shared_ptr<Instance> SymbolCollector::handleSelectorIdent(RuleParser::SelectorId
     string attribute_name = context->attributeName()->getText();
     ocall_print_string((string("handleSelectorIdent: ") + instance_name + "." + attribute_name).c_str(), __FILE__, __LINE__);
 
+    shared_ptr<Attribute> defined_attribute;
     // return a symbol type instance, which not in instance map
     if (entity_map_.find(instance_name) != entity_map_.end()) {
         ocall_print_string((string("find selectorident in Entities ")).c_str(), __FILE__, __LINE__);
         shared_ptr<Instance> instance_temp(new Instance(instance_name));
-        instance_temp->addAttribute(attribute_name, entity_map_[instance_name]->getAttribute(attribute_name));
+        defined_attribute = entity_map_[instance_name]->getAttribute(attribute_name);
+        instance_temp->addAttribute(attribute_name, getNewAttribute(defined_attribute));
         instance_temp->setInstanceKind(InstanceKind::SYMBOL);
         return instance_temp;
     }
 
-    shared_ptr<Attribute> defined_attribute;
+    
 
     if (instance_name.compare("inputdata") == 0 ) {
         ocall_print_string((string("find selectorident in inpudata ")).c_str(), __FILE__, __LINE__);
@@ -307,7 +339,7 @@ shared_ptr<Instance> SymbolCollector::handleSelectorIdent(RuleParser::SelectorId
         shared_ptr<Instance> instance(new Instance(instance_name));
         instance->setType(defined_attribute->getType());
         instance->setInstanceKind(InstanceKind::SPECIFIC_ATTRIBUTE);
-        instance->addAttribute(attribute_name, defined_attribute);
+        instance->addAttribute(attribute_name, getNewAttribute(defined_attribute));
         return instance;
     }
 
@@ -940,6 +972,8 @@ RuleLanguage::listExpr* SymbolCollector::handleListExpr(RuleParser::ListExprCont
 antlrcpp::Any SymbolCollector::visitDefinitionStmt(RuleParser::DefinitionStmtContext *context)
 {
     ocall_print_string((string(" enter visitDefinitionStmt ")).c_str(), __FILE__, __LINE__);
+    
+    // handle outputdata.** = ***
     if (context->selectorIdent()) {
         ocall_print_string("Debug: handle assignment of output data", __FILE__, __LINE__);
         string attribute_name = context->selectorIdent()->attributeName()->getText();
@@ -965,6 +999,13 @@ antlrcpp::Any SymbolCollector::visitDefinitionStmt(RuleParser::DefinitionStmtCon
             }
             attribute->setInstance(instance);
         }
+        RuleLanguage::definitionExpr* expr = new RuleLanguage::definitionExpr();
+        shared_ptr<Instance> output_specific_attr_instance(new Instance("outputdata"));
+        output_specific_attr_instance->specific_attribute = attribute->getName();
+        output_specific_attr_instance->setInstanceKind(InstanceKind::SPECIFIC_ATTRIBUTE);
+        expr->instance = output_specific_attr_instance;
+        unique_ptr<RuleLanguage::Expr> expr_ptr(expr);
+        rule_stmt_map_[curr_rule_name_].push_back(std::move(expr_ptr));
         return nullptr;
     }
 
@@ -1180,10 +1221,16 @@ ObjectAttribute* SymbolCollector::handleOutputObject(RuleParser::OutputObjectCon
 Attribute* SymbolCollector::handleOutputDecl(RuleParser::OutputDeclContext* context) {
     
     if (context->outputAttribute()) {
-        auto attribute = context->outputAttribute();
-        auto attribute_name = attribute->attributeName()->getText();
-        auto attribute_type = getAttributeTypeFromDef(attribute->typeAnno());
-        return createAttribute(attribute_name, attribute_type);
+        auto attribute_context = context->outputAttribute();
+        auto attribute_name = attribute_context->attributeName()->getText();
+        auto attribute_type = getAttributeTypeFromDef(attribute_context->typeAnno());
+        Attribute* attribute = createAttribute(attribute_name, attribute_type);
+        if (attribute_type == RuleLanguage::Type::INSTANCELIST) {
+            ListAttribute* list_attr = dynamic_cast<ListAttribute*>(attribute);
+            auto list_context = attribute_context->typeAnno()->compositeType()->listType();
+            list_attr->setInterType(getAttributeTypeFromDef(list_context->basicType()));
+        }
+        return attribute;
     }
 
     if (context->outputObject()) {

@@ -24,7 +24,7 @@ void RequestContext::setResult(bool rule_result) {
     result_ = rule_result;
 }
 
-void RequestContext::setOutputData(std::string& output) {
+void RequestContext::setOutputData(const std::string& output) {
     output_data_ = output;
 }
 

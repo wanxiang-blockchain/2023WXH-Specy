@@ -288,7 +288,6 @@ bool listExpr::isLegal() {
 
 void queryExpr::updateExprType() {
     if (entity != nullptr) {
-        ocall_print_string("Debug7:  ", __FILE__, __LINE__);
         if (!attribute_name.empty()) {
             Attribute* attribute = entity->getAttribute(attribute_name).get();
             expr_type = attribute->getType();
@@ -302,7 +301,6 @@ void queryExpr::updateExprType() {
     }
 
     if (instance != nullptr) {
-        ocall_print_string("Debug6:  ", __FILE__, __LINE__);
         if (!attribute_name.empty()) {
             Attribute* attribute = instance->getAttribute(attribute_name).get();
             expr_type = attribute->getType();
