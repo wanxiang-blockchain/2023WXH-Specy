@@ -1,7 +1,7 @@
 <template>
   <div class="container project-card p-2 mt-6">
     <div class="detail">
-      <h2 class="mb-5">Detail</h2>
+      <h2 class="mt-3">Detail</h2>
       <div class="task-container border-1 row">
         <div class="col-md-3 p-5 m-3 bg-light">
           <h4 class="mb-4">Registration</h4>
@@ -42,10 +42,10 @@
           </div>
 
           <hr />
-          <p>Last update time</p>
+          <p>Last execute time</p>
           <p class="p-color">{{ task.updateTime }}</p>
           <hr />
-          <p>Last update height</p>
+          <p>Last execute height</p>
           <p class="p-color">{{ task.updateBlockHeight }}</p>
         </div>
       </div>
@@ -53,7 +53,7 @@
     </div>
 
     <div class="history">
-      <h2 class="mb-5">History</h2>
+      <h2 class="mt-5">History</h2>
 
       <div class="table-responsive">
         <table class="table table-hover">
@@ -65,10 +65,10 @@
               <th>Amount</th>
             </tr>
           </thead>
-          <tbody v-if="recordsTable != null">
+          <tbody v-if="loaded">
             <tr v-for="(row, index) in currentPageData" :key="index">
-              <td @click="detail(row)">{{ row.timestamp }}</td>
-              <td>{{ row.txhash }}</td>
+              <td>{{ formatDate(row.timestamp / 1000000) }}</td>
+              <td class="p-color">{{ shortTxHash(row.txHash) }}</td>
               <td>{{ row.executor }}</td>
               <td>{{ row.amount }}</td>
             </tr>
@@ -77,7 +77,8 @@
       </div>
       <nav
         aria-label="Page navigation"
-        class="d-flex justify-content-between align-items-center"
+        class="d-flex justify-content-between align-items-center mb-3"
+        v-if="loaded"
       >
         <div>
           <button
@@ -105,8 +106,9 @@
   
 <script setup>
 import { useStore } from "vuex";
-import { onBeforeMount, computed, ref } from "vue";
+import { onBeforeMount, onMounted, computed, ref } from "vue";
 import { taskRecords } from "../../def-composables/taskHistory";
+import { format } from "date-fns";
 let store = useStore();
 let task = ref();
 let recordsTable = ref();
@@ -124,6 +126,9 @@ let shortHash = computed(() => {
     task.value.hash.substring(0, 20) + "..." + task.value.hash.substring(60, 64)
   );
 });
+let shortTxHash = (txHash) => {
+  return txHash.substring(0, 20) + "..." + txHash.substring(60, 64);
+};
 let taskType = computed(() => {
   if (task.value.taskType == 0) {
     return "Period";
@@ -131,20 +136,21 @@ let taskType = computed(() => {
     return "Custom";
   }
 });
+const formatDate = (value) => format(value, "yyyy-MM-dd hh:mm");
 
-const currentPage = ref(1);
-const handledTableData = ref([]);
+let currentPage = ref(1);
+let loaded = ref(false);
 let totalPages = computed(() => {
-  return Math.ceil(handledTableData.value.length / 10);
+  return Math.ceil(recordsTable.value.value.length / 10);
 });
 let currentPageData = computed(() => {
-  if (recordsTable.length != 0) {
+  if (recordsTable.value.value.length != 0) {
     const startIndex = (currentPage.value - 1) * 10;
     const endIndex = startIndex + 10;
-
-    return recordsTable.value.slice(startIndex, endIndex);
+    return recordsTable.value.value.slice(startIndex, endIndex);
   }
 });
+
 const goToPage = (page) => {
   if (page >= 1 && page <= totalPages) {
     currentPage = page;
@@ -153,9 +159,16 @@ const goToPage = (page) => {
 
 onBeforeMount(() => {
   task.value = store.state.task.task;
-  console.log(task.value);
-  let records = taskRecords(task.value.owner, task.value.name);
-  recordsTable = records;
+  let { records, isLoading } = taskRecords(task.value.owner, task.value.name);
+  const timer = setInterval(() => {
+    if (isLoading.value == false) {
+      recordsTable.value = records;
+      loaded.value = true;
+      clearInterval(timer); // 停止定时器
+    } else {
+      console.log("wait");
+    }
+  }, 1000);
 });
 </script>
   

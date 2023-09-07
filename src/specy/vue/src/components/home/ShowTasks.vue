@@ -68,7 +68,7 @@ const props = defineProps({
 });
 let store = useStore();
 const router = useRouter();
-const currentPage = ref(1);
+let currentPage = ref(1);
 const handledTableData = ref([]);
 let totalPages = computed(() => {
   return Math.ceil(props.tableData.length / props.itemsPerPage);

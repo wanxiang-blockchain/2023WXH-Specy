@@ -2,12 +2,7 @@
   <div class="container mt-3 pt-5">
     <div class="row rounded-lg shadow-sm p-4">
       <div class="col-md-1 text-center">
-        <img
-          src="https://www.mintscan.io/assets/chains/svg/cosmos.svg"
-          class="mb-1 hover"
-          width="80"
-          height="80"
-        />
+        <img src="logo-s.png" class="mb-1 hover" width="80" height="80" />
         <div class="mt-3">Specy</div>
       </div>
 
