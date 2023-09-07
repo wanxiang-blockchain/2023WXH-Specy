@@ -6,7 +6,7 @@
       <div class="col-md-3">
         <select class="form-select" aria-label="" v-model="msgType">
           <option selected value="1">Send</option>
-          <option value="2">Swap</option>
+          <option value="2">Contract</option>
           <option value="3">Staking</option>
         </select>
       </div>
@@ -25,6 +25,19 @@
         </div>
       </div>
     </div>
+    <div v-if="msgType == '2'">
+      <div class="row">
+        <div class="form col-md-6">
+          <ContractForm
+            :icaAddress="initialState.icaAddress"
+            :connection-id="initialState.connectionId"
+          ></ContractForm>
+        </div>
+        <div class="col-md-5 ml-20">
+          <AutomationTriggers></AutomationTriggers>
+        </div>
+      </div>
+    </div>
   </div>
 </template>
       
@@ -34,6 +47,7 @@ import { icaAddress } from "../../def-composables/icaAddress";
 import { computed, onBeforeUnmount, onMounted, reactive } from "vue";
 import { ref } from "vue";
 import SendFrom from "../osmosis/SendForm.vue";
+import ContractForm from "../osmosis/ContractForm.vue";
 import AutomationTriggers from "./AutomationTriggers.vue";
 export interface State {
   userAddress: string;
