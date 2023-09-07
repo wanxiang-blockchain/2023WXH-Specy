@@ -8,10 +8,10 @@ namespace http = beast::http;       // from <boost/beast/http.hpp>
 namespace net = boost::asio;        // from <boost/asio.hpp>
 using tcp = net::ip::tcp; 
 
-std::string Dataservice::generateQueryTarget(const char* subgraph) {
-    const char* querySubgraph = subgraph == nullptr ? this->subgraph : subgraph;
+std::string Dataservice::generateQueryTarget(const std::string& subgraph) {
+    std::string querySubgraph = subgraph.empty() ? this->subgraph : subgraph;
     std::stringstream ss;
-    ss << this->target << querySubgraph;
+    ss << target << querySubgraph;
     return ss.str();
 }
 
@@ -24,7 +24,8 @@ json11::Json Dataservice::query(const char* querySentence,
         SPDLOG_INFO("Query Sentence is {}, subgraph is {}", querySentence, subgraph);
         net::io_context ioc;
         tcp::resolver resolver(ioc);
-        auto const resolveResult = resolver.resolve(this->host, this->port);
+        SPDLOG_INFO("Target Address is {}, Port is {}", host, port);
+        auto const resolveResult = resolver.resolve(host, port);
         boost::beast::tcp_stream stream(ioc);
         stream.connect(resolveResult);
 
@@ -32,7 +33,7 @@ json11::Json Dataservice::query(const char* querySentence,
         std::string queryTarget = generateQueryTarget(subgraph);
         http::request<http::string_body> req{http::verb::post, queryTarget.c_str(), 11};
         req.set(http::field::host, this->host);
-        req.set(http::field::user_agent, "compliance engine http client");
+        req.set(http::field::user_agent, "specy engine http client");
         req.set(http::field::content_type, "application/json");
 
         // set query language as body

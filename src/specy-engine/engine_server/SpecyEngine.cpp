@@ -117,8 +117,19 @@ uint32_t SpecyEngine::LaunchGRPCServer()
 }
 
 uint32_t SpecyEngine::LaunchDataService() {
-    SPDLOG_INFO("Create http client");
-    dataservice.reset(new Dataservice());
+    SPDLOG_INFO("Create data service");
+    try
+    {
+        string graph_addr = config["dataaccess"]["THE_GRAPH_ADDRESS"].as<string>();
+        string graph_port = config["dataaccess"]["THE_GRAPH_PORT"].as<string>();
+        dataservice.reset(new Dataservice(graph_addr.c_str(), graph_port.c_str()));
+    }
+    catch (YAML::TypedBadConversion<string> &e)
+    {
+        SPDLOG_INFO("LaunchDataService:DataService start with defaul config");
+        dataservice.reset(new Dataservice());
+    }
+    
     return uint32_t(EngineStatus::kOK);
 }
 

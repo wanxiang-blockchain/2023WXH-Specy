@@ -22,7 +22,7 @@ extern "C"
         string contract = request_contract;
         string subgraph = "specy";
         if (contract != ""){
-            subgraph = contract ;
+            subgraph = contract + "-subgraph";
         }
         Json queryResult = dataservice->query(query_request, subgraph.c_str());
         map<string, Json> outter;

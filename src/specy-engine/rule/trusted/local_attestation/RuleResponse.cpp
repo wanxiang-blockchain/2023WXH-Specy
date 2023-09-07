@@ -91,8 +91,10 @@ RuleEnclaveStatus fill_rule_check_response(
         return status_code;
     }
 
-    // TODO: file result
     response_output->set_taskhash(request_input.taskhash());
+    response_output->set_error_info(request_context->getErrorInfo());
+    response_output->set_output_data(request_context->getOutputData());
+    response_output->set_status(request_context->getResult());
     RULE_INFO_STRING(string("rule check response is: " +
                             response_output->SerializeAsString()));
     delete(request_context);

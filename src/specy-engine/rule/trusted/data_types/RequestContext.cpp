@@ -36,3 +36,14 @@ bool RequestContext::getResult() {
     return result_;
 }
 
+std::string RequestContext::getInputData() {
+    return input_data_;
+}
+
+std::string RequestContext::getErrorInfo() {
+    return err_info_;
+}
+
+void RequestContext::setErrorInfo(const std::string& err) {
+    err_info_ = err;
+}

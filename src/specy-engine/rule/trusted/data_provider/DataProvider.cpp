@@ -202,7 +202,8 @@ RuleEnclaveStatus DataProvider::QueryDataFromGraphnodeJson(
     string json_parse_err = "error: failed to parse Query output JSON";
 
     // TODO convert raw JSON output to Json object
-    json_result = Json::parse(result, json_parse_err);
+    Json query_result = Json::parse(result, json_parse_err);
+    json_result = query_result["data"];
     ocall_print_string(json_result.dump().c_str(), __FILE__, __LINE__);
     return RuleEnclaveStatus::kOK;
 }

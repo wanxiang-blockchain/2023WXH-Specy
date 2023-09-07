@@ -30,10 +30,14 @@
 //   request_context->get_rule_evaluation_result(rule_id);
 class RequestContext {
    private:
+   // data from request
     std::string task_id_;
     std::string rule_file_;
     std::string input_data_;
+
+    // execute result from engine
     bool result_;
+    std::string err_info_;
     std::string output_data_;
 
 
@@ -47,15 +51,13 @@ class RequestContext {
     // Data Member Getters
     const std::string &get_req_id() const;
     const std::string &get_rule_text() const;
+    std::string getInputData();
+
+    bool getResult();
+    std::string getOutputData();
+    std::string getErrorInfo();
 
     void setResult(bool rule_result);
-    bool getResult();
-
     void setOutputData(const std::string& output);
-    std::string getOutputData();
-
-    std::string getInputData() {
-        return input_data_;
-    }
-
+    void setErrorInfo(const std::string& err);
 };

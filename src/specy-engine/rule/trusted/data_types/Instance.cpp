@@ -42,6 +42,8 @@ std::string Instance::dumpAttributeValue() {
 }
 
 bool Instance::updateAttributeValue(json11::Json& instance_json) {
+    ocall_print_string("Debug: enter updateAttributeValue", __FILE__, __LINE__);
+    ocall_print_string(instance_json.dump().c_str(), __FILE__, __LINE__);
     bool update_succ = true;
     std::string schema_name;
 
@@ -55,6 +57,9 @@ bool Instance::updateAttributeValue(json11::Json& instance_json) {
     }
 
     json11::Json instance_data = instance_json[schema_name];
+    if (instance_data.array_items().size() == 1) {
+        instance_data = instance_data[0];
+    }
     ocall_print_string(instance_data.dump().c_str(), __FILE__, __LINE__);
     for (auto attribute : attribute_list) {
         if (attribute.second->getType() == RuleLanguage::Type::NUMBER) {

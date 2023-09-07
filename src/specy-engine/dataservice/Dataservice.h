@@ -9,16 +9,17 @@
 class Dataservice {
     private:
         // need to change this to config file
-        const char* host;
-        const char* port;
-        const char* target;
-        const char* subgraph;
+        std::string host;
+        std::string port;
+        std::string target;
+        std::string subgraph;
 
-    std::string generateQueryTarget(const char* subgraph);
+    std::string generateQueryTarget(const std::string& subgraph);
 
     public:
-        Dataservice(const char* host, const char* port, const char* target) : host(host), port(port), target(target), subgraph("specy") {}
-        
+        Dataservice(const std::string& host, const std::string& port, const std::string& target) : host(host), port(port), target(target), subgraph("specy") {}
+        Dataservice(const std::string& host, const std::string& port) : host(host), port(port), target("/subgraphs/name/"), subgraph("specy") {}
+
         Dataservice() {
             // for default, visit graph node from localhost:8000 and
             // query the regchain system subgraph

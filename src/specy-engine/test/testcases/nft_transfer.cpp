@@ -6,7 +6,7 @@ using namespace json11;
 using namespace std;
 // data of binding
 string TestTaskHash = "0x1004";
-string TestTaskRule = R"(task autoFollow entities friend { entity Followers {  user_id is string     followers is list[ string ] }} input { usera is string userb is string} output { newFollowers is list[string] } rules { rule checkNewFollowers {  followersA = select Followers.followers where Followers.user_id == inputdata.usera  followersB = select Followers.followers where Followers.user_id == inputdata.userb  newFollowers = collect followersB where followersB not in followersA   outputdata.newFollowers = newFollowers }}execute { check rule checkNewFollowers})";
+string TestTaskRule = R"(task autoFollow entities friend { entity follower {  address is string     follows is list[ string ] }} input { usera is string userb is string} output { newFollows is list[string] } rules { rule checkNewFollowers {  followsA = select follower.follows where follower.address == inputdata.usera  followsB = select follower.follows where follower.address == inputdata.userb  newFollows = collect followsB where followsB not in followsA   outputdata.newFollows = newFollows }}execute { check rule checkNewFollowers})";
 
 void mockTaskRequest_NFTList(request_proto::TaskRequest* request) {
     request->set_taskhash(TestTaskHash);
@@ -14,8 +14,8 @@ void mockTaskRequest_NFTList(request_proto::TaskRequest* request) {
     json11::Json::object data{
         {"inputdatas",
             json11::Json::object{
-                {"usera", "usera_addr"},
-                {"userb", "userb_addr"}
+                {"usera", "osmo1njd8p9avmp3y9xa9aq78gsjgwx8ttmw37ppxy2"},
+                {"userb", "osmo12smx2wdlyttvyzvzg54y2vnqwq2qjateuf7thj"},
             }
         }
     };

@@ -190,46 +190,6 @@ void ecall_test_check_rule(void)
 {
     ocall_print_string("enter ecall_test_check_rule", __FILE__, __LINE__);
 
-    // RuleEnclaveStatus status_code;
-    // vector<bool> status_list;
-
-    // // STATUS: OK (after changing to simpler rule grammar)
-    // ocall_print_string("test erc20 rule", __FILE__, __LINE__);
-    // // request_handler.CheckRule(to_string(request_id++), erc20_rule, rule_id_list);
-    // RequestHandler request_handler;
-    // status_code = request_handler.CheckRule("erc20", erc20_rule, rule_id_list, &status_list);
-    // if (status_code != RuleEnclaveStatus::kOK)
-    // {
-    //     ocall_print_string("CheckRule failed for erc20", __FILE__, __LINE__);
-    // }
-
-    // // STATUS: OK
-    // ocall_print_string("test hello world rule");
-    // request_handler.CheckRule(to_string(request_id++), hello_world_rule, rule_id_list);
-
-    // // STATUS: OK
-    // ocall_print_string("test number attribute rule");
-    // request_handler.CheckRule(to_string(request_id++), number_attribute_rule, rule_id_list);
-
-    // // STATUS: OK
-    // ocall_print_string("test set not in rule");
-    // request_handler.CheckRule(to_string(request_id++), set_not_in_rule, rule_id_list);
-
-    // // STATUS: OK (after changing to simpler rule grammar)
-    // ocall_print_string("test count on rule");
-    // request_handler.CheckRule(to_string(request_id++), count_on_rule, rule_id_list);
-
-    // // STATUS: OK (after changing to simpler rule grammar)
-    // ocall_print_string("test date time format rule");
-    // request_handler.CheckRule(to_string(request_id++), date_time_format_rule, rule_id_list);
-
-    // // STATUS: OK (after changing to simpler rule grammar)
-    // ocall_print_string("test if statement rule");
-    // request_handler.CheckRule(to_string(request_id++), if_statement_rule, rule_id_list);
-
-    // // STATUS: OK (after changing to simpler rule grammar)
-    // ocall_print_string("test order of precedence rule");
-    // request_handler.CheckRule(to_string(request_id++), order_of_precedence_rule, rule_id_list);
-
+    
     ocall_print_string("exit ecall_test_check_rule", __FILE__, __LINE__);
 }

@@ -74,7 +74,7 @@ string QueryBuilder::getConstrainFromRelationExpr(RuleLanguage::relationExpr* ex
     } else if (expr->getLeftStringExpr() != nullptr && expr->getRightStringExpr() != nullptr) {
         string first_string_expr_str = getConstrainFromStringExpr(expr->getLeftStringExpr(), query_entity);
         string relation_suffix = RuleLanguage::RelationOperatorToSuffixString(expr->getOperators());
-        string second_string_expr_str = getConstrainFromStringExpr(expr->getRightStringExpr(), query_entity);
+        string second_string_expr_str = R"(\")" + getConstrainFromStringExpr(expr->getRightStringExpr(), query_entity) + R"(\")";
         return first_string_expr_str + relation_suffix + " : " + second_string_expr_str;
     }
 
@@ -153,16 +153,12 @@ string QueryBuilder::generateQueryString(shared_ptr<Instance> instance) {
     if (instance->getInstanceKind() == InstanceKind::EXPR) {
         ocall_print_string(("handle instance expr" + instance->dump()).c_str(), __FILE__, __LINE__);
         RuleLanguage::queryExpr* expr = dynamic_cast<RuleLanguage::queryExpr*>(instance->getExpr());
-        ocall_print_string("debug 1", __FILE__, __LINE__);
         if (expr != nullptr) {
-            ocall_print_string("debug 2", __FILE__, __LINE__);
             string query_table = expr->getQueryTable();
             string attributes_str = "";
-            ocall_print_string("debug 3", __FILE__, __LINE__);
             for (auto attribute : expr->getAttributs()) {
                 attributes_str = attributes_str + attribute.first + " ";
             }
-            ocall_print_string("debug 4", __FILE__, __LINE__);
 
             string constraint_str = getConstrainFromConditionExpr(expr->getExpr(), expr->getName());
             string query_string;

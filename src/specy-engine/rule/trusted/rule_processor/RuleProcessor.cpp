@@ -101,7 +101,10 @@ RuleEnclaveStatus RuleProcessor::EvaluateRule(RequestContext* request_context)
     entity_collector.dump();
 
     SemanticModelEngine semantic_model(&entity_collector, request_context);
-    semantic_model.execute();
+    if (!semantic_model.execute()) {
+        ocall_print_string("Error: rule file execution error! ", __FILE__, __LINE__);
+        return RuleEnclaveStatus::kError;
+    }
 
     return RuleEnclaveStatus::kOK;
 }

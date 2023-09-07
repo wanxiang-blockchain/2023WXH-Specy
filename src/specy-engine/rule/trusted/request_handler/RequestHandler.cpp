@@ -35,7 +35,10 @@ RuleEnclaveStatus RequestHandler::CheckRule(const string &req_id, const string &
 
     // employ rule processor to evaluate rule
     RuleProcessor rule_processor;
-    rule_processor.EvaluateRule(request_context);
+    if (rule_processor.EvaluateRule(request_context) != RuleEnclaveStatus::kOK) {
+        ocall_print_string("Error: evaluate rule error!", __FILE__, __LINE__);
+        return RuleEnclaveStatus::kError;
+    }
     // TODO build rule check result
     
     ocall_print_string("exit CheckRule", __FILE__, __LINE__);
