@@ -1,27 +1,38 @@
 <template>
   <div class="container">
-    <h2 class="text-left mt-4 mb-6 pl-2 font-weight-bold">{{ title }}</h2>
-    <div class="table-responsive">
+    <h2 class="text-left mt-5 mb-6 pl-2 font-weight-bold font-main-color">
+      {{ title }}
+    </h2>
+    <div v-if="!showTabel" class="border-1 box-empty">
+      <h1>Please connect the wallet and create a task!</h1>
+    </div>
+    <div v-if="showTabel" class="table-responsive">
       <table class="table table-hover">
         <thead class="bg-light">
           <tr>
-            <th>Name</th>
-            <th>Host Chain</th>
-            <th>Msg Type</th>
-            <th>Status</th>
+            <th class="font-second-color">Name</th>
+            <th class="font-second-color">Host Chain</th>
+            <th class="font-second-color">Msg Type</th>
+            <th class="font-second-color">Status</th>
           </tr>
         </thead>
+
         <tbody>
-          <tr v-for="(row, index) in currentPageData" :key="index">
+          <tr
+            v-for="(row, index) in currentPageData"
+            :key="index"
+            class="tr-border"
+          >
             <td @click="detail(row)">{{ row.name }}</td>
             <td>{{ row.connectionId }}</td>
             <td>{{ row.msg }}</td>
-            <td class="status"><i class="fal fa-check-badge"></i></td>
+            <td class="status">Active</td>
           </tr>
         </tbody>
       </table>
     </div>
     <nav
+      v-if="showTabel"
       aria-label="Page navigation"
       class="d-flex justify-content-between align-items-center"
     >
@@ -52,6 +63,7 @@
 import { ref, computed } from "vue";
 import { useStore } from "vuex";
 import { useRouter } from "vue-router";
+import { useAddress } from "@/def-composables/useAddress";
 const props = defineProps({
   title: {
     type: String,
@@ -65,6 +77,19 @@ const props = defineProps({
     type: Number,
     default: 5, // You can adjust the default value
   },
+});
+const { address } = useAddress();
+let showTabel = computed(() => {
+  if (useAddress.value == "") {
+    return false;
+  }
+  console.log(handledTableData.value);
+  if (props.tableData.length == 0) {
+    console.log(222);
+    return false;
+  }
+  console.log(true);
+  return true;
 });
 let store = useStore();
 const router = useRouter();
@@ -97,6 +122,13 @@ const detail = (task) => {
 </script>
   
   <style scoped lang="scss">
+$main-color: rgb(45, 114, 179);
+.font-main-color {
+  color: #212121;
+}
+.font-second-color {
+  color: #757575;
+}
 .project-card {
   padding: 20px;
 }
@@ -111,27 +143,22 @@ const detail = (task) => {
   margin-top: 5px;
 }
 
-.table th,
-.table td {
-  vertical-align: middle; /* Center content vertically in table cells */
-}
-
 .table th {
   border: none; /* Remove top border from table headers */
   border: 1px gray;
 }
-
-.table tbody tr {
-  margin-bottom: 10px; /* Add margin between table rows */
+.status {
+  color: rgb(45, 114, 179);
+  font-weight: 600;
 }
-
-.table {
-  border-collapse: separate; /* Separate borders between table cells */
-  border-spacing: 0 8px; /* Set spacing between table rows */
-}
-
-.pagination {
-  margin-top: 20px; /* Add space between table and pagination */
+.box-empty {
+  border: 1px solid #f5f5f5;
+  height: 300px;
+  border-radius: 5px;
+  display: flex; /* 使用 flex 布局 */
+  justify-content: center; /* 在水平方向上居中对齐 */
+  align-items: center; /* 在垂直方向上居中对齐 */
+  color: rgba($color: #000000, $alpha: 0.3);
 }
 </style>
   

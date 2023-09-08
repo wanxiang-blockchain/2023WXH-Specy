@@ -17,7 +17,7 @@
     <IgntButton
       v-else
       aria-label="Connect wallet"
-      type="primary"
+      type="secondary"
       @click="state.connectWalletModal = true"
     >
       Connect wallet
@@ -96,7 +96,7 @@
         <div v-if="state.modalPage === 'connect'" class="my-3">
           <IgntButton
             aria-label="Connect Keplr"
-            type="primary"
+            type="secondary"
             @click="tryToConnectToKeplr"
           >
             Connect Keplr
