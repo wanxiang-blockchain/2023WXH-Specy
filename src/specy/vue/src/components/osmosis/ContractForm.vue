@@ -36,7 +36,7 @@
           ></textarea>
         </div>
       </div>
-      <div class="mb-3 row">
+      <!-- <div class="mb-3 row">
         <label class="col-sm-3 col-form-label">Funds</label>
         <div class="col-sm-2">
           <input v-model="amount" type="text" class="form-control" />
@@ -45,7 +45,7 @@
         <div class="col-sm-5">
           <input v-model="denom" type="text" class="form-control" />
         </div>
-      </div>
+      </div> -->
       <div class="mb-3 row align-items-center">
         <label class="col-sm-3 col-form-label">RuleFile</label>
         <div class="col-sm-9">
@@ -136,7 +136,7 @@ const submit = async (): Promise<void> => {
     sender: props.icaAddress,
     contract: contractAddress.value,
     msg: executeMethodJson,
-    funds: { denom: denom.value, amount: amount.value },
+    funds: [],
   };
 
   let msg = JSON.stringify(executeContract);

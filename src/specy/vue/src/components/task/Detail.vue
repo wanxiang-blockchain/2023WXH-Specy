@@ -152,8 +152,8 @@ let currentPageData = computed(() => {
 });
 
 const goToPage = (page) => {
-  if (page >= 1 && page <= totalPages) {
-    currentPage = page;
+  if (page >= 1 && page <= totalPages.value) {
+    currentPage.value = page;
   }
 };
 

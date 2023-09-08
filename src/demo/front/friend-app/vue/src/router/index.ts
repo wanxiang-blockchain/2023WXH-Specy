@@ -6,7 +6,7 @@ import PortfolioView from "../views/PortfolioView.vue";
 const routerHistory = createWebHistory();
 const routes = [
   { path: "/", component: PortfolioView },
-  { path: "/data", component: DataView },
+  { path: "/friends", component: DataView },
 ];
 
 const router = createRouter({

@@ -8,8 +8,8 @@ const items = [
     to: "/",
   },
   {
-    label: "Data",
-    to: "/data",
+    label: "Friends",
+    to: "/friends",
   },
 ];
 </script>
