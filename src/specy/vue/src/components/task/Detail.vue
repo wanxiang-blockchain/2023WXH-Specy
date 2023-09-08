@@ -19,14 +19,16 @@
         </div>
         <div class="col-md-5 p-5 m-3 bg-light">
           <h4 class="mb-4">Meta Data</h4>
-          <p>Msg type</p>
-          <p class="p-color">{{ task.msg }}</p>
-          <hr />
-          <p>Rule file content</p>
-          <p class="p-color">{{ task.ruleFiles }}</p>
-          <hr />
-          <p>Check data</p>
-          <p class="p-color">{{ task.checkData }}</p>
+          <div class="overflow-auto mh-400">
+            <p>Msg type</p>
+            <p class="p-color">{{ task.msg }}</p>
+            <hr />
+            <p>Rule file content</p>
+            <p class="p-color">{{ task.ruleFiles }}</p>
+            <hr />
+            <p>Check data</p>
+            <p class="p-color">{{ task.checkData }}</p>
+          </div>
         </div>
         <div class="col-md-3 p-5 m-3 bg-light">
           <h4 class="mb-4">Status</h4>
@@ -173,6 +175,16 @@ onBeforeMount(() => {
 </script>
   
 <style scoped lang="scss">
+.mh-500 {
+  height: 500px;
+}
+.mh-400 {
+  height: 400px;
+}
+.overflow-auto::-webkit-scrollbar {
+  width: 0.1rem; /* 将滚动条的宽度设置为非常小的值 */
+  background-color: transparent; /* 设置背景颜色为透明 */
+}
 $light-bg: #f8f9fa;
 .bg-light {
   background-color: $light-bg;

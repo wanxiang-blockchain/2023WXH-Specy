@@ -57,7 +57,9 @@
         </div>
       </div>
       <div class="text-center mb-2">
-        <button class="btn btn-outline-dark" @click="submit">submit</button>
+        <button class="main-btn pl-5 pr-5 pt-1 pb-1" @click="submit">
+          submit
+        </button>
       </div>
     </div>
   </div>
@@ -156,4 +158,19 @@ const submit = async (): Promise<void> => {
   }
 };
 </script>
-  
+<style lang="scss" scoped>
+.col-form-label {
+  color: #757575;
+  font-weight: 500;
+}
+.main-btn {
+  background-color: rgb(255, 255, 255);
+  color: rgb(45, 114, 179);
+  border: 1px solid rgb(45, 114, 179);
+  border-radius: 5px;
+  &:hover {
+    background-color: rgb(20, 101, 176);
+    color: #fff;
+  }
+}
+</style>
