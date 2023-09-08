@@ -4,14 +4,20 @@
     <!-- <IgntCrud store-name="OrgRepoModule" item-name="modelName" /> -->
     <!-- <button @click="submit_deposit">submit</button> -->
 
-    <div class="container pt-5">
-      <div class="title"><h1>Friends Demo</h1></div>
-
+    <div class="container">
+      <div class="text-center" v-if="loaded && showRegister()">
+        <button
+          class="btn rounded shadow border-1 register-btn"
+          @click="submit_register()"
+        >
+          REGISTER
+        </button>
+      </div>
       <div class="row mt-5" v-if="loaded">
         <div
           v-for="(item, index) in followers"
           :key="item.index"
-          class="col-md-5 border-1 rounded shadow-sm p-2 m-4"
+          class="col-md-5 rounded shadow-sm p-3 m-5"
         >
           <div class="flex items-center">
             <IgntProfileIcon :address="shortAddress(item.address)" />
@@ -21,21 +27,25 @@
             <button
               class="btn btn-outline-dark ml-5 btn-sm"
               v-if="showFollow(item)"
+              @click="submit_follow(item.address)"
             >
               Follow
             </button>
           </div>
-          <div class="border-1 rounded shadow-sm m-3 h-300">
+          <div class="border-1 rounded shadow-sm m-3">
             <h5 class="p-4">Followers</h5>
-            <div
-              class="flex items-center pl-4 mb-2"
-              v-for="follow in item.follows"
-              :key="follow"
-            >
-              <IgntProfileIcon :address="follow" />
-              <span class="mx-2">
-                {{ shortAddress(follow) }}
-              </span>
+            <div class="overflow-auto h-300 p-3">
+              <div v-for="follow in item.follows" :key="follow">
+                <div
+                  class="flex items-center pl-4 mb-2"
+                  v-if="follow != item.address"
+                >
+                  <IgntProfileIcon :address="follow" />
+                  <span class="mx-2">
+                    {{ shortAddress(follow) }}
+                  </span>
+                </div>
+              </div>
             </div>
           </div>
         </div>
@@ -58,12 +68,59 @@ let loaded = ref(false);
 let client = useClient();
 let { address } = useAddress();
 let executeContract = client.CosmwasmWasmV1.tx.sendMsgExecuteContract;
+const showRegister = () => {
+  if (address.value == "") {
+    return false;
+  }
+  for (let index = 0; index < followers.value.length; index++) {
+    const element = followers.value[index];
+    if (element.address == address.value) {
+      return false;
+      break;
+    }
+  }
+  return true;
+};
+const submit_register = async (): Promise<void> => {
+  let tryRegister = btoa('{"register": {}}');
+  let send;
+  const fee: Array<Amount> = [
+    {
+      denom: "uosmo",
+      amount: "0",
+    },
+  ];
 
-let tryFollow = btoa(
-  '{"follow": {"new_follows":["osmo12smx2wdlyttvyzvzg54y2vnqwq2qjateuf7aaa"]}}'
-);
+  let payload: any = {
+    sender: address.value,
+    /** Contract is the address of the smart contract */
+    contract: "osmo1nc5tatafv6eyq7llkr2gv50ff9e22mnf70qgjlv737ktmt4eswrqvlx82r",
+    /** Msg json encoded message to be passed to the contract */
+    msg: tryRegister,
+    /** Funds coins that are transferred to the contract on execution */
+    funds: null,
+  };
 
-const submit_deposit = async (): Promise<void> => {
+  try {
+    send = () =>
+      executeContract({
+        value: payload,
+        fee: { amount: fee as Readonly<Amount[]>, gas: "200000" },
+        memo: "follow",
+      });
+
+    const txResult = await send();
+    console.log(txResult);
+
+    if (txResult.code) {
+      throw new Error();
+    }
+  } catch (e) {
+    console.error(e);
+  }
+};
+const submit_follow = async (followAddress: string): Promise<void> => {
+  let tryFollow = btoa('{"follow": {"new_follows":["' + followAddress + '"]}}');
   let send;
   const fee: Array<Amount> = [
     {
@@ -87,7 +144,7 @@ const submit_deposit = async (): Promise<void> => {
       executeContract({
         value: payload,
         fee: { amount: fee as Readonly<Amount[]>, gas: "200000" },
-        memo: "deposit",
+        memo: "follow",
       });
 
     const txResult = await send();
@@ -108,7 +165,7 @@ const shortAddress = (address: string) => {
   );
 };
 const showFollow = (item: object) => {
-  if (address.value == null) {
+  if (address.value == "") {
     return false;
   }
 
@@ -156,5 +213,11 @@ onMounted(() => {
 <style>
 .h-300 {
   height: 300px;
+}
+.register-btn {
+  width: 100%;
+  height: 50px;
+  font-size: 60;
+  font-weight: 600;
 }
 </style>

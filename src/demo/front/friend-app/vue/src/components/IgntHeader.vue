@@ -1,7 +1,10 @@
 <template>
   <header class="flex p-5">
-    <IgntLogo class="mx-2.5" />
+    <!-- <IgntLogo class="mx-2.5" /> -->
+    <img src="specylogo.png" alt="logo" class="logo-image ml-5" />
+
     <nav class="flex flex-1 justify-between">
+      <!-- <h1>Friends Demo</h1> -->
       <ul class="flex items-center">
         <li
           class="text-3 px-4 font-normal"
@@ -19,7 +22,6 @@
 import { ref, type PropType } from "vue";
 import { IgntLink } from "@ignt/vue-library";
 import IgntAcc from "@/components/IgntAcc.vue";
-import { IgntLogo } from "@ignt/vue-library";
 
 type MenuItem = {
   label: string;
@@ -34,3 +36,9 @@ const props = defineProps({
 });
 const navItems = ref(props.navItems);
 </script>
+<style>
+.logo-image {
+  width: 290px;
+  height: 70px;
+}
+</style>
