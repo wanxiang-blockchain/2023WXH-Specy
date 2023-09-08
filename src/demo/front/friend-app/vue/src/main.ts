@@ -4,6 +4,8 @@ import { VueQueryPlugin } from "@tanstack/vue-query";
 import App from "./App.vue";
 import router from "./router";
 import "./assets/index.css";
+import "bootstrap/dist/css/bootstrap.min.css";
+import "bootstrap";
 import "@ignt/vue-library/dist/style.css";
 
 const app = createApp(App);

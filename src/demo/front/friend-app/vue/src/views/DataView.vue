@@ -2,8 +2,159 @@
   <div>
     <!-- Uncomment the following component to add a form for a `modelName` -->
     <!-- <IgntCrud store-name="OrgRepoModule" item-name="modelName" /> -->
+    <!-- <button @click="submit_deposit">submit</button> -->
+
+    <div class="container pt-5">
+      <div class="title"><h1>Friends Demo</h1></div>
+
+      <div class="row mt-5" v-if="loaded">
+        <div
+          v-for="(item, index) in followers"
+          :key="item.index"
+          class="col-md-5 border-1 rounded shadow-sm p-2 m-4"
+        >
+          <div class="flex items-center">
+            <IgntProfileIcon :address="shortAddress(item.address)" />
+            <span class="mx-2">
+              {{ shortAddress(item.address) }}
+            </span>
+            <button
+              class="btn btn-outline-dark ml-5 btn-sm"
+              v-if="showFollow(item)"
+            >
+              Follow
+            </button>
+          </div>
+          <div class="border-1 rounded shadow-sm m-3 h-300">
+            <h5 class="p-4">Followers</h5>
+            <div
+              class="flex items-center pl-4 mb-2"
+              v-for="follow in item.follows"
+              :key="follow"
+            >
+              <IgntProfileIcon :address="follow" />
+              <span class="mx-2">
+                {{ shortAddress(follow) }}
+              </span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 <script setup lang="ts">
-import IgntCrud from "@/components/IgntCrud.vue";
+import { useContractQuery } from "../def-composables/useContract";
+import { useClient } from "@/composables/useClient";
+import type { Amount } from "@/utils/interfaces";
+import { IgntProfileIcon } from "@ignt/vue-library";
+import { useAddress } from "../def-composables/useAddress";
+import { ref, computed, onBeforeMount, onMounted } from "vue";
+import axios from "axios";
+//state
+let users = ref();
+
+let loaded = ref(false);
+let client = useClient();
+let { address } = useAddress();
+let executeContract = client.CosmwasmWasmV1.tx.sendMsgExecuteContract;
+
+let tryFollow = btoa(
+  '{"follow": {"new_follows":["osmo12smx2wdlyttvyzvzg54y2vnqwq2qjateuf7aaa"]}}'
+);
+
+const submit_deposit = async (): Promise<void> => {
+  let send;
+  const fee: Array<Amount> = [
+    {
+      denom: "uosmo",
+      amount: "0",
+    },
+  ];
+
+  let payload: any = {
+    sender: address.value,
+    /** Contract is the address of the smart contract */
+    contract: "osmo1nc5tatafv6eyq7llkr2gv50ff9e22mnf70qgjlv737ktmt4eswrqvlx82r",
+    /** Msg json encoded message to be passed to the contract */
+    msg: tryFollow,
+    /** Funds coins that are transferred to the contract on execution */
+    funds: null,
+  };
+
+  try {
+    send = () =>
+      executeContract({
+        value: payload,
+        fee: { amount: fee as Readonly<Amount[]>, gas: "200000" },
+        memo: "deposit",
+      });
+
+    const txResult = await send();
+    console.log(txResult);
+
+    if (txResult.code) {
+      throw new Error();
+    }
+  } catch (e) {
+    console.error(e);
+  }
+};
+let followers = ref(1);
+const shortAddress = (address: string) => {
+  let length = address.length;
+  return (
+    address.substring(0, 10) + "..." + address.substring(length - 4, length)
+  );
+};
+const showFollow = (item: object) => {
+  if (address.value == null) {
+    return false;
+  }
+
+  if (address.value == item.address) {
+    return false;
+  }
+  let currentUserInfo = null;
+  for (let index = 0; index < followers.value.length; index++) {
+    const element = followers.value[index];
+    if (element.address == address.value) {
+      currentUserInfo = element;
+      break;
+    }
+  }
+  if (currentUserInfo != null) {
+    if (currentUserInfo.follows.includes(item.address)) {
+      return false;
+    }
+  }
+  return true;
+};
+const queryFollowers = (queryData: string) => {
+  axios
+    .post(
+      "http://10.100.117.55:8000/subgraphs/name/friendtest2-subgraph",
+      queryData
+    )
+    .then((response) => {
+      followers.value = response.data.data.followers;
+      console.log(followers.value);
+      loaded.value = true;
+    })
+    .catch((error) => {
+      // 请求失败时的处理
+      console.error("请求失败:", error);
+    });
+};
+
+onMounted(() => {
+  let queryData =
+    '{"query":"{\\n  followers {\\n    id\\n    address\\n    follows\\n  }\\n}","variables":null,"extensions":{"headers":null}}';
+  queryFollowers(queryData);
+});
 </script>
+<style>
+.h-300 {
+  height: 300px;
+}
+</style>
