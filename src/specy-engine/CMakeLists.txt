@@ -2,6 +2,8 @@ cmake_minimum_required(VERSION 3.10)
 
 project(compliance_engine VERSION 0.8)
 
+# output compile message
+set(CMAKE_VERBOSE_MAKEFILE ON)
 
 # Enable SGX SIM runtime
 set(SGX_HW OFF)

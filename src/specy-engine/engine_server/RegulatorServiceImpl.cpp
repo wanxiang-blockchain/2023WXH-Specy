@@ -81,6 +81,7 @@ grpc::Status RegulatorServiceImpl::GetTaskResult(::grpc::ServerContext *context,
         request_proto::TaskResponse taskResponse;
         int i = 0;
         while (outputQueue.pop(taskResponse)) {
+            SPDLOG_INFO("write response: \n {}", EmitJsonString(taskResponse));
             stream->Write(taskResponse);
             i++; 
         }

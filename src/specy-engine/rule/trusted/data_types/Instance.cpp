@@ -156,6 +156,11 @@ bool Instance::updateListValue(const json11::Json& json_value) {
         return false;
     }
 
+    if (json_value.array_items().size() == 0) {
+        ocall_print_string(("Debug: output json is empty, rule not match" + json_value.dump()).c_str(), __FILE__, __LINE__);
+        return false;
+    }
+
     for (auto json_data : json_value.array_items()) {
         Value value;
         if (list_type == RuleLanguage::Type::BOOLEAN) {
