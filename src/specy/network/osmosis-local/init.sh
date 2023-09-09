@@ -15,13 +15,10 @@ WALLET_MNEMONIC_4="open attitude harsh casino rent attitude midnight debris desc
 RLY_MNEMONIC_1="alley afraid soup fall idea toss can goose become valve initial strong forward bright dish figure check leopard decide warfare hub unusual join cart"
 RLY_MNEMONIC_2="record gift you once hip style during joke field prize dust unique length more pencil transfer quit train device arrive energy sort steak upset"
 
-P2PPORT_2=16656
-P2PPORT_1=26656
-RPCPORT_2=26657
+
+P2PPORT_1=16656
 RPCPORT_1=16657
-RESTPORT_2=1316
-RESTPORT_1=1317
-ROSETTA_2=8080
+RESTPORT_1=1316
 ROSETTA_1=8081
 
 # Stop if it is already running 
