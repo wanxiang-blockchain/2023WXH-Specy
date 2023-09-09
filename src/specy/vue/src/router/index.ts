@@ -8,8 +8,8 @@ import CreateTaskView from "@/views/TaskView.vue";
 
 const routerHistory = createWebHistory();
 const routes = [
-  { path: "/", component: PortfolioView },
-  { path: "/data", component: DataView },
+  { path: "/", component: HomeView },
+  // { path: "/data", component: DataView },
   { path: "/home", component: HomeView },
   { path: "/task", component: CreateTaskView },
   { path: "/detail", component: DetailView }

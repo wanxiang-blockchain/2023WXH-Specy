@@ -172,4 +172,19 @@ const submit = async (): Promise<void> => {
   }
 };
 </script>
-  
+<style lang="scss" scoped>
+.col-form-label {
+  color: #757575;
+  font-weight: 500;
+}
+.main-btn {
+  background-color: rgb(255, 255, 255);
+  color: rgb(45, 114, 179);
+  border: 1px solid rgb(45, 114, 179);
+  border-radius: 5px;
+  &:hover {
+    background-color: rgb(20, 101, 176);
+    color: #fff;
+  }
+}
+</style>
