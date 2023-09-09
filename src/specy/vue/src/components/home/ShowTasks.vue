@@ -4,7 +4,7 @@
       {{ title }}
     </h2>
     <div v-if="!showTabel" class="border-1 box-empty">
-      <h1>Please connect the wallet and create a task!</h1>
+      <h2>Please connect the wallet and create a task!</h2>
     </div>
     <div v-if="showTabel" class="table-responsive">
       <table class="table table-hover">
@@ -159,6 +159,10 @@ $main-color: rgb(45, 114, 179);
   justify-content: center; /* 在水平方向上居中对齐 */
   align-items: center; /* 在垂直方向上居中对齐 */
   color: rgba($color: #000000, $alpha: 0.3);
+}
+table {
+  border-collapse: separate;
+  border-spacing: 0 25px; /* 10px 是你想要的行间距 */
 }
 </style>
   
