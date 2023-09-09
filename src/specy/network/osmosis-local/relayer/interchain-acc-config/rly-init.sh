@@ -20,8 +20,8 @@ echo "Initializing $BINARY..."
 $BINARY config init --home $CHAIN_DIR/$RELAYER_DIR
 
 echo "Adding configurations for both chains..."
-$BINARY chains add-dir ./network/osmosis/relayer/interchain-acc-config/chains --home $CHAIN_DIR/$RELAYER_DIR
-$BINARY paths add $CHAINID_1 $CHAINID_2 test1-test2 --file ./network/osmosis/relayer/interchain-acc-config/paths/test1-test2.json --home $CHAIN_DIR/$RELAYER_DIR
+$BINARY chains add-dir ./network/osmosis-local/relayer/interchain-acc-config/chains --home $CHAIN_DIR/$RELAYER_DIR
+$BINARY paths add $CHAINID_1 $CHAINID_2 test1-test2 --file ./network/osmosis-local/relayer/interchain-acc-config/paths/test1-test2.json --home $CHAIN_DIR/$RELAYER_DIR
 
 echo "Restoring accounts..."
 $BINARY keys restore $CHAINID_1 testkey1 "$MNEMONIC_1" --home $CHAIN_DIR/$RELAYER_DIR
