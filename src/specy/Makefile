@@ -134,6 +134,14 @@ init-golang-rly-osmosis: kill-dev install
 	@echo "Initializing relayer..."
 	./network/osmosis/relayer/interchain-acc-config/rly-init.sh
 
+init-golang-rly-osmosis-local: kill-dev install
+	@echo "Initializing both blockchains..."
+	./network/osmosis-local/init.sh
+	./network/osmosis-local/start.sh
+	@echo "Initializing relayer..."
+	./network/osmosis-local/relayer/interchain-acc-config/rly-init.sh
+
+
 start: 
 	@echo "Starting up test network"
 	./network/test/start.sh
@@ -142,6 +150,9 @@ start-golang-rly-test:
 	./network/test/relayer/interchain-acc-config/rly-start.sh
 start-golang-rly-osmosis:
 	./network/osmosis/relayer/interchain-acc-config/rly-start.sh
+
+start-golang-rly-osmosis-local:
+	./network/osmosis-local/relayer/interchain-acc-config/rly-start.sh
 
 kill-dev:
 	@echo "Killing specyd and removing previous data"
