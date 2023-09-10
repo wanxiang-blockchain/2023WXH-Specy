@@ -60,6 +60,11 @@ specy net and osmosis local net
     ```bash
     cd firehose-specy
     bash devel/osmosis1/bootstrap.sh
+    ```
+    Modify the Genesis file to allow the host to execute all packets
+    ```bash
+    vim tmp/osmosis_home/config/genesis.json
+    #"allow_messages": [] -> "allow_messages": ["*"],
     tmux new -s firehose-osmosis
     bash devel/osmosis1/start.sh
     #ctrl b +d      exit tmux session
@@ -81,7 +86,8 @@ specy net and osmosis local net
   
     - 6 deploy contract
     ```bash
-    cd cw-contracts/friend-demo/
+    git clone https://github.com/wanxiang-blockchain/2023WXH-Specy.git
+    cd 2023WXH-Specy/src/demo/cw-contracts/friend-demo/
     RUSTFLAGS='-C link-arg=-s' cargo wasm
     #store code
     RES=$(osmosisd tx wasm store target/wasm32-unknown-unknown/release/cw_tpl_osmosis.wasm --from osmo12smx2wdlyttvyzvzg54y2vnqwq2qjateuf7thj \
@@ -114,7 +120,7 @@ specy net and osmosis local net
     ```
     - 7 deploy friend subgraph
     ```bash
-    git clone https://github.com/wanxiang-blockchain/2023WXH-Specy.git
+    
     cd 2023WXH-Specy/src/demo/manifests/friend-subgraph/
     #build manifest and deploy subgraph
     yarn install
@@ -192,12 +198,12 @@ specy net and osmosis local net
     #use ica address and contract
     osmosisd-tool tx interchain-accounts host generate-packet-data '{
                 "@type": "/cosmwasm.wasm.v1.MsgExecuteContract",
-                "sender": "osmo1ptxwgpxz8qx4x9ls6k43c2s4ptkevr8punn2wevk923espjm4xnqwfr2k7",
+                "sender": "osmo1qt5zw27kkpaukjtngkhyyx650lcwnurvduwscafz5pzrgt97ttlqs6fxxj",
                 "contract": "osmo14hj2tavq8fpesdwxxcu44rty3hh90vhujrvcmstl4zr3txmfvw9sq2r9g9",
                 "msg": {
                     "register": {}
                 },
-                "funds": [{"amount":"10","denom":"uosmo"}]
+                "funds": []
             }' --memo executing-task
 
     #use log info
@@ -208,8 +214,8 @@ specy net and osmosis local net
     #SEND interchain-tx to follow user1
     osmosisd-tool tx interchain-accounts host generate-packet-data '{
                 "@type": "/cosmwasm.wasm.v1.MsgExecuteContract",
-                "sender": "osmo18c3mn7keaamhta7655kk6xn7zyhv2c6uk9udrt2004trc8wd75nqjenr9n",
-                "contract": "osmo1nc5tatafv6eyq7llkr2gv50ff9e22mnf70qgjlv737ktmt4eswrqvlx82r",
+                "sender": "osmo1qt5zw27kkpaukjtngkhyyx650lcwnurvduwscafz5pzrgt97ttlqs6fxxj",
+                "contract": "osmo14hj2tavq8fpesdwxxcu44rty3hh90vhujrvcmstl4zr3txmfvw9sq2r9g9",
                 "msg": {
                     "follow": {
                         "new_follows": [
