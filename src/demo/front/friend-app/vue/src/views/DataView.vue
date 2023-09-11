@@ -113,9 +113,12 @@ const submit_register = async (): Promise<void> => {
     console.log(txResult);
 
     if (txResult.code) {
+      alert("Transaction failed!");
       throw new Error();
     }
+    alert("Transaction successed!");
   } catch (e) {
+    alert("Transaction failed!");
     console.error(e);
   }
 };
@@ -151,10 +154,13 @@ const submit_follow = async (followAddress: string): Promise<void> => {
     console.log(txResult);
 
     if (txResult.code) {
+      alert("Transaction failed!");
       throw new Error();
     }
+    alert("Transaction successed!");
   } catch (e) {
     console.error(e);
+    alert("Transaction failed!");
   }
 };
 let followers = ref(1);
