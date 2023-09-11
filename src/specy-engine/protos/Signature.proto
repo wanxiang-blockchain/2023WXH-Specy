@@ -1,0 +1,11 @@
+syntax = "proto3";
+
+package e2e_message;
+
+message SignInput{
+    string datas = 1;
+}
+
+message SignOutput{
+    string signature = 1;
+}

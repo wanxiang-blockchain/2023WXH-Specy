@@ -1,0 +1,14 @@
+enclave {
+    include "sgx_report.h"
+    include "common/data_types/key_management/ErrorType.h"
+    trusted {
+        public keymanagement_status_t ecall_init(void);
+
+        public keymanagement_status_t ecall_create_report(
+                [in] const sgx_target_info_t *target_info,
+                [out] sgx_report_t *report,
+                [out, size=64] uint8_t *pubkey, [out, size=512] uint8_t *pubEncryptKey);
+
+        public keymanagement_status_t ecall_get_pk([out, size=64] uint8_t *pubkey);
+    };
+};

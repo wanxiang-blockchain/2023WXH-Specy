@@ -1,0 +1,44 @@
+syntax = "proto3";
+
+package rule_check_proto;
+
+message Constraint {
+    oneof content {
+        Provided provided = 1;
+        Within within = 2;
+        Where where = 3;
+    }
+}
+
+message Provided {
+    string entity = 1;
+    string member = 2;
+}
+
+message Within {
+    uint64 value = 1;
+    enum UNIT{
+        SEC = 0;
+        MINIT = 1;
+        HOUR = 2;
+        DAY = 3;
+    }
+    UNIT unit = 2;
+}
+
+message Where {
+    string left_entity = 1;
+    string left_member = 2;
+    enum OPERATOR {
+        EQ = 0;
+        NEQ = 1;
+        GT = 2;
+        LT = 3;
+        EGT = 4;
+        ELT = 5;
+    }
+    OPERATOR operator = 3;
+    string right_entity = 4;
+    string right_member = 5;
+}
+

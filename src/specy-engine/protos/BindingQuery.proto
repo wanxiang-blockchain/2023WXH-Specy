@@ -1,0 +1,12 @@
+syntax = "proto3";
+
+package request_proto;
+
+message BindingQueryItem {
+    string contractID = 1;
+    string contractBinding = 2;
+}
+
+message BindingQueryMessage {
+    repeated BindingQueryItem items = 1;
+}

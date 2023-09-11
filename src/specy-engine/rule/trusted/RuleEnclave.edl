@@ -1,0 +1,16 @@
+enclave {
+    from "sgx_tstdc.edl" import *;
+    from "LocalAttestation.edl" import *;
+
+    trusted {
+        public void ecall_test_check_rule(void);
+    };
+
+    untrusted {
+        void ocall_query_entity([in, size=request_length] const char* query_request, size_t request_length,
+                                [in, size=contract_length] const char* request_contract, size_t contract_length,
+                                [out, size=result_length] char* query_result, size_t result_length);
+
+
+    };
+};

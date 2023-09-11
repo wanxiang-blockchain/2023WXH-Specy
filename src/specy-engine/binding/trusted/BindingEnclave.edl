@@ -1,0 +1,17 @@
+enclave {
+    from "sgx_tstdc.edl" import *;
+    from "LocalAttestation.edl" import *;
+    // from "CollectMetrics.edl" import *;
+    include "common/data_types/binding/ErrorType.h"
+    
+    trusted {
+        public binding_status_t ecall_process_proof_request([in, size=input_size] const char* request, size_t input_size,
+                                        [out, size=output_size] char* response, size_t output_size);
+    };
+
+    untrusted {
+        // for debug
+        void ocall_print([in, size=string_length] const char* output_string, size_t string_length);
+
+    };
+};

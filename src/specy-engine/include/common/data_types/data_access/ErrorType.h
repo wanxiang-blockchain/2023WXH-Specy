@@ -1,0 +1,10 @@
+#pragma once
+
+enum class DATAACCESS_ERROR_CODE {
+    kSUCCESS = 0,
+    kINIT_ERROR = 1,
+    kCONNECT_DB_ERROR = 2,
+    kCREATE_TABLE_ERROR = 3,
+    kQUERY_INPUT_ERROR = 4,
+    kQUERY_RESULT_ERROR = 5
+};
