@@ -23,6 +23,5 @@ let projectDescription = ref(
 </script>
   
 <style>
-/* 样式可以根据需要添加在这里 */
 </style>
   

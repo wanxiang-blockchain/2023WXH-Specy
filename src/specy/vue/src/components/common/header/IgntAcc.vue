@@ -221,6 +221,7 @@ let getAccName = (): string => {
 let disconnect = (): void => {
   state.accountDropdown = false;
   walletStore.signOut();
+  store.dispatch("common/setUserAddress", "");
 };
 
 // check if already connected

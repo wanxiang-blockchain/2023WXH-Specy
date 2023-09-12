@@ -23,7 +23,7 @@
             :key="index"
             class="tr-border"
           >
-            <td @click="detail(row)">{{ row.name }}</td>
+            <td @click="detail(row, index)">{{ row.name }}</td>
             <td>{{ row.connectionId }}</td>
             <td>{{ row.msg }}</td>
             <td class="status">Active</td>
@@ -65,8 +65,12 @@ import { useStore } from "vuex";
 import { useRouter } from "vue-router";
 import { useAddress } from "@/def-composables/useAddress";
 import { userTasks } from "../../def-composables/userTasks";
-import { env } from "../../env";
-import axios from "axios";
+import { tasks } from "../../api/task";
+//util
+let store = useStore();
+const { address } = useAddress();
+const router = useRouter();
+//props
 const props = defineProps({
   title: {
     type: String,
@@ -77,23 +81,31 @@ const props = defineProps({
     default: 5, // You can adjust the default value
   },
 });
-let store = useStore();
-const { address } = useAddress();
+//state
+let tableData = ref([]);
+let currentPage = ref(1);
+const handledTableData = ref([]);
+
+//watch
 watch(
   () => store.state.common.address,
   (newVal, oldVal) => {
-    const url =
-      env.apiURL + `/specy-network/specy/specy/task_all_by_owner/${newVal}`;
-    axios
-      .get(url)
-      .then((response) => {
-        tableData.value = response.data.tasks;
-      })
-      .catch((error) => {
-        console.error("Error fetching data:", error);
-      });
+    if (newVal.length == 0) {
+      tableData.value = [];
+    } else {
+      tasks(newVal)
+        .then((response) => {
+          tableData.value = response.tasks;
+        })
+        .catch((error) => {
+          tableData.value = [];
+          console.error("Error fetching data:", error);
+        });
+    }
   }
 );
+
+//function
 let showTabel = computed(() => {
   if (useAddress.value == "") {
     return false;
@@ -109,13 +121,10 @@ let showTabel = computed(() => {
   return true;
 });
 
-const router = useRouter();
-let tableData = ref([]);
-let currentPage = ref(1);
-const handledTableData = ref([]);
 let totalPages = computed(() => {
   return Math.ceil(tableData.value.length / props.itemsPerPage);
 });
+
 let currentPageData = computed(() => {
   if (tableData.value.length != 0) {
     const startIndex = (currentPage.value - 1) * props.itemsPerPage;
@@ -128,28 +137,33 @@ let currentPageData = computed(() => {
     return handledTableData.value.slice(startIndex, endIndex);
   }
 });
+
 const goToPage = (page) => {
   if (page >= 1 && page <= totalPages.value) {
     currentPage.value = page;
   }
 };
-const detail = (task) => {
-  store.dispatch("task/setTask", task);
+
+const detail = (task, index) => {
+  store.dispatch(
+    "task/setTask",
+    tableData.value[(currentPage.value - 1) * props.itemsPerPage + index]
+  );
   router.push("/detail");
 };
+
 const getUserTasks = () => {
-  if (store.state.common.address != "") {
-    let { tasks, isLoading } = userTasks(100);
-    const timer = setInterval(() => {
-      if (isLoading.value == false) {
-        tableData.value = tasks.value;
-        clearInterval(timer); // 停止定时器
-      } else {
-        console.log("wait");
-      }
-    }, 1000);
-  }
+  tasks(store.state.common.address)
+    .then((response) => {
+      tableData.value = response.tasks;
+    })
+    .catch((error) => {
+      tableData.value = [];
+      console.error("Error fetching data:", error);
+    });
 };
+
+//hook
 onMounted(() => {
   if (store.state.common.address.length != "") {
     getUserTasks(store);
@@ -164,19 +178,6 @@ $main-color: rgb(45, 114, 179);
 }
 .font-second-color {
   color: #757575;
-}
-.project-card {
-  padding: 20px;
-}
-
-.project-title {
-  font-size: 24px;
-  margin-bottom: 5px;
-}
-
-.project-description {
-  font-size: 18px;
-  margin-top: 5px;
 }
 
 .table th {
