@@ -14,7 +14,7 @@
             type="text"
             readonly
             class="form-control"
-            v-model="props.icaAddress"
+            v-model="icaAddress"
           />
         </div>
       </div>
@@ -36,16 +36,6 @@
           ></textarea>
         </div>
       </div>
-      <!-- <div class="mb-3 row">
-        <label class="col-sm-3 col-form-label">Funds</label>
-        <div class="col-sm-2">
-          <input v-model="amount" type="text" class="form-control" />
-        </div>
-        <label class="col-sm-1 col-form-label mr-1">Denom</label>
-        <div class="col-sm-5">
-          <input v-model="denom" type="text" class="form-control" />
-        </div>
-      </div> -->
       <div class="mb-3 row align-items-center">
         <label class="col-sm-3 col-form-label">RuleFile</label>
         <div class="col-sm-9">
@@ -69,7 +59,13 @@
         </div>
       </div>
       <div class="text-center mb-2">
-        <button class="btn btn-outline-dark" @click="submit">submit</button>
+        <button
+          class="btn btn-outline-dark"
+          v-if="icaAddress.length != 0"
+          @click="submit"
+        >
+          submit
+        </button>
       </div>
     </div>
   </div>
@@ -77,11 +73,13 @@
 
   
   <script setup lang="ts">
-import { ref } from "vue";
+import { ref, computed } from "vue";
 import type { Amount } from "@/utils/interfaces";
 import { useClient } from "@/composables/useClient";
 import { ElNotification } from "element-plus";
 import { useAddress } from "../../def-composables/useAddress";
+import { useStore } from "vuex";
+let store = useStore();
 //page params
 let taskName = ref("");
 let contractAddress = ref("");
@@ -92,16 +90,14 @@ let amount = ref("");
 let denom = ref("");
 //props
 const props = defineProps({
-  icaAddress: {
-    type: String,
-    require: true,
-  },
   connectionId: {
     type: String,
     require: true,
   },
 });
-
+let icaAddress = computed(() => {
+  return store.state.common.icaAddress;
+});
 const client = useClient();
 const createTask = client.SpecynetworkSpecySpecy.tx.sendMsgCreateTask;
 //function
@@ -133,7 +129,7 @@ const submit = async (): Promise<void> => {
   let executeMethodJson = JSON.parse(executeMethod.value);
   let executeContract = {
     "@type": "/cosmwasm.wasm.v1.MsgExecuteContract",
-    sender: props.icaAddress,
+    sender: icaAddress,
     contract: contractAddress.value,
     msg: executeMethodJson,
     funds: [],

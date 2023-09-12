@@ -16,18 +16,18 @@
       <div class="col-md-4 p-2 ml-5">
         <div><span>Interchain Account</span></div>
 
-        <div class="mt-4 font-main-color" v-if="initialState.icaAddress != ''">
+        <div class="mt-4 font-main-color" v-if="icaAddress.length != 0">
           <i class="fas fa-wallet"
             ><span class="ml-1"
-              >{{ initialState.icaAddress.substring(0, 10) }}...{{
-                initialState.icaAddress.substring(61, 65)
+              >{{ icaAddress.substring(0, 10) }}...{{
+                icaAddress.substring(61, 65)
               }}</span
             ></i
           >
         </div>
         <button
           class="main-btn mt-3 p-2"
-          v-if="initialState.icaAddress == ''"
+          v-if="icaAddress == 0"
           @click="createIca"
         >
           Create An ICA Account
@@ -39,41 +39,35 @@
     
 <script setup lang="ts">
 import { useAddress } from "../../def-composables/useAddress";
-import { icaAddress } from "../../def-composables/icaAddress";
 import type { Amount } from "@/utils/interfaces";
 import { useClient } from "@/composables/useClient";
-import { computed, onBeforeUnmount, onMounted, reactive } from "vue";
+import { onMounted, reactive, computed } from "vue";
 import { ElNotification } from "element-plus";
-
+import { useStore } from "vuex";
+//props
+const props = defineProps({
+  connectionId: {
+    type: String,
+    required: true, // You can adjust the default value
+  },
+});
+//state
 export interface State {
-  userAddress: string;
-  connectionId: string;
-  icaAddress: string;
   targetChain: { logoUrl: string; name: string };
 }
-//state
-
 let initialState = reactive({
-  userAddress: "",
-  connectionId: "connection-0",
-  icaAddress: "",
   targetChain: {
     logoUrl: "https://www.mintscan.io/assets/chains/svg/osmosis.svg",
     name: "Osmosis",
   },
 });
 
-//mounted
-let { addressInfo } = icaAddress(initialState.connectionId);
-const timer = setInterval(() => {
-  //wait user connect wallet
-  if (addressInfo != null) {
-    initialState.icaAddress = addressInfo.value || "";
-    clearInterval(timer); // 停止定时器
-  } else {
-    console.log("wait");
-  }
-}, 1000);
+let store = useStore();
+
+//computed
+let icaAddress = computed(() => {
+  return store.state.common.icaAddress;
+});
 
 const client = useClient();
 const registerIcaAccount =
@@ -109,7 +103,7 @@ const createIca = async (): Promise<void> => {
 
   let payload: any = {
     owner: address.value,
-    connectionId: initialState.connectionId,
+    connectionId: props.connectionId,
     version: 0,
   };
 

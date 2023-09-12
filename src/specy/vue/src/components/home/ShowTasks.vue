@@ -34,7 +34,7 @@
     <nav
       v-if="showTabel"
       aria-label="Page navigation"
-      class="d-flex justify-content-between align-items-center"
+      class="d-flex justify-content-between align-items-center mb-2"
     >
       <div>
         <button
@@ -60,17 +60,16 @@
 </template>
   
   <script setup>
-import { ref, computed } from "vue";
+import { ref, computed, onMounted, watch } from "vue";
 import { useStore } from "vuex";
 import { useRouter } from "vue-router";
 import { useAddress } from "@/def-composables/useAddress";
+import { userTasks } from "../../def-composables/userTasks";
+import { env } from "../../env";
+import axios from "axios";
 const props = defineProps({
   title: {
     type: String,
-    required: true,
-  },
-  tableData: {
-    type: Array,
     required: true,
   },
   itemsPerPage: {
@@ -78,33 +77,52 @@ const props = defineProps({
     default: 5, // You can adjust the default value
   },
 });
+let store = useStore();
 const { address } = useAddress();
+watch(
+  () => store.state.common.address,
+  (newVal, oldVal) => {
+    const url =
+      env.apiURL + `/specy-network/specy/specy/task_all_by_owner/${newVal}`;
+    axios
+      .get(url)
+      .then((response) => {
+        tableData.value = response.data.tasks;
+      })
+      .catch((error) => {
+        console.error("Error fetching data:", error);
+      });
+  }
+);
 let showTabel = computed(() => {
   if (useAddress.value == "") {
     return false;
   }
-  console.log(handledTableData.value);
-  if (props.tableData.length == 0) {
-    console.log(222);
+  if (
+    tableData.value.length == 0 ||
+    tableData.value == null ||
+    tableData.value.length == 0
+  ) {
     return false;
   }
-  console.log(true);
+
   return true;
 });
-let store = useStore();
+
 const router = useRouter();
+let tableData = ref([]);
 let currentPage = ref(1);
 const handledTableData = ref([]);
 let totalPages = computed(() => {
-  return Math.ceil(props.tableData.length / props.itemsPerPage);
+  return Math.ceil(tableData.value.length / props.itemsPerPage);
 });
 let currentPageData = computed(() => {
-  if (props.tableData.length != 0) {
+  if (tableData.value.length != 0) {
     const startIndex = (currentPage.value - 1) * props.itemsPerPage;
     const endIndex = startIndex + props.itemsPerPage;
-    for (let i = 0; i < props.tableData.length; i++) {
-      let json = JSON.parse(props.tableData[i].msg);
-      handledTableData.value[i] = Object.assign({}, props.tableData[i]);
+    for (let i = 0; i < tableData.value.length; i++) {
+      let json = JSON.parse(tableData.value[i].msg);
+      handledTableData.value[i] = Object.assign({}, tableData.value[i]);
       handledTableData.value[i].msg = json["@type"];
     }
     return handledTableData.value.slice(startIndex, endIndex);
@@ -119,6 +137,24 @@ const detail = (task) => {
   store.dispatch("task/setTask", task);
   router.push("/detail");
 };
+const getUserTasks = () => {
+  if (store.state.common.address != "") {
+    let { tasks, isLoading } = userTasks(100);
+    const timer = setInterval(() => {
+      if (isLoading.value == false) {
+        tableData.value = tasks.value;
+        clearInterval(timer); // 停止定时器
+      } else {
+        console.log("wait");
+      }
+    }, 1000);
+  }
+};
+onMounted(() => {
+  if (store.state.common.address.length != "") {
+    getUserTasks(store);
+  }
+});
 </script>
   
   <style scoped lang="scss">

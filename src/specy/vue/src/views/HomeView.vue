@@ -4,54 +4,22 @@
       :projectName="projectName"
       :projectDescription="projectDescription"
     />
-    <ShowTasks title="My tasks" :tableData="tableData" :itemsPerPage="5" />
+    <ShowTasks title="My tasks" :itemsPerPage="5" />
   </div>
 </template>
   
-<script>
+<script setup>
 import Introduction from "../components/home/Introduction.vue";
 import ShowTasks from "../components/home/ShowTasks.vue";
 import { useAddress } from "../def-composables/useAddress";
-import { userTasks } from "../def-composables/userTasks";
-import { useStore } from "vuex";
-export default {
-  components: {
-    Introduction,
-    ShowTasks,
-  },
-  data() {
-    return {
-      address: "",
-      projectName: "Specy  Automation",
-      projectDescription:
-        "Automate your Cosmos ecosystem TX with the Specy Network.",
-      tableData: [],
-    };
-  },
-  watch: {
-    "$store.state.common.address": function (newVal, oldVal) {},
-  },
-  methods: {
-    getUserTasks() {
-      let store = useStore();
-      if (store.state.common.address != "") {
-        let { tasks, isLoading } = userTasks(100);
-        const timer = setInterval(() => {
-          if (isLoading.value == false) {
-            this.tableData = tasks;
-            clearInterval(timer); // 停止定时器
-          } else {
-            console.log("wait");
-          }
-        }, 1000);
-      }
-    },
-  },
 
-  mounted() {
-    this.getUserTasks();
-  },
-};
+import { useStore } from "vuex";
+import { ref } from "vue";
+let address = ref("");
+let projectName = ref("Specy  Automation");
+let projectDescription = ref(
+  "Automate your Cosmos ecosystem TX with the Specy Network."
+);
 </script>
   
 <style>
