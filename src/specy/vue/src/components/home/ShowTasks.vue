@@ -23,7 +23,7 @@
             :key="index"
             class="tr-border"
           >
-            <td @click="detail(row)">{{ row.name }}</td>
+            <td @click="detail(row, index)">{{ row.name }}</td>
             <td>{{ row.connectionId }}</td>
             <td>{{ row.msg }}</td>
             <td class="status">Active</td>
@@ -144,8 +144,11 @@ const goToPage = (page) => {
   }
 };
 
-const detail = (task) => {
-  store.dispatch("task/setTask", task);
+const detail = (task, index) => {
+  store.dispatch(
+    "task/setTask",
+    tableData.value[(currentPage.value - 1) * props.itemsPerPage + index]
+  );
   router.push("/detail");
 };
 

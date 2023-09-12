@@ -20,7 +20,7 @@
         <div class="col-md-5 p-5 m-3 bg-light">
           <h4 class="mb-4">Meta Data</h4>
           <div class="overflow-auto mh-400">
-            <p>Msg type</p>
+            <p>Msg content</p>
             <p class="p-color">{{ task.msg }}</p>
             <hr />
             <p>Rule file content</p>
@@ -45,10 +45,17 @@
 
           <hr />
           <p>Last execute time</p>
-          <p class="p-color">{{ task.updateTime }}</p>
-          <hr />
-          <p>Last execute height</p>
-          <p class="p-color">{{ task.updateBlockHeight }}</p>
+          <p class="p-color" v-if="loaded && recordsTable.length >= 1">
+            {{
+              formatDate(
+                recordsTable[recordsTable.length - 1].timestamp / 1000000
+              )
+            }}
+          </p>
+          <p class="p-color" v-else>Unexecuted</p>
+          <!-- <hr /> -->
+          <!-- <p>Last execute height</p>
+          <p class="p-color">{{ task.updateBlockHeight }}</p> -->
         </div>
       </div>
       <hr />
@@ -180,6 +187,7 @@ const getRecords = () => {
 onBeforeMount(() => {
   if (store.state.task.task != null) {
     task.value = store.state.task.task;
+    console.log(task.value);
     getRecords();
   }
 });
