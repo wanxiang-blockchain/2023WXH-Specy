@@ -108,12 +108,22 @@
   
 <script setup>
 import { useStore } from "vuex";
-import { onBeforeMount, onMounted, computed, ref } from "vue";
+import { onBeforeMount, onMounted, onBeforeUnmount, computed, ref } from "vue";
 import { taskRecords } from "../../def-composables/taskHistory";
 import { format } from "date-fns";
+import { records } from "../../api/task";
+import { useRouter } from "vue-router";
+//util
 let store = useStore();
+let router = useRouter();
+
+//state
+let currentPage = ref(1);
+let loaded = ref(false);
 let task = ref();
 let recordsTable = ref();
+let timer;
+
 //function
 let shortAddress = computed(() => {
   return (
@@ -140,16 +150,14 @@ let taskType = computed(() => {
 });
 const formatDate = (value) => format(value, "yyyy-MM-dd hh:mm");
 
-let currentPage = ref(1);
-let loaded = ref(false);
 let totalPages = computed(() => {
-  return Math.ceil(recordsTable.value.value.length / 10);
+  return Math.ceil(recordsTable.value.length / 10);
 });
 let currentPageData = computed(() => {
-  if (recordsTable.value.value.length != 0) {
+  if (recordsTable.value.length != 0) {
     const startIndex = (currentPage.value - 1) * 10;
     const endIndex = startIndex + 10;
-    return recordsTable.value.value.slice(startIndex, endIndex);
+    return recordsTable.value.slice(startIndex, endIndex);
   }
 });
 
@@ -158,19 +166,25 @@ const goToPage = (page) => {
     currentPage.value = page;
   }
 };
-
-onBeforeMount(() => {
-  task.value = store.state.task.task;
-  let { records, isLoading } = taskRecords(task.value.owner, task.value.name);
-  const timer = setInterval(() => {
-    if (isLoading.value == false) {
-      recordsTable.value = records;
+const getRecords = () => {
+  timer = setInterval(() => {
+    records(task.value.owner, task.value.name).then((response) => {
+      console.log(response);
+      recordsTable.value = response.records;
       loaded.value = true;
-      clearInterval(timer); // 停止定时器
-    } else {
-      console.log("wait");
-    }
-  }, 1000);
+    });
+  }, 3000);
+};
+
+//hook
+onBeforeMount(() => {
+  if (store.state.task.task != null) {
+    task.value = store.state.task.task;
+    getRecords();
+  }
+});
+onBeforeUnmount(() => {
+  clearInterval(timer);
 });
 </script>
   
