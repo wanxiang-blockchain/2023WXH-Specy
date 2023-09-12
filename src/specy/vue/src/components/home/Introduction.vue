@@ -21,13 +21,20 @@
           <a
             target="_blank"
             href="https://specy-network.gitbook.io/specy-network/introduction/what-is-specy-network"
+            class="font-main-color"
             >Go to the docs</a
           >
         </button>
       </div>
       <div class="col-md-2 text-right font-second-color">
         <i class="fas fa-question-circle"></i
-        ><a href="#" class="font-second-color"> How it works</a>
+        ><a
+          target="_blank"
+          href="https://specy-network.gitbook.io/specy-network/introduction/how-it-work"
+          class="font-second-color"
+        >
+          How it works</a
+        >
       </div>
     </div>
   </div>
@@ -87,11 +94,6 @@ $main-color: rgb(45, 114, 179);
 }
 a {
   text-decoration: none !important; /* 去除下划线 */
-}
-
-/* 修改链接悬停时的颜色 */
-a:hover {
-  color: #0056b3 !important;
 }
 </style>
   

@@ -34,7 +34,7 @@
     <nav
       v-if="showTabel"
       aria-label="Page navigation"
-      class="d-flex justify-content-between align-items-center"
+      class="d-flex justify-content-between align-items-center mb-2"
     >
       <div>
         <button

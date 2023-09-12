@@ -8,7 +8,7 @@
       @click="state.accountDropdown = !state.accountDropdown"
     >
       <div class="flex items-center">
-        <IgntProfileIcon :address="state.keplrParams?.bech32Address" />
+        <IgntProfileIcon :address="address" />
         <span class="mx-2">
           {{ getAccName() }}
         </span>
@@ -141,6 +141,7 @@ import { useClient } from "@/composables/useClient";
 import { useWalletStore } from "@/stores/useWalletStore";
 import useCosmosBaseTendermintV1Beta1 from "@/composables/useCosmosBaseTendermintV1Beta1";
 import { useStore } from "vuex";
+import { useAddress } from "../../../def-composables/useAddress";
 
 export interface State {
   modalPage: string;
@@ -162,11 +163,12 @@ const state = reactive(initialState);
 const store = useStore();
 // composables
 const { connectToKeplr, isKeplrAvailable, getKeplrAccParams } = useKeplr();
-
+let { address, shortAddress } = useAddress();
 const client = useClient();
 const walletStore = useWalletStore();
 // methods
 const wallet = computed(() => walletStore.getWallet);
+
 const query = useCosmosBaseTendermintV1Beta1();
 const nodeInfo = query.ServiceGetNodeInfo({});
 const chainId = computed(
@@ -179,6 +181,17 @@ watch(
       let { name, bech32Address } = await getKeplrAccParams(newVal);
       state.keplrParams.name = name;
       state.keplrParams.bech32Address = bech32Address;
+    }
+  }
+);
+watch(
+  () => address.value,
+  async (newVal) => {
+    if (newVal != "") {
+      let { name, bech32Address } = await getKeplrAccParams(chainId.value);
+      state.keplrParams.name = name;
+      state.keplrParams.bech32Address = bech32Address;
+      store.dispatch("common/setUserAddress", state.keplrParams.bech32Address);
     }
   }
 );
@@ -197,9 +210,9 @@ let tryToConnectToKeplr = (): void => {
 
   connectToKeplr(onKeplrConnect, onKeplrError);
 };
+
 let getAccName = (): string => {
   if (client.signer) {
-    store.dispatch("common/setUserAddress", state.keplrParams.bech32Address);
     return state.keplrParams.name;
   } else {
     return "";
