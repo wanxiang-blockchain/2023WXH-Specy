@@ -119,6 +119,7 @@ import { onBeforeMount, onMounted, onBeforeUnmount, computed, ref } from "vue";
 import { taskRecords } from "../../def-composables/taskHistory";
 import { format } from "date-fns";
 import { records } from "../../api/task";
+import { tx } from "../../api/tx";
 import { useRouter } from "vue-router";
 //util
 let store = useStore();
@@ -129,6 +130,7 @@ let currentPage = ref(1);
 let loaded = ref(false);
 let task = ref();
 let recordsTable = ref();
+
 let timer;
 
 //function
@@ -176,18 +178,37 @@ const goToPage = (page) => {
 const getRecords = () => {
   timer = setInterval(() => {
     records(task.value.owner, task.value.name).then((response) => {
-      console.log(response);
-      recordsTable.value = response.records;
-      loaded.value = true;
+      // console.log(response);
+      // recordsTable.value = response.records;
+      //filter record
+      let filterData = [];
+      let filterKey = [];
+      for (let index = 0; index < response.records.length; index++) {
+        const element = response.records[index];
+        tx(element.txHash)
+          .then((res) => {
+            let key = res.tx.body.messages[0].packet_data.data;
+            if (!filterKey.includes(key)) {
+              filterKey.push(key);
+              filterData.push(response.records[index]);
+              recordsTable.value = filterData;
+            }
+            if (index == response.records.length - 1) {
+              loaded.value = true;
+            }
+          })
+          .catch((error) => {
+            console.log(error);
+          });
+      }
     });
-  }, 3000);
+  }, 4000);
 };
 
 //hook
 onBeforeMount(() => {
   if (store.state.task.task != null) {
     task.value = store.state.task.task;
-    console.log(task.value);
     getRecords();
   }
 });
