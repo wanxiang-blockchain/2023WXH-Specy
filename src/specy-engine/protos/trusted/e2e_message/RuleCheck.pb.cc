@@ -81,6 +81,7 @@ const ::google::protobuf::uint32 TableStruct_RuleCheck_2eproto::offsets[] PROTOB
   PROTOBUF_FIELD_OFFSET(::e2e_message::RuleCheckResponse, status_),
   PROTOBUF_FIELD_OFFSET(::e2e_message::RuleCheckResponse, error_info_),
   PROTOBUF_FIELD_OFFSET(::e2e_message::RuleCheckResponse, output_data_),
+  PROTOBUF_FIELD_OFFSET(::e2e_message::RuleCheckResponse, cproof_),
 };
 static const ::google::protobuf::internal::MigrationSchema schemas[] PROTOBUF_SECTION_VARIABLE(protodesc_cold) = {
   { 0, -1, sizeof(::e2e_message::RuleCheckRequest)},
@@ -101,15 +102,15 @@ static ::google::protobuf::Message const * const file_default_instances[] = {
 const char descriptor_table_protodef_RuleCheck_2eproto[] =
   "\n\017RuleCheck.proto\022\013e2e_message\"K\n\020RuleCh"
   "eckRequest\022\020\n\010taskhash\030\001 \001(\014\022\021\n\trule_fil"
-  "e\030\002 \001(\t\022\022\n\ninput_data\030\003 \001(\t\"^\n\021RuleCheck"
+  "e\030\002 \001(\t\022\022\n\ninput_data\030\003 \001(\t\"n\n\021RuleCheck"
   "Response\022\020\n\010taskhash\030\001 \001(\014\022\016\n\006status\030\002 \001"
   "(\010\022\022\n\nerror_info\030\003 \001(\t\022\023\n\013output_data\030\004 "
-  "\001(\tb\006proto3"
+  "\001(\t\022\016\n\006cproof\030\005 \001(\tb\006proto3"
   ;
 ::google::protobuf::internal::DescriptorTable descriptor_table_RuleCheck_2eproto = {
   false, InitDefaults_RuleCheck_2eproto, 
   descriptor_table_protodef_RuleCheck_2eproto,
-  "RuleCheck.proto", &assign_descriptors_table_RuleCheck_2eproto, 211,
+  "RuleCheck.proto", &assign_descriptors_table_RuleCheck_2eproto, 227,
 };
 
 void AddDescriptors_RuleCheck_2eproto() {
@@ -566,6 +567,7 @@ const int RuleCheckResponse::kTaskhashFieldNumber;
 const int RuleCheckResponse::kStatusFieldNumber;
 const int RuleCheckResponse::kErrorInfoFieldNumber;
 const int RuleCheckResponse::kOutputDataFieldNumber;
+const int RuleCheckResponse::kCproofFieldNumber;
 #endif  // !defined(_MSC_VER) || _MSC_VER >= 1900
 
 RuleCheckResponse::RuleCheckResponse()
@@ -589,6 +591,10 @@ RuleCheckResponse::RuleCheckResponse(const RuleCheckResponse& from)
   if (from.output_data().size() > 0) {
     output_data_.AssignWithDefault(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), from.output_data_);
   }
+  cproof_.UnsafeSetDefault(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+  if (from.cproof().size() > 0) {
+    cproof_.AssignWithDefault(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), from.cproof_);
+  }
   status_ = from.status_;
   // @@protoc_insertion_point(copy_constructor:e2e_message.RuleCheckResponse)
 }
@@ -599,6 +605,7 @@ void RuleCheckResponse::SharedCtor() {
   taskhash_.UnsafeSetDefault(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
   error_info_.UnsafeSetDefault(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
   output_data_.UnsafeSetDefault(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+  cproof_.UnsafeSetDefault(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
   status_ = false;
 }
 
@@ -611,6 +618,7 @@ void RuleCheckResponse::SharedDtor() {
   taskhash_.DestroyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
   error_info_.DestroyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
   output_data_.DestroyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+  cproof_.DestroyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
 }
 
 void RuleCheckResponse::SetCachedSize(int size) const {
@@ -631,6 +639,7 @@ void RuleCheckResponse::Clear() {
   taskhash_.ClearToEmptyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
   error_info_.ClearToEmptyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
   output_data_.ClearToEmptyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+  cproof_.ClearToEmptyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
   status_ = false;
   _internal_metadata_.Clear();
 }
@@ -693,6 +702,22 @@ const char* RuleCheckResponse::_InternalParse(const char* begin, const char* end
         GOOGLE_PROTOBUF_PARSER_ASSERT(ptr);
         ctx->extra_parse_data().SetFieldName("e2e_message.RuleCheckResponse.output_data");
         object = msg->mutable_output_data();
+        if (size > end - ptr + ::google::protobuf::internal::ParseContext::kSlopBytes) {
+          parser_till_end = ::google::protobuf::internal::GreedyStringParserUTF8;
+          goto string_till_end;
+        }
+        GOOGLE_PROTOBUF_PARSER_ASSERT(::google::protobuf::internal::StringCheckUTF8(ptr, size, ctx));
+        ::google::protobuf::internal::InlineGreedyStringParser(object, ptr, size, ctx);
+        ptr += size;
+        break;
+      }
+      // string cproof = 5;
+      case 5: {
+        if (static_cast<::google::protobuf::uint8>(tag) != 42) goto handle_unusual;
+        ptr = ::google::protobuf::io::ReadSize(ptr, &size);
+        GOOGLE_PROTOBUF_PARSER_ASSERT(ptr);
+        ctx->extra_parse_data().SetFieldName("e2e_message.RuleCheckResponse.cproof");
+        object = msg->mutable_cproof();
         if (size > end - ptr + ::google::protobuf::internal::ParseContext::kSlopBytes) {
           parser_till_end = ::google::protobuf::internal::GreedyStringParserUTF8;
           goto string_till_end;
@@ -790,6 +815,21 @@ bool RuleCheckResponse::MergePartialFromCodedStream(
         break;
       }
 
+      // string cproof = 5;
+      case 5: {
+        if (static_cast< ::google::protobuf::uint8>(tag) == (42 & 0xFF)) {
+          DO_(::google::protobuf::internal::WireFormatLite::ReadString(
+                input, this->mutable_cproof()));
+          DO_(::google::protobuf::internal::WireFormatLite::VerifyUtf8String(
+            this->cproof().data(), static_cast<int>(this->cproof().length()),
+            ::google::protobuf::internal::WireFormatLite::PARSE,
+            "e2e_message.RuleCheckResponse.cproof"));
+        } else {
+          goto handle_unusual;
+        }
+        break;
+      }
+
       default: {
       handle_unusual:
         if (tag == 0) {
@@ -848,6 +888,16 @@ void RuleCheckResponse::SerializeWithCachedSizes(
       4, this->output_data(), output);
   }
 
+  // string cproof = 5;
+  if (this->cproof().size() > 0) {
+    ::google::protobuf::internal::WireFormatLite::VerifyUtf8String(
+      this->cproof().data(), static_cast<int>(this->cproof().length()),
+      ::google::protobuf::internal::WireFormatLite::SERIALIZE,
+      "e2e_message.RuleCheckResponse.cproof");
+    ::google::protobuf::internal::WireFormatLite::WriteStringMaybeAliased(
+      5, this->cproof(), output);
+  }
+
   if (_internal_metadata_.have_unknown_fields()) {
     ::google::protobuf::internal::WireFormat::SerializeUnknownFields(
         _internal_metadata_.unknown_fields(), output);
@@ -895,6 +945,17 @@ void RuleCheckResponse::SerializeWithCachedSizes(
         4, this->output_data(), target);
   }
 
+  // string cproof = 5;
+  if (this->cproof().size() > 0) {
+    ::google::protobuf::internal::WireFormatLite::VerifyUtf8String(
+      this->cproof().data(), static_cast<int>(this->cproof().length()),
+      ::google::protobuf::internal::WireFormatLite::SERIALIZE,
+      "e2e_message.RuleCheckResponse.cproof");
+    target =
+      ::google::protobuf::internal::WireFormatLite::WriteStringToArray(
+        5, this->cproof(), target);
+  }
+
   if (_internal_metadata_.have_unknown_fields()) {
     target = ::google::protobuf::internal::WireFormat::SerializeUnknownFieldsToArray(
         _internal_metadata_.unknown_fields(), target);
@@ -935,6 +996,13 @@ size_t RuleCheckResponse::ByteSizeLong() const {
     total_size += 1 +
       ::google::protobuf::internal::WireFormatLite::StringSize(
         this->output_data());
+  }
+
+  // string cproof = 5;
+  if (this->cproof().size() > 0) {
+    total_size += 1 +
+      ::google::protobuf::internal::WireFormatLite::StringSize(
+        this->cproof());
   }
 
   // bool status = 2;
@@ -981,6 +1049,10 @@ void RuleCheckResponse::MergeFrom(const RuleCheckResponse& from) {
 
     output_data_.AssignWithDefault(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), from.output_data_);
   }
+  if (from.cproof().size() > 0) {
+
+    cproof_.AssignWithDefault(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), from.cproof_);
+  }
   if (from.status() != 0) {
     set_status(from.status());
   }
@@ -1016,6 +1088,8 @@ void RuleCheckResponse::InternalSwap(RuleCheckResponse* other) {
   error_info_.Swap(&other->error_info_, &::google::protobuf::internal::GetEmptyStringAlreadyInited(),
     GetArenaNoVirtual());
   output_data_.Swap(&other->output_data_, &::google::protobuf::internal::GetEmptyStringAlreadyInited(),
+    GetArenaNoVirtual());
+  cproof_.Swap(&other->cproof_, &::google::protobuf::internal::GetEmptyStringAlreadyInited(),
     GetArenaNoVirtual());
   swap(status_, other->status_);
 }

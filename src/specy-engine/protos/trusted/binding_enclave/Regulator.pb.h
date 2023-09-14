@@ -353,9 +353,23 @@ class TaskResponse :
   ::std::string* release_output_data();
   void set_allocated_output_data(::std::string* output_data);
 
-  // bytes signature = 5;
+  // string cproof = 5;
+  void clear_cproof();
+  static const int kCproofFieldNumber = 5;
+  const ::std::string& cproof() const;
+  void set_cproof(const ::std::string& value);
+  #if LANG_CXX11
+  void set_cproof(::std::string&& value);
+  #endif
+  void set_cproof(const char* value);
+  void set_cproof(const char* value, size_t size);
+  ::std::string* mutable_cproof();
+  ::std::string* release_cproof();
+  void set_allocated_cproof(::std::string* cproof);
+
+  // bytes signature = 6;
   void clear_signature();
-  static const int kSignatureFieldNumber = 5;
+  static const int kSignatureFieldNumber = 6;
   const ::std::string& signature() const;
   void set_signature(const ::std::string& value);
   #if LANG_CXX11
@@ -381,6 +395,7 @@ class TaskResponse :
   ::google::protobuf::internal::ArenaStringPtr taskhash_;
   ::google::protobuf::internal::ArenaStringPtr error_info_;
   ::google::protobuf::internal::ArenaStringPtr output_data_;
+  ::google::protobuf::internal::ArenaStringPtr cproof_;
   ::google::protobuf::internal::ArenaStringPtr signature_;
   bool status_;
   mutable ::google::protobuf::internal::CachedSize _cached_size_;
@@ -733,7 +748,60 @@ inline void TaskResponse::set_allocated_output_data(::std::string* output_data) 
   // @@protoc_insertion_point(field_set_allocated:request_proto.TaskResponse.output_data)
 }
 
-// bytes signature = 5;
+// string cproof = 5;
+inline void TaskResponse::clear_cproof() {
+  cproof_.ClearToEmptyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+}
+inline const ::std::string& TaskResponse::cproof() const {
+  // @@protoc_insertion_point(field_get:request_proto.TaskResponse.cproof)
+  return cproof_.GetNoArena();
+}
+inline void TaskResponse::set_cproof(const ::std::string& value) {
+  
+  cproof_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), value);
+  // @@protoc_insertion_point(field_set:request_proto.TaskResponse.cproof)
+}
+#if LANG_CXX11
+inline void TaskResponse::set_cproof(::std::string&& value) {
+  
+  cproof_.SetNoArena(
+    &::google::protobuf::internal::GetEmptyStringAlreadyInited(), ::std::move(value));
+  // @@protoc_insertion_point(field_set_rvalue:request_proto.TaskResponse.cproof)
+}
+#endif
+inline void TaskResponse::set_cproof(const char* value) {
+  GOOGLE_DCHECK(value != nullptr);
+  
+  cproof_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), ::std::string(value));
+  // @@protoc_insertion_point(field_set_char:request_proto.TaskResponse.cproof)
+}
+inline void TaskResponse::set_cproof(const char* value, size_t size) {
+  
+  cproof_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(),
+      ::std::string(reinterpret_cast<const char*>(value), size));
+  // @@protoc_insertion_point(field_set_pointer:request_proto.TaskResponse.cproof)
+}
+inline ::std::string* TaskResponse::mutable_cproof() {
+  
+  // @@protoc_insertion_point(field_mutable:request_proto.TaskResponse.cproof)
+  return cproof_.MutableNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+}
+inline ::std::string* TaskResponse::release_cproof() {
+  // @@protoc_insertion_point(field_release:request_proto.TaskResponse.cproof)
+  
+  return cproof_.ReleaseNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+}
+inline void TaskResponse::set_allocated_cproof(::std::string* cproof) {
+  if (cproof != nullptr) {
+    
+  } else {
+    
+  }
+  cproof_.SetAllocatedNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), cproof);
+  // @@protoc_insertion_point(field_set_allocated:request_proto.TaskResponse.cproof)
+}
+
+// bytes signature = 6;
 inline void TaskResponse::clear_signature() {
   signature_.ClearToEmptyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
 }

@@ -36,6 +36,7 @@ constexpr TaskResponse::TaskResponse(
   : taskhash_(&::PROTOBUF_NAMESPACE_ID::internal::fixed_address_empty_string)
   , error_info_(&::PROTOBUF_NAMESPACE_ID::internal::fixed_address_empty_string)
   , output_data_(&::PROTOBUF_NAMESPACE_ID::internal::fixed_address_empty_string)
+  , cproof_(&::PROTOBUF_NAMESPACE_ID::internal::fixed_address_empty_string)
   , signature_(&::PROTOBUF_NAMESPACE_ID::internal::fixed_address_empty_string)
   , status_(false){}
 struct TaskResponseDefaultTypeInternal {
@@ -70,6 +71,7 @@ const ::PROTOBUF_NAMESPACE_ID::uint32 TableStruct_Regulator_2eproto::offsets[] P
   PROTOBUF_FIELD_OFFSET(::request_proto::TaskResponse, status_),
   PROTOBUF_FIELD_OFFSET(::request_proto::TaskResponse, error_info_),
   PROTOBUF_FIELD_OFFSET(::request_proto::TaskResponse, output_data_),
+  PROTOBUF_FIELD_OFFSET(::request_proto::TaskResponse, cproof_),
   PROTOBUF_FIELD_OFFSET(::request_proto::TaskResponse, signature_),
 };
 static const ::PROTOBUF_NAMESPACE_ID::internal::MigrationSchema schemas[] PROTOBUF_SECTION_VARIABLE(protodesc_cold) = {
@@ -85,16 +87,17 @@ static ::PROTOBUF_NAMESPACE_ID::Message const * const file_default_instances[] =
 const char descriptor_table_protodef_Regulator_2eproto[] PROTOBUF_SECTION_VARIABLE(protodesc_cold) =
   "\n\017Regulator.proto\022\rrequest_proto\"F\n\013Task"
   "Request\022\020\n\010taskhash\030\001 \001(\014\022\021\n\trule_file\030\002"
-  " \001(\t\022\022\n\ninput_data\030\003 \001(\t\"l\n\014TaskResponse"
+  " \001(\t\022\022\n\ninput_data\030\003 \001(\t\"|\n\014TaskResponse"
   "\022\020\n\010taskhash\030\001 \001(\014\022\016\n\006status\030\002 \001(\010\022\022\n\ner"
-  "ror_info\030\003 \001(\t\022\023\n\013output_data\030\004 \001(\t\022\021\n\ts"
-  "ignature\030\005 \001(\0142[\n\tRegulator\022N\n\rGetTaskRe"
-  "sult\022\032.request_proto.TaskRequest\032\033.reque"
-  "st_proto.TaskResponse\"\000(\0010\001b\006proto3"
+  "ror_info\030\003 \001(\t\022\023\n\013output_data\030\004 \001(\t\022\016\n\006c"
+  "proof\030\005 \001(\t\022\021\n\tsignature\030\006 \001(\0142[\n\tRegula"
+  "tor\022N\n\rGetTaskResult\022\032.request_proto.Tas"
+  "kRequest\032\033.request_proto.TaskResponse\"\000("
+  "\0010\001b\006proto3"
   ;
 static ::PROTOBUF_NAMESPACE_ID::internal::once_flag descriptor_table_Regulator_2eproto_once;
 const ::PROTOBUF_NAMESPACE_ID::internal::DescriptorTable descriptor_table_Regulator_2eproto = {
-  false, false, 315, descriptor_table_protodef_Regulator_2eproto, "Regulator.proto", 
+  false, false, 331, descriptor_table_protodef_Regulator_2eproto, "Regulator.proto", 
   &descriptor_table_Regulator_2eproto_once, nullptr, 0, 2,
   schemas, file_default_instances, TableStruct_Regulator_2eproto::offsets,
   file_level_metadata_Regulator_2eproto, file_level_enum_descriptors_Regulator_2eproto, file_level_service_descriptors_Regulator_2eproto,
@@ -410,6 +413,11 @@ TaskResponse::TaskResponse(const TaskResponse& from)
     output_data_.Set(::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr::EmptyDefault{}, from._internal_output_data(), 
       GetArena());
   }
+  cproof_.UnsafeSetDefault(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited());
+  if (!from._internal_cproof().empty()) {
+    cproof_.Set(::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr::EmptyDefault{}, from._internal_cproof(), 
+      GetArena());
+  }
   signature_.UnsafeSetDefault(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited());
   if (!from._internal_signature().empty()) {
     signature_.Set(::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr::EmptyDefault{}, from._internal_signature(), 
@@ -423,6 +431,7 @@ void TaskResponse::SharedCtor() {
 taskhash_.UnsafeSetDefault(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited());
 error_info_.UnsafeSetDefault(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited());
 output_data_.UnsafeSetDefault(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited());
+cproof_.UnsafeSetDefault(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited());
 signature_.UnsafeSetDefault(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited());
 status_ = false;
 }
@@ -438,6 +447,7 @@ void TaskResponse::SharedDtor() {
   taskhash_.DestroyNoArena(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited());
   error_info_.DestroyNoArena(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited());
   output_data_.DestroyNoArena(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited());
+  cproof_.DestroyNoArena(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited());
   signature_.DestroyNoArena(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited());
 }
 
@@ -460,6 +470,7 @@ void TaskResponse::Clear() {
   taskhash_.ClearToEmpty();
   error_info_.ClearToEmpty();
   output_data_.ClearToEmpty();
+  cproof_.ClearToEmpty();
   signature_.ClearToEmpty();
   status_ = false;
   _internal_metadata_.Clear<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>();
@@ -505,9 +516,18 @@ const char* TaskResponse::_InternalParse(const char* ptr, ::PROTOBUF_NAMESPACE_I
           CHK_(ptr);
         } else goto handle_unusual;
         continue;
-      // bytes signature = 5;
+      // string cproof = 5;
       case 5:
         if (PROTOBUF_PREDICT_TRUE(static_cast<::PROTOBUF_NAMESPACE_ID::uint8>(tag) == 42)) {
+          auto str = _internal_mutable_cproof();
+          ptr = ::PROTOBUF_NAMESPACE_ID::internal::InlineGreedyStringParser(str, ptr, ctx);
+          CHK_(::PROTOBUF_NAMESPACE_ID::internal::VerifyUTF8(str, "request_proto.TaskResponse.cproof"));
+          CHK_(ptr);
+        } else goto handle_unusual;
+        continue;
+      // bytes signature = 6;
+      case 6:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<::PROTOBUF_NAMESPACE_ID::uint8>(tag) == 50)) {
           auto str = _internal_mutable_signature();
           ptr = ::PROTOBUF_NAMESPACE_ID::internal::InlineGreedyStringParser(str, ptr, ctx);
           CHK_(ptr);
@@ -573,10 +593,20 @@ failure:
         4, this->_internal_output_data(), target);
   }
 
-  // bytes signature = 5;
+  // string cproof = 5;
+  if (this->cproof().size() > 0) {
+    ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::VerifyUtf8String(
+      this->_internal_cproof().data(), static_cast<int>(this->_internal_cproof().length()),
+      ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::SERIALIZE,
+      "request_proto.TaskResponse.cproof");
+    target = stream->WriteStringMaybeAliased(
+        5, this->_internal_cproof(), target);
+  }
+
+  // bytes signature = 6;
   if (this->signature().size() > 0) {
     target = stream->WriteBytesMaybeAliased(
-        5, this->_internal_signature(), target);
+        6, this->_internal_signature(), target);
   }
 
   if (PROTOBUF_PREDICT_FALSE(_internal_metadata_.have_unknown_fields())) {
@@ -616,7 +646,14 @@ size_t TaskResponse::ByteSizeLong() const {
         this->_internal_output_data());
   }
 
-  // bytes signature = 5;
+  // string cproof = 5;
+  if (this->cproof().size() > 0) {
+    total_size += 1 +
+      ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::StringSize(
+        this->_internal_cproof());
+  }
+
+  // bytes signature = 6;
   if (this->signature().size() > 0) {
     total_size += 1 +
       ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::BytesSize(
@@ -668,6 +705,9 @@ void TaskResponse::MergeFrom(const TaskResponse& from) {
   if (from.output_data().size() > 0) {
     _internal_set_output_data(from._internal_output_data());
   }
+  if (from.cproof().size() > 0) {
+    _internal_set_cproof(from._internal_cproof());
+  }
   if (from.signature().size() > 0) {
     _internal_set_signature(from._internal_signature());
   }
@@ -700,6 +740,7 @@ void TaskResponse::InternalSwap(TaskResponse* other) {
   taskhash_.Swap(&other->taskhash_, &::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), GetArena());
   error_info_.Swap(&other->error_info_, &::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), GetArena());
   output_data_.Swap(&other->output_data_, &::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), GetArena());
+  cproof_.Swap(&other->cproof_, &::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), GetArena());
   signature_.Swap(&other->signature_, &::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), GetArena());
   swap(status_, other->status_);
 }

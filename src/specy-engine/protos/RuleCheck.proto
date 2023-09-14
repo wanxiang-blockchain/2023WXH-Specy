@@ -13,4 +13,5 @@ message RuleCheckResponse {
     bool status =2;  
     string error_info = 3;
     string output_data = 4;
+    string cproof = 5;
 }

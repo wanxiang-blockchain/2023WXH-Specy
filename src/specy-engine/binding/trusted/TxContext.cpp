@@ -114,6 +114,7 @@ void TxContext::generateTaskResponse() {
     taskResponse->set_output_data(ruleCheckResponse->output_data());
     taskResponse->set_error_info(ruleCheckResponse->error_info());
     taskResponse->set_status(ruleCheckResponse->status());
+    taskResponse->set_cproof(ruleCheckResponse->cproof());
 
     
     BINDING_INFO("generateTaskResponse start!");

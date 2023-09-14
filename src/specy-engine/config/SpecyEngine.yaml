@@ -1,7 +1,7 @@
 # ComplianceEngine config file
 # version:0.1.0
 dataaccess:
-  THE_GRAPH_ADDRESS: '10.100.117.55'
+  THE_GRAPH_ADDRESS: 'localhost'
   THE_GRAPH_PORT: '8000'
 
 requestprocessor:

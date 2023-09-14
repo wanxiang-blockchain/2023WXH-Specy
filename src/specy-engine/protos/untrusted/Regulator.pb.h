@@ -366,7 +366,8 @@ class TaskResponse PROTOBUF_FINAL :
     kTaskhashFieldNumber = 1,
     kErrorInfoFieldNumber = 3,
     kOutputDataFieldNumber = 4,
-    kSignatureFieldNumber = 5,
+    kCproofFieldNumber = 5,
+    kSignatureFieldNumber = 6,
     kStatusFieldNumber = 2,
   };
   // bytes taskhash = 1;
@@ -417,7 +418,23 @@ class TaskResponse PROTOBUF_FINAL :
   std::string* _internal_mutable_output_data();
   public:
 
-  // bytes signature = 5;
+  // string cproof = 5;
+  void clear_cproof();
+  const std::string& cproof() const;
+  void set_cproof(const std::string& value);
+  void set_cproof(std::string&& value);
+  void set_cproof(const char* value);
+  void set_cproof(const char* value, size_t size);
+  std::string* mutable_cproof();
+  std::string* release_cproof();
+  void set_allocated_cproof(std::string* cproof);
+  private:
+  const std::string& _internal_cproof() const;
+  void _internal_set_cproof(const std::string& value);
+  std::string* _internal_mutable_cproof();
+  public:
+
+  // bytes signature = 6;
   void clear_signature();
   const std::string& signature() const;
   void set_signature(const std::string& value);
@@ -452,6 +469,7 @@ class TaskResponse PROTOBUF_FINAL :
   ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr taskhash_;
   ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr error_info_;
   ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr output_data_;
+  ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr cproof_;
   ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr signature_;
   bool status_;
   mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
@@ -858,7 +876,68 @@ inline void TaskResponse::set_allocated_output_data(std::string* output_data) {
   // @@protoc_insertion_point(field_set_allocated:request_proto.TaskResponse.output_data)
 }
 
-// bytes signature = 5;
+// string cproof = 5;
+inline void TaskResponse::clear_cproof() {
+  cproof_.ClearToEmpty();
+}
+inline const std::string& TaskResponse::cproof() const {
+  // @@protoc_insertion_point(field_get:request_proto.TaskResponse.cproof)
+  return _internal_cproof();
+}
+inline void TaskResponse::set_cproof(const std::string& value) {
+  _internal_set_cproof(value);
+  // @@protoc_insertion_point(field_set:request_proto.TaskResponse.cproof)
+}
+inline std::string* TaskResponse::mutable_cproof() {
+  // @@protoc_insertion_point(field_mutable:request_proto.TaskResponse.cproof)
+  return _internal_mutable_cproof();
+}
+inline const std::string& TaskResponse::_internal_cproof() const {
+  return cproof_.Get();
+}
+inline void TaskResponse::_internal_set_cproof(const std::string& value) {
+  
+  cproof_.Set(::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr::EmptyDefault{}, value, GetArena());
+}
+inline void TaskResponse::set_cproof(std::string&& value) {
+  
+  cproof_.Set(
+    ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr::EmptyDefault{}, ::std::move(value), GetArena());
+  // @@protoc_insertion_point(field_set_rvalue:request_proto.TaskResponse.cproof)
+}
+inline void TaskResponse::set_cproof(const char* value) {
+  GOOGLE_DCHECK(value != nullptr);
+  
+  cproof_.Set(::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr::EmptyDefault{}, ::std::string(value), GetArena());
+  // @@protoc_insertion_point(field_set_char:request_proto.TaskResponse.cproof)
+}
+inline void TaskResponse::set_cproof(const char* value,
+    size_t size) {
+  
+  cproof_.Set(::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr::EmptyDefault{}, ::std::string(
+      reinterpret_cast<const char*>(value), size), GetArena());
+  // @@protoc_insertion_point(field_set_pointer:request_proto.TaskResponse.cproof)
+}
+inline std::string* TaskResponse::_internal_mutable_cproof() {
+  
+  return cproof_.Mutable(::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr::EmptyDefault{}, GetArena());
+}
+inline std::string* TaskResponse::release_cproof() {
+  // @@protoc_insertion_point(field_release:request_proto.TaskResponse.cproof)
+  return cproof_.Release(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), GetArena());
+}
+inline void TaskResponse::set_allocated_cproof(std::string* cproof) {
+  if (cproof != nullptr) {
+    
+  } else {
+    
+  }
+  cproof_.SetAllocated(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), cproof,
+      GetArena());
+  // @@protoc_insertion_point(field_set_allocated:request_proto.TaskResponse.cproof)
+}
+
+// bytes signature = 6;
 inline void TaskResponse::clear_signature() {
   signature_.ClearToEmpty();
 }

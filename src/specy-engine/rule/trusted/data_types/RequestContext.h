@@ -34,6 +34,8 @@ class RequestContext {
     std::string task_id_;
     std::string rule_file_;
     std::string input_data_;
+    std::string rule_file_hash_;
+    std::vector<std::string> rules;
 
     // execute result from engine
     bool result_;
@@ -56,8 +58,12 @@ class RequestContext {
     bool getResult();
     std::string getOutputData();
     std::string getErrorInfo();
+    std::string getRuleFileHash();
+    std::vector<std::string>& getRules(); 
+    std::string getCproofJsonString();
 
     void setResult(bool rule_result);
     void setOutputData(const std::string& output);
     void setErrorInfo(const std::string& err);
+    void updateRuleFileHash();
 };
