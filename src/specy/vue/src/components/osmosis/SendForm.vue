@@ -125,10 +125,12 @@ const submit = async (): Promise<void> => {
 
   let bankSend = {
     "@type": "/cosmos.bank.v1beta1.MsgSend",
-    from_address: icaAddress,
+    from_address: icaAddress.value,
     to_address: receiverAddress.value,
     amount: { denom: denom.value, amount: amount.value },
   };
+  console.log(bankSend);
+
   let msg = JSON.stringify(bankSend);
 
   let payload: any = {

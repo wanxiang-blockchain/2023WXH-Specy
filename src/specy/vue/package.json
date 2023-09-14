@@ -70,7 +70,7 @@
     "lint": "eslint . --ext .vue,.js,.jsx,.cjs,.mjs,.ts,.tsx,.cts,.mts --fix --ignore-path .gitignore",
     "postinstall": "node postinstall.js",
     "prepare": "node prepare.js",
-    "preview": "vite preview --port 4173",
+    "preview": "vite preview --port 5174",
     "type-check": "vue-tsc --noEmit"
   },
   "version": "0.4.3"
