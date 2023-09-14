@@ -129,7 +129,7 @@ const submit = async (): Promise<void> => {
   let executeMethodJson = JSON.parse(executeMethod.value);
   let executeContract = {
     "@type": "/cosmwasm.wasm.v1.MsgExecuteContract",
-    sender: icaAddress,
+    sender: icaAddress.value,
     contract: contractAddress.value,
     msg: executeMethodJson,
     funds: [],
