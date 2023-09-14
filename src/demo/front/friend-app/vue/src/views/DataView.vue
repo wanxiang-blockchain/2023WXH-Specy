@@ -56,10 +56,18 @@
 <script setup lang="ts">
 import { useContractQuery } from "../def-composables/useContract";
 import { useClient } from "@/composables/useClient";
+import useKeplr from "@/def-composables/useKeplr";
 import type { Amount } from "@/utils/interfaces";
 import { IgntProfileIcon } from "@ignt/vue-library";
 import { useAddress } from "../def-composables/useAddress";
-import { ref, computed, onBeforeMount, onMounted } from "vue";
+import {
+  ref,
+  computed,
+  onBeforeMount,
+  onMounted,
+  watch,
+  onBeforeUnmount,
+} from "vue";
 import axios from "axios";
 import { env } from "../env";
 //state
@@ -67,8 +75,34 @@ let users = ref();
 
 let loaded = ref(false);
 let client = useClient();
+const { connectToKeplr, isKeplrAvailable, getKeplrAccParams } = useKeplr();
 let { address } = useAddress();
 let executeContract = client.CosmwasmWasmV1.tx.sendMsgExecuteContract;
+let timer;
+watch(
+  () => address.value,
+  async (newVal) => {
+    if (newVal != "") {
+      try {
+        await tryToConnectToKeplr();
+        client = useClient();
+        executeContract = client.CosmwasmWasmV1.tx.sendMsgExecuteContract;
+      } catch (e) {
+        console.warn("Keplr not connected");
+      }
+    }
+  }
+);
+let tryToConnectToKeplr = (): void => {
+  let onKeplrConnect = async () => {};
+
+  let onKeplrError = (): void => {
+    console.log("error");
+  };
+
+  connectToKeplr(onKeplrConnect, onKeplrError);
+};
+
 const showRegister = () => {
   if (address.value == "") {
     return false;
@@ -207,11 +241,22 @@ const queryFollowers = (queryData: string) => {
       console.error("请求失败:", error);
     });
 };
+const intervalQuery = () => {
+  timer = setInterval(() => {
+    let queryData =
+      '{"query":"{\\n  followers {\\n    id\\n    address\\n    follows\\n  }\\n}","variables":null,"extensions":{"headers":null}}';
+    queryFollowers(queryData);
+  }, 3000);
+};
 
 onMounted(() => {
   let queryData =
     '{"query":"{\\n  followers {\\n    id\\n    address\\n    follows\\n  }\\n}","variables":null,"extensions":{"headers":null}}';
   queryFollowers(queryData);
+  intervalQuery();
+});
+onBeforeUnmount(() => {
+  clearInterval(timer);
 });
 </script>
 <style>
