@@ -65,7 +65,7 @@ file(GLOB_RECURSE T_SRCS_ANTLR4_RUNTIME
 file(GLOB_RECURSE T_SRCS_JSON_LIB
     LIST_DIRECTORIES false 
     CONFIGURE_DEPENDS
-    ../common/json_lib/json11.cpp)
+    ../third_party/json_lib/json11.cpp)
 
 file(GLOB_RECURSE T_SRCS_BASE64_LIB
     LIST_DIRECTORIES false 
@@ -138,7 +138,8 @@ include_directories(.
                     ../third_party/antlr4_runtime_trusted
                     ../third_party/protobuf/trusted_protobuf_src
                     ../protos/trusted
-                    ../include)
+                    ../include
+                    ../)
 
 
 target_include_directories(binding_enclave PRIVATE 

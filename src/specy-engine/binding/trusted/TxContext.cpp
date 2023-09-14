@@ -11,7 +11,7 @@
 #include "rule/RuleExportFunction.h"
 #include "BindingEnclave_t.h"
 #include "test_utils/TestUtils.h"
-
+#include "third_party/json_lib/json11.hpp"
 
 using namespace std;
 static const unsigned long kMaxOutSize = 8192UL;
@@ -114,9 +114,22 @@ void TxContext::generateTaskResponse() {
     taskResponse->set_output_data(ruleCheckResponse->output_data());
     taskResponse->set_error_info(ruleCheckResponse->error_info());
     taskResponse->set_status(ruleCheckResponse->status());
-    taskResponse->set_cproof(ruleCheckResponse->cproof());
 
-    
+    string cproof_string = ruleCheckResponse->cproof();
+    string cproof_signature = getSignature(cproof_string.c_str());
+    json11::Json signature(cproof_signature);
+    string err;
+    json11::Json old_json = json11::Json::parse(cproof_string, err);
+    json11::Json::object cproof {
+        {"inpudata", old_json["inputdata"]},
+        {"rulefilehash", old_json["rulefilehash"]},
+        {"rules", old_json["rules"]},
+        {"outputdata", old_json["outputdata"]},
+        {"signature", signature}
+    };
+    json11::Json cproof_json = cproof;
+    BINDING_INFO(cproof_json.dump().c_str());
+    taskResponse->set_cproof(cproof_json.dump());
     BINDING_INFO("generateTaskResponse start!");
     string response_string = taskResponse->SerializeAsString();
     string response_signature = getSignature(response_string.c_str());
