@@ -140,6 +140,7 @@ import { IgntWarningIcon } from "@ignt/vue-library";
 import { useClient } from "@/composables/useClient";
 import { useWalletStore } from "@/stores/useWalletStore";
 import useCosmosBaseTendermintV1Beta1 from "@/composables/useCosmosBaseTendermintV1Beta1";
+import { useAddress } from "../def-composables/useAddress";
 
 export interface State {
   modalPage: string;
@@ -160,7 +161,7 @@ const state = reactive(initialState);
 
 // composables
 const { connectToKeplr, isKeplrAvailable, getKeplrAccParams } = useKeplr();
-
+let { address, shortAddress } = useAddress();
 const client = useClient();
 const walletStore = useWalletStore();
 // methods
@@ -175,6 +176,16 @@ watch(
   async (newVal) => {
     if (newVal != "") {
       let { name, bech32Address } = await getKeplrAccParams(newVal);
+      state.keplrParams.name = name;
+      state.keplrParams.bech32Address = bech32Address;
+    }
+  }
+);
+watch(
+  () => address.value,
+  async (newVal) => {
+    if (newVal != "") {
+      let { name, bech32Address } = await getKeplrAccParams(chainId.value);
       state.keplrParams.name = name;
       state.keplrParams.bech32Address = bech32Address;
     }

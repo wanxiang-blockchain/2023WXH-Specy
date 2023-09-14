@@ -61,6 +61,7 @@ import { IgntProfileIcon } from "@ignt/vue-library";
 import { useAddress } from "../def-composables/useAddress";
 import { ref, computed, onBeforeMount, onMounted } from "vue";
 import axios from "axios";
+import { env } from "../env";
 //state
 let users = ref();
 
@@ -94,7 +95,7 @@ const submit_register = async (): Promise<void> => {
   let payload: any = {
     sender: address.value,
     /** Contract is the address of the smart contract */
-    contract: "osmo1nc5tatafv6eyq7llkr2gv50ff9e22mnf70qgjlv737ktmt4eswrqvlx82r",
+    contract: env.contractAddress,
     /** Msg json encoded message to be passed to the contract */
     msg: tryRegister,
     /** Funds coins that are transferred to the contract on execution */
@@ -135,7 +136,7 @@ const submit_follow = async (followAddress: string): Promise<void> => {
   let payload: any = {
     sender: address.value,
     /** Contract is the address of the smart contract */
-    contract: "osmo1nc5tatafv6eyq7llkr2gv50ff9e22mnf70qgjlv737ktmt4eswrqvlx82r",
+    contract: env.contractAddress,
     /** Msg json encoded message to be passed to the contract */
     msg: tryFollow,
     /** Funds coins that are transferred to the contract on execution */
@@ -195,10 +196,7 @@ const showFollow = (item: object) => {
 };
 const queryFollowers = (queryData: string) => {
   axios
-    .post(
-      "http://10.100.117.55:8000/subgraphs/name/friendtest2-subgraph",
-      queryData
-    )
+    .post("subgraphs/name/friend-subgraph", queryData)
     .then((response) => {
       followers.value = response.data.data.followers;
       console.log(followers.value);
