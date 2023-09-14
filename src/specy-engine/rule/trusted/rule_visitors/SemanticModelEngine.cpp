@@ -159,6 +159,8 @@ bool SemanticModelEngine::executeRule(ExecuteRule* rule) {
 
     curr_rule_name = rule->rule_name;
     auto& rule_stmts = symbol_collector->getRuleStmtMap()[curr_rule_name];
+    auto& executed_rules = request_context->getRules();
+    executed_rules.push_back(curr_rule_name);
     bool execute_result = true;
 
     // start execute rule

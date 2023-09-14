@@ -14,8 +14,8 @@ void mockTaskRequest_NFTList(request_proto::TaskRequest* request) {
     json11::Json::object data{
         {"inputdatas",
             json11::Json::object{
-                {"usera", "osmo1njd8p9avmp3y9xa9aq78gsjgwx8ttmw37ppxy2"},
-                {"userb", "osmo12smx2wdlyttvyzvzg54y2vnqwq2qjateuf7thj"},
+                {"usera", "usera_addr"},
+                {"userb", "userb_addr"},
             }
         }
     };
@@ -55,28 +55,28 @@ std::string MockDatabase_Taska::handleTaskaQuery(std::string& query) {
 
     cout << "enter handleTaskaQuery: "<< query << endl;
 
-    if (query.find("Followerss") != string::npos && query.find("usera_addr") != string::npos) {
+    if (query.find("followers") != string::npos && query.find("usera_addr") != string::npos) {
         cout << "return data for Followers usera_addr: "<< query << endl;
         Json::array datas;
         datas.push_back("userb_addr");
         datas.push_back("usera_addr");
         Json::object followers {
-            {"followers", datas}
+            {"follows", datas}
         };
         Json::object data {
-            {"Followerss", followers}
+            {"followers", followers}
         };
         Json result = data;
         return result.dump();
     }
 
-    if (query.find("Followerss") != string::npos && query.find("userb_addr") != string::npos) {
+    if (query.find("followers") != string::npos && query.find("userb_addr") != string::npos) {
         cout << "return data for Followers usera_addr: "<< query << endl;
         Json::array datas;
         datas.push_back("userb_addr");
         datas.push_back("userc_addr");
         Json::object followers {
-            {"followers", datas}
+            {"follows", datas}
         };
         Json::object data {
             {"Followerss", followers}

@@ -81,6 +81,7 @@ const ::google::protobuf::uint32 TableStruct_Regulator_2eproto::offsets[] PROTOB
   PROTOBUF_FIELD_OFFSET(::request_proto::TaskResponse, status_),
   PROTOBUF_FIELD_OFFSET(::request_proto::TaskResponse, error_info_),
   PROTOBUF_FIELD_OFFSET(::request_proto::TaskResponse, output_data_),
+  PROTOBUF_FIELD_OFFSET(::request_proto::TaskResponse, cproof_),
   PROTOBUF_FIELD_OFFSET(::request_proto::TaskResponse, signature_),
 };
 static const ::google::protobuf::internal::MigrationSchema schemas[] PROTOBUF_SECTION_VARIABLE(protodesc_cold) = {
@@ -102,17 +103,18 @@ static ::google::protobuf::Message const * const file_default_instances[] = {
 const char descriptor_table_protodef_Regulator_2eproto[] =
   "\n\017Regulator.proto\022\rrequest_proto\"F\n\013Task"
   "Request\022\020\n\010taskhash\030\001 \001(\014\022\021\n\trule_file\030\002"
-  " \001(\t\022\022\n\ninput_data\030\003 \001(\t\"l\n\014TaskResponse"
+  " \001(\t\022\022\n\ninput_data\030\003 \001(\t\"|\n\014TaskResponse"
   "\022\020\n\010taskhash\030\001 \001(\014\022\016\n\006status\030\002 \001(\010\022\022\n\ner"
-  "ror_info\030\003 \001(\t\022\023\n\013output_data\030\004 \001(\t\022\021\n\ts"
-  "ignature\030\005 \001(\0142[\n\tRegulator\022N\n\rGetTaskRe"
-  "sult\022\032.request_proto.TaskRequest\032\033.reque"
-  "st_proto.TaskResponse\"\000(\0010\001b\006proto3"
+  "ror_info\030\003 \001(\t\022\023\n\013output_data\030\004 \001(\t\022\016\n\006c"
+  "proof\030\005 \001(\t\022\021\n\tsignature\030\006 \001(\0142[\n\tRegula"
+  "tor\022N\n\rGetTaskResult\022\032.request_proto.Tas"
+  "kRequest\032\033.request_proto.TaskResponse\"\000("
+  "\0010\001b\006proto3"
   ;
 ::google::protobuf::internal::DescriptorTable descriptor_table_Regulator_2eproto = {
   false, InitDefaults_Regulator_2eproto, 
   descriptor_table_protodef_Regulator_2eproto,
-  "Regulator.proto", &assign_descriptors_table_Regulator_2eproto, 315,
+  "Regulator.proto", &assign_descriptors_table_Regulator_2eproto, 331,
 };
 
 void AddDescriptors_Regulator_2eproto() {
@@ -569,6 +571,7 @@ const int TaskResponse::kTaskhashFieldNumber;
 const int TaskResponse::kStatusFieldNumber;
 const int TaskResponse::kErrorInfoFieldNumber;
 const int TaskResponse::kOutputDataFieldNumber;
+const int TaskResponse::kCproofFieldNumber;
 const int TaskResponse::kSignatureFieldNumber;
 #endif  // !defined(_MSC_VER) || _MSC_VER >= 1900
 
@@ -593,6 +596,10 @@ TaskResponse::TaskResponse(const TaskResponse& from)
   if (from.output_data().size() > 0) {
     output_data_.AssignWithDefault(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), from.output_data_);
   }
+  cproof_.UnsafeSetDefault(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+  if (from.cproof().size() > 0) {
+    cproof_.AssignWithDefault(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), from.cproof_);
+  }
   signature_.UnsafeSetDefault(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
   if (from.signature().size() > 0) {
     signature_.AssignWithDefault(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), from.signature_);
@@ -607,6 +614,7 @@ void TaskResponse::SharedCtor() {
   taskhash_.UnsafeSetDefault(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
   error_info_.UnsafeSetDefault(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
   output_data_.UnsafeSetDefault(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+  cproof_.UnsafeSetDefault(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
   signature_.UnsafeSetDefault(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
   status_ = false;
 }
@@ -620,6 +628,7 @@ void TaskResponse::SharedDtor() {
   taskhash_.DestroyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
   error_info_.DestroyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
   output_data_.DestroyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+  cproof_.DestroyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
   signature_.DestroyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
 }
 
@@ -641,6 +650,7 @@ void TaskResponse::Clear() {
   taskhash_.ClearToEmptyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
   error_info_.ClearToEmptyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
   output_data_.ClearToEmptyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+  cproof_.ClearToEmptyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
   signature_.ClearToEmptyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
   status_ = false;
   _internal_metadata_.Clear();
@@ -713,9 +723,25 @@ const char* TaskResponse::_InternalParse(const char* begin, const char* end, voi
         ptr += size;
         break;
       }
-      // bytes signature = 5;
+      // string cproof = 5;
       case 5: {
         if (static_cast<::google::protobuf::uint8>(tag) != 42) goto handle_unusual;
+        ptr = ::google::protobuf::io::ReadSize(ptr, &size);
+        GOOGLE_PROTOBUF_PARSER_ASSERT(ptr);
+        ctx->extra_parse_data().SetFieldName("request_proto.TaskResponse.cproof");
+        object = msg->mutable_cproof();
+        if (size > end - ptr + ::google::protobuf::internal::ParseContext::kSlopBytes) {
+          parser_till_end = ::google::protobuf::internal::GreedyStringParserUTF8;
+          goto string_till_end;
+        }
+        GOOGLE_PROTOBUF_PARSER_ASSERT(::google::protobuf::internal::StringCheckUTF8(ptr, size, ctx));
+        ::google::protobuf::internal::InlineGreedyStringParser(object, ptr, size, ctx);
+        ptr += size;
+        break;
+      }
+      // bytes signature = 6;
+      case 6: {
+        if (static_cast<::google::protobuf::uint8>(tag) != 50) goto handle_unusual;
         ptr = ::google::protobuf::io::ReadSize(ptr, &size);
         GOOGLE_PROTOBUF_PARSER_ASSERT(ptr);
         object = msg->mutable_signature();
@@ -816,9 +842,24 @@ bool TaskResponse::MergePartialFromCodedStream(
         break;
       }
 
-      // bytes signature = 5;
+      // string cproof = 5;
       case 5: {
         if (static_cast< ::google::protobuf::uint8>(tag) == (42 & 0xFF)) {
+          DO_(::google::protobuf::internal::WireFormatLite::ReadString(
+                input, this->mutable_cproof()));
+          DO_(::google::protobuf::internal::WireFormatLite::VerifyUtf8String(
+            this->cproof().data(), static_cast<int>(this->cproof().length()),
+            ::google::protobuf::internal::WireFormatLite::PARSE,
+            "request_proto.TaskResponse.cproof"));
+        } else {
+          goto handle_unusual;
+        }
+        break;
+      }
+
+      // bytes signature = 6;
+      case 6: {
+        if (static_cast< ::google::protobuf::uint8>(tag) == (50 & 0xFF)) {
           DO_(::google::protobuf::internal::WireFormatLite::ReadBytes(
                 input, this->mutable_signature()));
         } else {
@@ -885,10 +926,20 @@ void TaskResponse::SerializeWithCachedSizes(
       4, this->output_data(), output);
   }
 
-  // bytes signature = 5;
+  // string cproof = 5;
+  if (this->cproof().size() > 0) {
+    ::google::protobuf::internal::WireFormatLite::VerifyUtf8String(
+      this->cproof().data(), static_cast<int>(this->cproof().length()),
+      ::google::protobuf::internal::WireFormatLite::SERIALIZE,
+      "request_proto.TaskResponse.cproof");
+    ::google::protobuf::internal::WireFormatLite::WriteStringMaybeAliased(
+      5, this->cproof(), output);
+  }
+
+  // bytes signature = 6;
   if (this->signature().size() > 0) {
     ::google::protobuf::internal::WireFormatLite::WriteBytesMaybeAliased(
-      5, this->signature(), output);
+      6, this->signature(), output);
   }
 
   if (_internal_metadata_.have_unknown_fields()) {
@@ -938,11 +989,22 @@ void TaskResponse::SerializeWithCachedSizes(
         4, this->output_data(), target);
   }
 
-  // bytes signature = 5;
+  // string cproof = 5;
+  if (this->cproof().size() > 0) {
+    ::google::protobuf::internal::WireFormatLite::VerifyUtf8String(
+      this->cproof().data(), static_cast<int>(this->cproof().length()),
+      ::google::protobuf::internal::WireFormatLite::SERIALIZE,
+      "request_proto.TaskResponse.cproof");
+    target =
+      ::google::protobuf::internal::WireFormatLite::WriteStringToArray(
+        5, this->cproof(), target);
+  }
+
+  // bytes signature = 6;
   if (this->signature().size() > 0) {
     target =
       ::google::protobuf::internal::WireFormatLite::WriteBytesToArray(
-        5, this->signature(), target);
+        6, this->signature(), target);
   }
 
   if (_internal_metadata_.have_unknown_fields()) {
@@ -987,7 +1049,14 @@ size_t TaskResponse::ByteSizeLong() const {
         this->output_data());
   }
 
-  // bytes signature = 5;
+  // string cproof = 5;
+  if (this->cproof().size() > 0) {
+    total_size += 1 +
+      ::google::protobuf::internal::WireFormatLite::StringSize(
+        this->cproof());
+  }
+
+  // bytes signature = 6;
   if (this->signature().size() > 0) {
     total_size += 1 +
       ::google::protobuf::internal::WireFormatLite::BytesSize(
@@ -1038,6 +1107,10 @@ void TaskResponse::MergeFrom(const TaskResponse& from) {
 
     output_data_.AssignWithDefault(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), from.output_data_);
   }
+  if (from.cproof().size() > 0) {
+
+    cproof_.AssignWithDefault(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), from.cproof_);
+  }
   if (from.signature().size() > 0) {
 
     signature_.AssignWithDefault(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), from.signature_);
@@ -1077,6 +1150,8 @@ void TaskResponse::InternalSwap(TaskResponse* other) {
   error_info_.Swap(&other->error_info_, &::google::protobuf::internal::GetEmptyStringAlreadyInited(),
     GetArenaNoVirtual());
   output_data_.Swap(&other->output_data_, &::google::protobuf::internal::GetEmptyStringAlreadyInited(),
+    GetArenaNoVirtual());
+  cproof_.Swap(&other->cproof_, &::google::protobuf::internal::GetEmptyStringAlreadyInited(),
     GetArenaNoVirtual());
   signature_.Swap(&other->signature_, &::google::protobuf::internal::GetEmptyStringAlreadyInited(),
     GetArenaNoVirtual());

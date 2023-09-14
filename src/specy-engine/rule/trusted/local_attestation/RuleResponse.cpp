@@ -82,6 +82,7 @@ RuleEnclaveStatus fill_rule_check_response(
     string input_data = request_input.input_data();
     // allocate a new request context pointer
     RequestContext* request_context = new RequestContext(request_id, rule_content, input_data);
+    request_context->updateRuleFileHash();
     vector<bool> status_list;
 
     // call delegate function to get rule result
@@ -95,6 +96,7 @@ RuleEnclaveStatus fill_rule_check_response(
     response_output->set_error_info(request_context->getErrorInfo());
     response_output->set_output_data(request_context->getOutputData());
     response_output->set_status(request_context->getResult());
+    response_output->set_cproof(request_context->getCproofJsonString());
     RULE_INFO_STRING(string("rule check response is: " +
                             response_output->SerializeAsString()));
     delete(request_context);

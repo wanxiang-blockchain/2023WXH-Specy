@@ -6,8 +6,10 @@
 // This file implements RequestContext class.
 
 #include "RequestContext.h"
+#include "sgx_tcrypto.h"
 
 #include "sgx_tcrypto.h"
+#include "RuleEnclave_t.h"
 #include "merklecpp.h"
 
 using namespace std;
@@ -46,4 +48,48 @@ std::string RequestContext::getErrorInfo() {
 
 void RequestContext::setErrorInfo(const std::string& err) {
     err_info_ = err;
+}
+
+void RequestContext::updateRuleFileHash() {
+    uint8_t hash[32];
+    sgx_sha256_msg((unsigned char*)rule_file_.c_str(), rule_file_.length(), &hash);
+    merkle::HashT<32> text_hash_node(hash);
+    rule_file_hash_ = text_hash_node.to_string();
+}
+
+std::string RequestContext::getRuleFileHash() {
+    return rule_file_hash_;
+}
+
+std::vector<std::string>& RequestContext::getRules() {
+    return rules;
+}
+
+std::string RequestContext::getCproofJsonString() {
+    string err;
+    Json inputdata = Json::parse(input_data_, err);
+    if (!err.empty()) {
+        ocall_print_string(err.c_str(), __FILE__, __LINE__);
+    }
+    Json outputdata = Json::parse(output_data_, err);
+    if (!err.empty()) {
+        ocall_print_string(err.c_str(), __FILE__, __LINE__);
+    }
+    Json::array json_rules;
+    for (auto rule : rules) {
+        json_rules.push_back(Json(rule));
+    }
+    Json executed_rules = json_rules;
+
+    Json::object cproof {
+        {"rulefilehash", Json(rule_file_hash_)},
+        {"inputdata", inputdata},
+        {"outputdata", output_data_},
+        {"rules", executed_rules}, 
+    };
+
+    Json ans = cproof;
+    ocall_print_string("dump cproof", __FILE__, __LINE__);
+    ocall_print_string(ans.dump().c_str(), __FILE__, __LINE__);
+    return ans.dump();
 }
