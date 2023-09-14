@@ -46,11 +46,7 @@
           <hr />
           <p>Last execute time</p>
           <p class="p-color" v-if="loaded && recordsTable.length >= 1">
-            {{
-              formatDate(
-                recordsTable[recordsTable.length - 1].timestamp / 1000000
-              )
-            }}
+            {{ recordsTable[recordsTable.length - 1].timestamp }}
           </p>
           <p class="p-color" v-else>Unexecuted</p>
           <!-- <hr /> -->
@@ -65,24 +61,33 @@
       <h2 class="mt-5">History</h2>
 
       <div class="table-responsive">
-        <table class="table table-hover">
-          <thead class="bg-light">
-            <tr>
-              <th>Date</th>
-              <th>Transaction hash</th>
-              <th>Executor</th>
-              <th>Amount</th>
-            </tr>
-          </thead>
-          <tbody v-if="loaded">
-            <tr v-for="(row, index) in currentPageData" :key="index">
-              <td>{{ formatDate(row.timestamp / 1000000) }}</td>
-              <td class="p-color">{{ shortTxHash(row.txHash) }}</td>
-              <td>{{ row.executor }}</td>
-              <td>{{ row.amount }}</td>
-            </tr>
-          </tbody>
-        </table>
+        <el-table
+          :data="currentPageData"
+          :border="parentBorder"
+          style="width: 100%"
+          v-if="loaded"
+        >
+          <el-table-column type="expand">
+            <template #default="props">
+              <div m="4" class="ml-10 p-3">
+                <p m="t-0 b-2">
+                  Input data: {{ props.row.cproof.inputdata.inputdatas }}
+                </p>
+                <p m="t-0 b-2">
+                  Output data: {{ props.row.cproof.outputdata }}
+                </p>
+                <p m="t-0 b-2">
+                  Rulefile hash: {{ props.row.cproof.rulefilehash }}
+                </p>
+                <p m="t-0 b-2">Signature: {{ props.row.cproof.signature }}</p>
+              </div>
+            </template>
+          </el-table-column>
+          <el-table-column label="Date" prop="timestamp" width="160" />
+          <el-table-column label="TxHash" prop="txHash" width="540" />
+          <el-table-column label="Executor" prop="executor" width="400" />
+          <el-table-column label="Amount" prop="amount" />
+        </el-table>
       </div>
       <nav
         aria-label="Page navigation"
@@ -124,8 +129,10 @@ import { useRouter } from "vue-router";
 //util
 let store = useStore();
 let router = useRouter();
-
+let expandedRows = ref(-1);
 //state
+const parentBorder = ref(false);
+const childBorder = ref(false);
 let currentPage = ref(1);
 let loaded = ref(false);
 let task = ref();
@@ -134,6 +141,9 @@ let recordsTable = ref();
 let timer;
 
 //function
+let toggleRow = (index) => {
+  expandedRows.value = index;
+};
 let shortAddress = computed(() => {
   return (
     task.value.owner.substring(0, 20) +
@@ -176,33 +186,55 @@ const goToPage = (page) => {
   }
 };
 const getRecords = () => {
-  timer = setInterval(() => {
-    records(task.value.owner, task.value.name).then((response) => {
-      // console.log(response);
-      // recordsTable.value = response.records;
-      //filter record
-      let filterData = [];
-      let filterKey = [];
-      for (let index = 0; index < response.records.length; index++) {
-        const element = response.records[index];
-        tx(element.txHash)
-          .then((res) => {
-            let key = res.tx.body.messages[0].packet_data.data;
-            if (!filterKey.includes(key)) {
-              filterKey.push(key);
-              filterData.push(response.records[index]);
-              recordsTable.value = filterData;
-            }
-            if (index == response.records.length - 1) {
-              loaded.value = true;
-            }
-          })
-          .catch((error) => {
-            console.log(error);
-          });
+  let trash = new Set();
+  let filterKey = new Set();
+  let filterData = [];
+  let isProcessing = false;
+
+  const processRecords = async () => {
+    if (isProcessing) return;
+    isProcessing = true;
+
+    try {
+      const response = await records(task.value.owner, task.value.name);
+      const resRecords = response.records;
+
+      resRecords.sort((a, b) => a.position - b.position);
+
+      for (const element of resRecords) {
+        const txHash = element.txHash;
+        if (!trash.has(txHash)) {
+          const res = await tx(element.txHash);
+          const key = res.tx.body.messages[0].packet_data.data;
+
+          if (!filterKey.has(key)) {
+            filterKey.add(key);
+            element["cproof"] = JSON.parse(res.tx.body.messages[0].cproof);
+            element["timestamp"] = format(
+              element.timestamp / 1000000,
+              "yyyy-MM-dd hh:mm"
+            );
+            console.log(element);
+            filterData.push(element);
+            recordsTable.value = filterData;
+          } else {
+            trash.add(txHash);
+          }
+        }
       }
-    });
-  }, 4000);
+
+      loaded.value = true;
+    } catch (error) {
+      console.log(error);
+    } finally {
+      isProcessing = false;
+    }
+  };
+
+  timer = setInterval(processRecords, 2000);
+
+  // Optionally, you can return a function to clear the interval if needed.
+  // Example: return () => clearInterval(timer);
 };
 
 //hook

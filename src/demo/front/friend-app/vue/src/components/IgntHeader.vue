@@ -1,7 +1,7 @@
 <template>
   <header class="flex p-5">
     <!-- <IgntLogo class="mx-2.5" /> -->
-    <img src="specylogo.png" alt="logo" class="logo-image ml-5" />
+    <img src="/specylogo.png" alt="logo" class="logo-image ml-5" />
 
     <nav class="flex flex-1 justify-between">
       <!-- <h1>Friends Demo</h1> -->

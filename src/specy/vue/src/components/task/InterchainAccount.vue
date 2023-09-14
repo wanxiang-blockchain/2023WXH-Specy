@@ -2,7 +2,7 @@
   <div class="container mt-3 pt-5">
     <div class="row rounded-lg shadow-sm p-4">
       <div class="col-md-1 text-center">
-        <img src="logo-s.png" class="mb-1 hover" width="80" height="80" />
+        <img src="/logo-s.png" class="mb-1 hover" width="80" height="80" />
         <div class="mt-3">Specy</div>
       </div>
 
@@ -10,7 +10,7 @@
         <div class="line-block gradient"></div>
       </div>
       <div class="col-md-1 text-center mr-5">
-        <img src="osmosislogo.png" class="mb-1 hover" width="80" height="80" />
+        <img src="/osmosislogo.png" class="mb-1 hover" width="80" height="80" />
         <div class="mt-3 fw-400">{{ initialState.targetChain.name }}</div>
       </div>
       <div class="col-md-4 p-2 ml-5">
