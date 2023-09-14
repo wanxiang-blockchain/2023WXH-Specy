@@ -3,7 +3,7 @@
     <div class="container">
       <div class="logo-site-container">
         <div class="logo">
-          <img src="specylogo.png" alt="Logo" class="logo-image" />
+          <img src="/specylogo.png" alt="Logo" class="logo-image" />
         </div>
         <!-- <a class="navbar-brand site-name" href="#">
           {{ siteName }}
