@@ -188,6 +188,11 @@ watch(
       let { name, bech32Address } = await getKeplrAccParams(chainId.value);
       state.keplrParams.name = name;
       state.keplrParams.bech32Address = bech32Address;
+      try {
+        await tryToConnectToKeplr();
+      } catch (e) {
+        console.warn("Keplr not connected");
+      }
     }
   }
 );
@@ -221,6 +226,8 @@ let disconnect = (): void => {
 // check if already connected
 onMounted(async () => {
   if (client.signer) {
+    console.log(111);
+
     try {
       await tryToConnectToKeplr();
     } catch (e) {
