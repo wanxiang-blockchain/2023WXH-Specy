@@ -91,13 +91,13 @@
       </div>
       <nav
         aria-label="Page navigation"
-        class="d-flex justify-content-between align-items-center mb-3"
+        class="d-flex justify-content-between align-items-center m-3"
         v-if="loaded"
       >
         <div>
           <button
             class="btn btn-outline-dark"
-            :disabled="currentPage === 1"
+            :disabled="currentPage <= 1"
             @click="goToPage(currentPage - 1)"
           >
             Previous
@@ -221,6 +221,10 @@ const getRecords = () => {
             trash.add(txHash);
           }
         }
+      }
+      if (filterData.length == 0) {
+        recordsTable.value = [];
+        currentPage.value = 0;
       }
 
       loaded.value = true;
