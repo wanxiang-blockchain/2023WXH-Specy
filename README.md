@@ -1,6 +1,12 @@
 # 2023WXH-Specy
 
-![logo](https://github.com/wanxiang-blockchain/2023WXH-Specy/blob/main/doc/pic/logo.jpeg)
+
+<center>
+    <img src="doc/pic/logo.jpeg" alt="logo">
+</center>
+<p align="center">
+<a href="https://specy-network.github.io/">Home Page </a>  | <a href="https://www.youtube.com/watch?v=etSlNtQbAkE">Demo Vedio </a>  |   <a href="  ">PPT </a>
+</p>
 
 ## Introduction
 
@@ -12,23 +18,30 @@ To meet these high expectations, Specy Network utilizes a trusted specification 
 
 ### Motivation
 
-![automation](https://github.com/wanxiang-blockchain/2023WXH-Specy/blob/main/doc/pic/motivation.png)
+<center>
+    <img src="doc/pic/motivation.png" alt="motivation">
+</center>
 
 The automation project can be divided into two parts: on-chain and off-chain. In the off-chain part, the Executor simulates the execution of user-written conditional logic repeatedly. When the conditions are met, it sends transactions to the on-chain automation service, which then executes the corresponding function of the target contract on behalf of the user. 
 
 We believe that in the entire process, the current automation project still has two areas that need improvement in its implementation
 
 
-#### complicated programing
-![short1](https://github.com/wanxiang-blockchain/2023WXH-Specy/blob/main/doc/pic/motivation1.png)
+- complicated programing
+  
+  Currently, off-chain conditions require access to on-chain world state data. In addition to the core condition checking logic, users also need to perform complex data preparation work. This has added a significant cognitive burden and programming threshold to the definition of automation tasks.
 
-Currently, off-chain conditions require access to on-chain world state data. In addition to the core condition checking logic, users also need to perform complex data preparation work. This has added a significant cognitive burden and programming threshold to the definition of automation tasks
+  <center>
+    <img src="doc/pic/motivation1.png" alt="motivation1">
+  </center>
 
-For example, below is a real condition checking function and its auxiliary functions.
+  For example, below is a real condition checking function and its auxiliary functions.
 
-* condition checking function
-```solidity
-function check()
+
+
+  - condition checking function
+  ```solidity
+  function check()
   {
     uint256[] memory _openedLoans = loanNFT.getAllOpenedLoans();
     uint256[] memory _upkeepLoans = new uint256[](maxLiquidationsPerUpkeep);
@@ -51,12 +64,12 @@ function check()
   }
 
 
-```
+  ```
 
-* auxiliary functions
+  - auxiliary functions
 
-```solidity
-function _shouldLiquidateLoan(uint256 _tokenId) internal view returns (bool) {
+  ```solidity
+  function _shouldLiquidateLoan(uint256 _tokenId) internal view returns (bool) {
     if (!loanNFT.doesTokenExist(_tokenId)) {
       return false;
     }
@@ -91,79 +104,88 @@ function _shouldLiquidateLoan(uint256 _tokenId) internal view returns (bool) {
     );
   }
 
-```
+  ```
 
-#### unverifiable
-![short2](https://github.com/wanxiang-blockchain/2023WXH-Specy/blob/main/doc/pic/motivation2.png)
+- Unverifiable
 
-The current project does not provide a verifiable computation method for off-chain condition checks. The trust in off-chain condition checks is derived from either the off-chain executor network mechanism or the staked tokens of executor.
+  The current project does not provide a verifiable computation method for off-chain condition checks. The trust in off-chain condition checks is derived from either the off-chain executor network mechanism or the staked tokens of executor.
+  <center>
+    <img src="doc/pic/motivation2.png" alt="motivation2">
+  </center>
 
 ### Specy Network
 Based on the observation mentioned above, we have designed Specy Network. It will enhance the user experience of automation in web3 from the following four directions:
 
-#### automation language
+- automation language
 
-![language model](https://github.com/wanxiang-blockchain/2023WXH-Specy/blob/main/doc/pic/rulemodel.png)
+  The automation language, constructed based on inputdata-rules-outputdata model, assists users in focusing on writing automation condition-checking logic.
+   <center>
+    <img src="doc/pic/rulemodel.png" alt="rulemodel">
+  </center>
 
-The automation language, constructed based on inputdata-rules-outputdata model, assists users in focusing on writing automation condition-checking logic.
+- verifiable
 
-#### verifiable
+  Based on the language model, using TEE (Trusted Execution Environment), and ZK (Zero-Knowledge) technology to provide proofs for off-chain execution processes.
+  <center>
+    <img src="doc/pic/verifiable.png" alt="verifiable">
+  </center>
 
-Based on the language model, using TEE (Trusted Execution Environment), and ZK (Zero-Knowledge) technology to provide proofs for off-chain execution processes.
 
-![verifiable](https://github.com/wanxiang-blockchain/2023WXH-Specy/blob/main/doc/pic/verifiable.png)
-
-```
-TEE PROOF: 
-{
+  ```
+  TEE PROOF: 
+  {
     rulefilehash: “”
     inputdata: {}
     rules: {“rule 1”, “rule 3”, “rule 5”}
     outputdata: {}
     signature：“”
-}
+    } 
 
 
-ZKPROOF（OnDeveloping）: 
-{
+  ZKPROOF（OnDeveloping）: 
+  {
     zkproof :“”
     signature :“”
-}
+  }
 
-```
-
-
-#### multi-chain support
-
-![verifiable](https://github.com/wanxiang-blockchain/2023WXH-Specy/blob/main/doc/pic/multi-chain.png)
-
-Specy Network is built on top of the Cosmos technology stack. We utilize the IBC (Inter-Blockchain Communication) protocol to facilitate multi-chain services. The off-chain database is linked to data from multiple blockchains, ensuring robust data support for off-chain task execution.
+  ```
 
 
-#### open framwork
+- multi-chain support
 
-Specy Network is an open architecture that allows any off-chain executor meeting the specified standards to connect to Specy Network.
+  Specy Network is built on top of the Cosmos technology stack. We utilize the IBC (Inter-Blockchain Communication) protocol to facilitate multi-chain services. The off-chain database is linked to data from multiple blockchains, ensuring robust data support for off-chain task execution.
+  <center>
+    <img src="doc/pic/multi-chain.png" alt="mutil-chain">
+  </center>
+
+
+- open framwork
+
+  Specy Network is an open architecture that allows any off-chain executor meeting the specified standards to connect to Specy Network.
 
 ### Architecture
-![architecture](https://github.com/wanxiang-blockchain/2023WXH-Specy/blob/main/doc/pic/architectrue.png)
 
+<center>
+    <img src="doc/pic/architectrue.png" alt="architectrue">
+</center>
 
-#### off-chain
-The off-chain executor is divided into two main components: the engine and the scheduler. 
+- off-chain
+  
+  - The off-chain executor is divided into two main components: the engine and the scheduler. 
 
-The scheduler is responsible for monitoring tasks registered on the blockchain and scheduling the execution of those tasks.
+  - The scheduler is responsible for monitoring tasks registered on the blockchain and scheduling the execution of those tasks.
 
-The engine operates within a Trusted Execution Environment (TEE) or Zero-Knowledge (ZK) runtime environment and is responsible for task execution and generating execution proofs. 
+  - The engine operates within a Trusted Execution Environment (TEE) or Zero-Knowledge (ZK) runtime environment and is responsible for task execution and generating execution proofs. 
 
-During the execution of tasks, the engine retrieves on-chain world state data from the off-chain database through the data service.
+  During the execution of tasks, the engine retrieves on-chain world state data from the off-chain database through the data service.
 
-#### on-chain
+- on-chain
 
-Specy Chain is built upon the Cosmos technology stack and serves various functions including user management, task management, executor management and target chain routing. It leverages the Inter-Blockchain Communication (IBC) protocol and its related mechanisms to facilitate cross-chain execution of tasks.
+  Specy Chain is built upon the Cosmos technology stack and serves various functions including user management, task management, executor management and target chain routing. It leverages the Inter-Blockchain Communication (IBC) protocol and its related mechanisms to facilitate cross-chain execution of tasks.
 
 ## Quick Start
 pls refer [Demo Env](https://github.com/wanxiang-blockchain/2023WXH-Specy/blob/main/src/demo/env.md)
 
 ## Demo
 
-vedio link
+Use a social dapp example to demonstrate the ability of specy network.([Demo Vedio](https://www.youtube.com/watch?v=etSlNtQbAkE))
