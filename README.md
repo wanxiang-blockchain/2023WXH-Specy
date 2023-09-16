@@ -5,7 +5,7 @@
     <img src="doc/pic/logo.jpeg" alt="logo">
 </center>
 <p align="center">
-<a href="https://specy-network.github.io/">Home Page </a>  | <a href="https://www.youtube.com/watch?v=etSlNtQbAkE">Demo Vedio </a>  |   <a href="  ">PPT </a>
+<a href="https://specy-network.github.io/">Home Page </a>  | <a href="https://www.youtube.com/watch?v=etSlNtQbAkE">Demo Vedio </a>  |   <a href="doc/specy-network.pptx">PPT </a>
 </p>
 
 ## Introduction
