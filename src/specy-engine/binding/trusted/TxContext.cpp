@@ -121,7 +121,7 @@ void TxContext::generateTaskResponse() {
     string err;
     json11::Json old_json = json11::Json::parse(cproof_string, err);
     json11::Json::object cproof {
-        {"inpudata", old_json["inputdata"]},
+        {"inputdata", old_json["inputdata"]},
         {"rulefilehash", old_json["rulefilehash"]},
         {"rules", old_json["rules"]},
         {"outputdata", old_json["outputdata"]},
