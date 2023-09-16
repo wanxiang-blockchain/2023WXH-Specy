@@ -1,6 +1,6 @@
 # 2023WXH-Specy
 
-### logo.jpg
+![logo](https://github.com/wanxiang-blockchain/2023WXH-Specy/blob/main/doc/pic/logo.jpeg)
 
 ## Introduction
 
@@ -12,12 +12,16 @@ To meet these high expectations, Specy Network utilizes a trusted specification 
 
 ### Motivation
 
+![automation](https://github.com/wanxiang-blockchain/2023WXH-Specy/blob/main/doc/pic/motivation.png)
+
 The automation project can be divided into two parts: on-chain and off-chain. In the off-chain part, the Executor simulates the execution of user-written conditional logic repeatedly. When the conditions are met, it sends transactions to the on-chain automation service, which then executes the corresponding function of the target contract on behalf of the user. 
 
 We believe that in the entire process, the current automation project still has two areas that need improvement in its implementation
 
 
 #### complicated programing
+![short1](https://github.com/wanxiang-blockchain/2023WXH-Specy/blob/main/doc/pic/motivation1.png)
+
 Currently, off-chain conditions require access to on-chain world state data. In addition to the core condition checking logic, users also need to perform complex data preparation work. This has added a significant cognitive burden and programming threshold to the definition of automation tasks
 
 For example, below is a real condition checking function and its auxiliary functions.
@@ -90,6 +94,8 @@ function _shouldLiquidateLoan(uint256 _tokenId) internal view returns (bool) {
 ```
 
 #### unverifiable
+![short2](https://github.com/wanxiang-blockchain/2023WXH-Specy/blob/main/doc/pic/motivation2.png)
+
 The current project does not provide a verifiable computation method for off-chain condition checks. The trust in off-chain condition checks is derived from either the off-chain executor network mechanism or the staked tokens of executor.
 
 ### Specy Network
@@ -97,7 +103,7 @@ Based on the observation mentioned above, we have designed Specy Network. It wil
 
 #### automation language
 
-语言模型图：
+![language model](https://github.com/wanxiang-blockchain/2023WXH-Specy/blob/main/doc/pic/rulemodel.png)
 
 The automation language, constructed based on inputdata-rules-outputdata model, assists users in focusing on writing automation condition-checking logic.
 
@@ -105,7 +111,7 @@ The automation language, constructed based on inputdata-rules-outputdata model, 
 
 Based on the language model, using TEE (Trusted Execution Environment), and ZK (Zero-Knowledge) technology to provide proofs for off-chain execution processes.
 
-图：
+![verifiable](https://github.com/wanxiang-blockchain/2023WXH-Specy/blob/main/doc/pic/verifiable.png)
 
 ```
 TEE PROOF: 
@@ -129,7 +135,7 @@ ZKPROOF（OnDeveloping）:
 
 #### multi-chain support
 
-图
+![verifiable](https://github.com/wanxiang-blockchain/2023WXH-Specy/blob/main/doc/pic/multi-chain.png)
 
 Specy Network is built on top of the Cosmos technology stack. We utilize the IBC (Inter-Blockchain Communication) protocol to facilitate multi-chain services. The off-chain database is linked to data from multiple blockchains, ensuring robust data support for off-chain task execution.
 
@@ -139,7 +145,8 @@ Specy Network is built on top of the Cosmos technology stack. We utilize the IBC
 Specy Network is an open architecture that allows any off-chain executor meeting the specified standards to connect to Specy Network.
 
 ### Architecture
-图
+![architecture](https://github.com/wanxiang-blockchain/2023WXH-Specy/blob/main/doc/pic/architectrue.png)
+
 
 #### off-chain
 The off-chain executor is divided into two main components: the engine and the scheduler. 
