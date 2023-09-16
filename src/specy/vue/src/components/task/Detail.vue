@@ -71,13 +71,14 @@
             <template #default="props">
               <div m="4" class="ml-10 p-3">
                 <p m="t-0 b-2">
-                  Input data: {{ props.row.cproof.inputdata.inputdatas }}
+                  Input data : {{ props.row.cproof.inputdata.inputdatas }}
                 </p>
                 <p m="t-0 b-2">
-                  Output data: {{ props.row.cproof.outputdata }}
+                  Output data : {{ props.row.cproof.outputdata }}
                 </p>
+                <p m="t-0 b-2">Rules : {{ props.row.cproof.rules }}</p>
                 <p m="t-0 b-2">
-                  Rulefile hash: {{ props.row.cproof.rulefilehash }}
+                  Rulefile hash : {{ props.row.cproof.rulefilehash }}
                 </p>
                 <p m="t-0 b-2">Signature: {{ props.row.cproof.signature }}</p>
               </div>
@@ -206,7 +207,6 @@ const getRecords = () => {
         if (!trash.has(txHash)) {
           const res = await tx(element.txHash);
           const key = res.tx.body.messages[0].packet_data.data;
-
           if (!filterKey.has(key)) {
             filterKey.add(key);
             element["cproof"] = JSON.parse(res.tx.body.messages[0].cproof);
@@ -214,7 +214,7 @@ const getRecords = () => {
               element.timestamp / 1000000,
               "yyyy-MM-dd hh:mm"
             );
-            console.log(element);
+
             filterData.push(element);
             recordsTable.value = filterData;
           } else {
