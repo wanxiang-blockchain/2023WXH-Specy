@@ -37,6 +37,7 @@ make test
 make install
 cd ../..
 export PKG_CONFIG_PATH="$PWD/install/lib/pkgconfig${PKG_CONFIG_PATH:+:$PKG_CONFIG_PATH}"
+echo "export PKG_CONFIG_PATH="$PWD/install/lib/pkgconfig${PKG_CONFIG_PATH:+:$PKG_CONFIG_PATH}" " >> ~/.bashrc
 ```
 
 #### Intel SGX OpenSSL
