@@ -144,11 +144,15 @@ const showRegister = () => {
   if (address.value == "") {
     return false;
   }
-  for (let index = 0; index < followers.value.length; index++) {
-    const element = followers.value[index];
+  let checkData = [];
+  checkData.push(...mainAccount.value);
+  checkData.push(...followers.value);
+  console.log(checkData);
+
+  for (let index = 0; index < checkData.length; index++) {
+    const element = checkData[index];
     if (element.address == address.value) {
       return false;
-      break;
     }
   }
   return true;
@@ -252,8 +256,11 @@ const showFollow = (item: object) => {
     return false;
   }
   let currentUserInfo = null;
-  for (let index = 0; index < followers.value.length; index++) {
-    const element = followers.value[index];
+  let checkData = [];
+  checkData.push(...followers.value);
+  checkData.push(...mainAccount.value);
+  for (let index = 0; index < checkData.length; index++) {
+    const element = checkData[index];
     if (element.address == address.value) {
       currentUserInfo = element;
       break;
