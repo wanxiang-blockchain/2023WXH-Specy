@@ -15,6 +15,43 @@
       </div>
       <div class="row mt-5" v-if="loaded">
         <div
+          v-for="(item, index) in mainAccount"
+          :key="item.index"
+          class="col-md-5 rounded shadow-sm p-3 m-5"
+        >
+          <div class="flex items-center">
+            <IgntProfileIcon :address="shortAddress(item.address)" />
+            <span class="mx-2">
+              {{ shortAddress(item.address) }}
+            </span>
+            <button
+              class="btn btn-outline-dark ml-5 btn-sm"
+              v-if="showFollow(item)"
+              @click="submit_follow(item.address)"
+            >
+              Follow
+            </button>
+          </div>
+          <div class="border-1 rounded shadow-sm m-3">
+            <h5 class="p-4">Followers</h5>
+            <div class="overflow-auto h-300 p-3">
+              <div v-for="follow in item.follows" :key="follow">
+                <div
+                  class="flex items-center pl-4 mb-2"
+                  v-if="follow != item.address"
+                >
+                  <IgntProfileIcon :address="follow" />
+                  <span class="mx-2">
+                    {{ shortAddress(follow) }}
+                  </span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="row mt-5" v-if="loaded">
+        <div
           v-for="(item, index) in followers"
           :key="item.index"
           class="col-md-5 rounded shadow-sm p-3 m-5"
@@ -198,7 +235,8 @@ const submit_follow = async (followAddress: string): Promise<void> => {
     alert("Transaction failed!");
   }
 };
-let followers = ref(1);
+let mainAccount = ref();
+let followers = ref();
 const shortAddress = (address: string) => {
   let length = address.length;
   return (
@@ -232,8 +270,21 @@ const queryFollowers = (queryData: string) => {
   axios
     .post("subgraphs/name/friend-subgraph", queryData)
     .then((response) => {
-      followers.value = response.data.data.followers;
-      console.log(followers.value);
+      // followers.value = response.data.data.followers;
+      mainAccount.value = [];
+      followers.value = [];
+      for (const item of response.data.data.followers) {
+        if (
+          item.address ==
+            "osmo1pgcee0wjzj5rayax64qh04ptqkrx7lpthccyaw242j37ppfxd2zqchrasn" ||
+          item.address == "osmo12smx2wdlyttvyzvzg54y2vnqwq2qjateuf7thj"
+        ) {
+          mainAccount.value.push(item);
+        } else {
+          followers.value.push(item);
+        }
+      }
+
       loaded.value = true;
     })
     .catch((error) => {
