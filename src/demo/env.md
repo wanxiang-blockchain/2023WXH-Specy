@@ -173,6 +173,19 @@ specy net and osmosis local net
 
     - 4.start executor
 
+        - 4.1 start engine
+            * deploy
+
+                pls refer: [SpecyEnginePrerequisites](https://github.com/wanxiang-blockchain/2023WXH-Specy/blob/main/src/specy-engine/SpecyEnginePrerequisites.md)
+            * run 
+                ```
+                ./specy-engine --log <log_file> --config <config_file>
+                ```
+
+        - 4.2 start scheduler 
+                pls refer: [scheduler](https://github.com/wanxiang-blockchain/2023WXH-Specy/blob/main/src/specy-scheduler/README.md)
+            
+
     - 5.deploy specy front 
     ```bash
     cd vue && npm install
